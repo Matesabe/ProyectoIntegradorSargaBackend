@@ -1,0 +1,6 @@
+@ProyectoIntegradorSarga_HostAddress = http://localhost:5264
+
+GET {{ProyectoIntegradorSarga_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
