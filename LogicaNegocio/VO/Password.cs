@@ -10,7 +10,7 @@ namespace BusinessLogic.VO
 {
     public record Password
     {
-        public string value { get; private set; }
+        public string Value { get; private set; }
         public Password(string value)
         {
             if (string.IsNullOrWhiteSpace(value) ||
@@ -20,7 +20,7 @@ namespace BusinessLogic.VO
             {
                 throw new PassException("La contraseña debe tener al menos 8 caracteres, un número y una letra mayúscula.");
             }
-            this.value = value;
+            this.Value = value;
         }
     }
 }

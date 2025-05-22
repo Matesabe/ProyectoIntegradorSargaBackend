@@ -1,8 +1,8 @@
 ﻿
 namespace Libreria.LogicaNegocio.InterfacesRepositorios
 {
-    public interface IRepositorioDelete <T>
+    public interface IRepoGetById <T>
     {
-        void Delete(int id);
+        T GetById(int id);
     }
 }

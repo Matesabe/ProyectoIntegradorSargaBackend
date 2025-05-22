@@ -1,7 +1,7 @@
 ﻿
 namespace Libreria.LogicaNegocio.InterfacesRepositorios
 {
-    public interface IRepositorioGetAll <T>
+    public interface IRepoGetAll <T>
     {
         IEnumerable<T> GetAll();
     }

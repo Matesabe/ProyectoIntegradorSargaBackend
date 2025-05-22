@@ -1,6 +1,6 @@
 ﻿namespace Libreria.LogicaNegocio.InterfacesRepositorios
 {
-    public interface IRepositorioRun
+    public interface IRepoRun
     {
         void Run();
     }

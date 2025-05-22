@@ -2,7 +2,7 @@
 
 namespace Libreria.LogicaNegocio.InterfacesRepositorios
 {
-    public interface IRepositorioAdd <T>
+    public interface IRepoAdd <T>
     {
         int Add(T obj);
     }

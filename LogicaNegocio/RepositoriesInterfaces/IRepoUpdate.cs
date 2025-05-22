@@ -1,8 +1,8 @@
 ﻿
 namespace Libreria.LogicaNegocio.InterfacesRepositorios
 {
-    public interface IRepositorioGetById <T>
+    public interface IRepoUpdate <T>
     {
-        T GetById(int id);
+        void Update(int id, T obj);
     }
 }
