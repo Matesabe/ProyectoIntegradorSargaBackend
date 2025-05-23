@@ -43,7 +43,8 @@ namespace xUnitTests
                 Mock.Of<IRemove>(),
                 Mock.Of<IGetByName<UserDto>>(),
                 Mock.Of<IGetById<UserDto>>(),
-                Mock.Of<IUpdate<UserDto>>()
+                Mock.Of<IUpdate<UserDto>>(),
+                Mock.Of<IGetByEmail<UserDto>>()
             );
 
             // Act  
@@ -67,7 +68,8 @@ namespace xUnitTests
                 Mock.Of<IRemove>(),
                 Mock.Of<IGetByName<UserDto>>(),
                 Mock.Of<IGetById<UserDto>>(),
-                Mock.Of<IUpdate<UserDto>>()
+                Mock.Of<IUpdate<UserDto>>(),
+                Mock.Of<IGetByEmail<UserDto>>()
             );
 
             // Act  
@@ -91,7 +93,8 @@ namespace xUnitTests
                 Mock.Of<IRemove>(),
                 Mock.Of<IGetByName<UserDto>>(),
                 Mock.Of<IGetById<UserDto>>(),
-                Mock.Of<IUpdate<UserDto>>()
+                Mock.Of<IUpdate<UserDto>>(),
+                Mock.Of<IGetByEmail<UserDto>>()
             );
 
             // Act  
@@ -115,7 +118,8 @@ namespace xUnitTests
                 Mock.Of<IRemove>(),
                 Mock.Of<IGetByName<UserDto>>(),
                 Mock.Of<IGetById<UserDto>>(),
-                Mock.Of<IUpdate<UserDto>>()
+                Mock.Of<IUpdate<UserDto>>(),
+                Mock.Of<IGetByEmail<UserDto>>()
             );
 
             // Act  
@@ -139,7 +143,8 @@ namespace xUnitTests
                 Mock.Of<IRemove>(),
                 Mock.Of<IGetByName<UserDto>>(),
                 Mock.Of<IGetById<UserDto>>(),
-                Mock.Of<IUpdate<UserDto>>()
+                Mock.Of<IUpdate<UserDto>>(),
+                Mock.Of<IGetByEmail<UserDto>>()
             );
 
             // Act  
@@ -163,7 +168,8 @@ namespace xUnitTests
                 Mock.Of<IRemove>(),
                 Mock.Of<IGetByName<UserDto>>(),
                 Mock.Of<IGetById<UserDto>>(),
-                Mock.Of<IUpdate<UserDto>>()
+                Mock.Of<IUpdate<UserDto>>(),
+                Mock.Of<IGetByEmail<UserDto>>()
             );
 
             // Act  
@@ -187,7 +193,8 @@ namespace xUnitTests
                 Mock.Of<IRemove>(),
                 Mock.Of<IGetByName<UserDto>>(),
                 Mock.Of<IGetById<UserDto>>(),
-                Mock.Of<IUpdate<UserDto>>()
+                Mock.Of<IUpdate<UserDto>>(),
+                Mock.Of<IGetByEmail<UserDto>>()
             );
 
             // Act  
@@ -211,7 +218,8 @@ namespace xUnitTests
                 Mock.Of<IRemove>(),
                 Mock.Of<IGetByName<UserDto>>(),
                 Mock.Of<IGetById<UserDto>>(),
-                Mock.Of<IUpdate<UserDto>>()
+                Mock.Of<IUpdate<UserDto>>(),
+                Mock.Of<IGetByEmail<UserDto>>()
             );
 
             // Act  
@@ -235,7 +243,8 @@ namespace xUnitTests
                 Mock.Of<IRemove>(),
                 Mock.Of<IGetByName<UserDto>>(),
                 Mock.Of<IGetById<UserDto>>(),
-                Mock.Of<IUpdate<UserDto>>()
+                Mock.Of<IUpdate<UserDto>>(),
+                Mock.Of<IGetByEmail<UserDto>>()
             );
 
             // Act  

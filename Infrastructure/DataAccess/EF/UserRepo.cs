@@ -50,6 +50,10 @@ namespace Infrastructure.DataAccess.EF
         public void Delete(int id)
         {
             User unU = GetById(id);
+            if (unU == null)
+            {
+                throw new BadRequestException("Usuario no encontrado");
+            }
             switch (unU.Rol)
             {
                 case "Client":
@@ -184,7 +188,8 @@ namespace Infrastructure.DataAccess.EF
             }
 
             var lowerValue = value.ToLower();
-
+            try
+            {
             var clients = _context.Clients
                 .Where(usuario => usuario.Name.Value.ToLower().Contains(lowerValue))
                 .ToList<User>();
@@ -197,7 +202,12 @@ namespace Infrastructure.DataAccess.EF
                 .Where(usuario => usuario.Name.Value.ToLower().Contains(lowerValue))
                 .ToList<User>();
 
-            return clients.Concat(sellers).Concat(administrators).ToList();
+                return clients.Concat(sellers).Concat(administrators).ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al buscar usuarios por nombre", ex);
+            }
         }
 
         public User GetByName(int id)
