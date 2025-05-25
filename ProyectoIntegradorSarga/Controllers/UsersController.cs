@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SharedUseCase.DTOs.User;
 using SharedUseCase.InterfacesUC;
+using Xunit.Abstractions;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -90,10 +91,82 @@ namespace ProyectoIntegradorSarga.Controllers
                 if (user == null)
                 {
                     return BadRequest("El objeto no puede ser nulo");
+                } 
+                if(user.Rol == "Client"){
+                        int id = _add.Execute(user);
+                        UserDto userCreated = _getByEmail.Execute(user.Email);
+                        return CreatedAtAction(nameof(GetById), new { id }, userCreated);
+                    }
+                else if (user.Rol == "Seller")
+                {
+                    return CreateSeller(user);
                 }
+                else if (user.Rol == "Administrator")
+                {
+                    return CreateAdmin(user);
+                }
+                return BadRequest("Rol no válido");
+            }
+            catch (Exception ex)
+            {
+                var errorMessage = ex.InnerException != null
+                    ? $"{ex.Message} - InnerException: {ex.InnerException.Message}"
+                    : ex.Message;
+                return BadRequest(errorMessage);
+            }
+        }
+
+        [Authorize]
+        [HttpPost("Seller")]
+        public IActionResult CreateSeller(UserDto user)
+        {
+            try
+            {
+                var rol = User.Claims.FirstOrDefault(c => c.Type == "Rol")?.Value;
+                if (rol != "Administrator")
+                {
+                    return BadRequest("Usuario con rol inválido para crear vendedor.");
+                }
+                if (user == null)
+                {
+                    return BadRequest("El objeto no puede ser nulo");
+                }
+                
+                 int id = _add.Execute(user);
+                 UserDto userCreated = _getByEmail.Execute(user.Email);
+                 return CreatedAtAction(nameof(GetById), new { id }, userCreated);
+
+            }
+            catch (Exception ex)
+            {
+                var errorMessage = ex.InnerException != null
+                    ? $"{ex.Message} - InnerException: {ex.InnerException.Message}"
+                    : ex.Message;
+                return BadRequest(errorMessage);
+            }
+        }
+
+        [Authorize]
+        [HttpPost("Administrator")]
+        public IActionResult CreateAdmin(UserDto user)
+        {
+            try
+            {
+                var rol = User.Claims.FirstOrDefault(c => c.Type == "Rol")?.Value;
+                if (rol != "Administrator")
+                {
+                    return BadRequest("Usuario con rol inválido para crear administrador.");
+                }
+
+                if (user == null)
+                {
+                    return BadRequest("El objeto no puede ser nulo");
+                }
+
                 int id = _add.Execute(user);
                 UserDto userCreated = _getByEmail.Execute(user.Email);
                 return CreatedAtAction(nameof(GetById), new { id }, userCreated);
+
             }
             catch (Exception ex)
             {
