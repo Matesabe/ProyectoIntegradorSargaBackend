@@ -20,6 +20,12 @@ public class AuthController : ControllerBase
         _config = config;
     }
 
+    [HttpGet]
+    public IActionResult Get()
+    {
+        return Ok("API de autenticación en funcionamiento");
+    }
+
     [HttpPost("login")]
     public IActionResult Login([FromBody] LoginRequest request)
     {
@@ -39,12 +45,12 @@ public class AuthController : ControllerBase
         JwtSecurityToken token = null;
         try
         {
-            var keyString = Environment.GetEnvironmentVariable("JWT_KEY") ?? _config["Jwt:Key"];
+            var keyString = Environment.GetEnvironmentVariable("Jwt:Key") ?? _config["Jwt:Key"];
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(keyString));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             token = new JwtSecurityToken(
-                issuer: _config["Jwt:Issuer"],
+                issuer: Environment.GetEnvironmentVariable("Jwt:Issuer") ?? _config["Jwt:Issuer"],
                 audience: null,
                 claims: claims,
                 expires: DateTime.Now.AddHours(1),
