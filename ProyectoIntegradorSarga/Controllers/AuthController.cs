@@ -26,7 +26,7 @@ public class AuthController : ControllerBase
         return Ok("API de autenticación en funcionamiento");
     }
 
-    [HttpPost("login")]
+    [HttpPost]
     public IActionResult Login([FromBody] LoginRequest request)
     {
         try { 
