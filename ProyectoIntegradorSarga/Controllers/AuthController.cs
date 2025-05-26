@@ -23,40 +23,50 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public IActionResult Login([FromBody] LoginRequest request)
     {
-        // Busca el usuario por email
-        var user = _repoUser.GetByEmail(request.Email);
-        if (user == null || user.Password.Value != request.Password)
-            return Unauthorized("Credenciales inválidas");
-
-        // Genera el token JWT
-        var claims = new[]
+        try
         {
-            new Claim(ClaimTypes.Name, user.Email.Value),
-            new Claim("Rol", user.Rol)
-        };
+            // Busca el usuario por email
+            var user = _repoUser.GetByEmail(request.Email);
+            if (user == null || user.Password.Value != request.Password)
+                return Unauthorized("Credenciales inválidas");
 
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
-        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            // Genera el token JWT
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.Name, user.Email.Value),
+                new Claim("Rol", user.Rol)
+            };
 
-        var token = new JwtSecurityToken(
-            issuer: _config["Jwt:Issuer"],
-            audience: null,
-            claims: claims,
-            expires: DateTime.Now.AddHours(1),
-            signingCredentials: creds);
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-        // Corrige la inicialización de UserDto proporcionando todos los argumentos requeridos
-        var userData = new UserDto
-        (
-            user.Id,
-            user.Ci,
-            user.Name.Value,
-            user.Email.Value,
-            user.Password.Value, 
-            user.Phone,
-            user.Rol
-        );
+            var token = new JwtSecurityToken(
+                issuer: _config["Jwt:Issuer"],
+                audience: null,
+                claims: claims,
+                expires: DateTime.Now.AddHours(1),
+                signingCredentials: creds);
 
-        return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token), userData });
+            // Corrige la inicialización de UserDto proporcionando todos los argumentos requeridos
+            var userData = new UserDto
+            (
+                user.Id,
+                user.Ci,
+                user.Name.Value,
+                user.Email.Value,
+                user.Password.Value,
+                user.Phone,
+                user.Rol
+            );
+
+            return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token), userData });
+        }
+        catch (Exception e)
+        {
+            var errorMessage = e.InnerException != null
+                ? $"{e.Message} | Inner: {e.InnerException.Message}"
+                : e.Message;
+            return StatusCode(500, $"Error en el servidor: {errorMessage}");
+        }
     }
 }
