@@ -31,11 +31,9 @@ builder.Services.AddScoped<IUpdate<UserDto>, UpdateUser>();
 builder.Services.AddScoped<IGetByCi<UserDto>, GetByCiUser>();
 
 
-// Inyecta el contex y la cadena de conexion que la toma desde el json
-//.Services.AddDbContext<LibreriaContext>();
 // Add services to the container.
 builder.Services.AddDbContext<SargaContext>(
-    options => options.UseSqlServer(builder.Configuration.GetConnectionString("PruebaUsuarios"))
+    options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
 //Configuración de seguridad
