@@ -30,6 +30,8 @@ builder.Services.AddScoped<IRemove, DeleteUser>();
 builder.Services.AddScoped<IUpdate<UserDto>, UpdateUser>();
 builder.Services.AddScoped<IGetByCi<UserDto>, GetByCiUser>();
 
+builder.Services.AddScoped<SeedData>(); // Inyección del SeedData para la inicialización de datos
+
 
 // Inyecta el contex y la cadena de conexion que la toma desde el json
 //.Services.AddDbContext<LibreriaContext>();
