@@ -1,5 +1,6 @@
 using AppLogic.Mapper;
 using BusinessLogic.RepositoriesInterfaces;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using SharedUseCase.DTOs.User;
@@ -7,6 +8,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
+[EnableCors]
 [Route("api/[controller]")]
 [ApiController]
 public class AuthController : ControllerBase

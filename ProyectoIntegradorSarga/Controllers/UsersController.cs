@@ -1,6 +1,7 @@
 ﻿
 using AppLogic.Mapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SharedUseCase.DTOs.User;
@@ -10,6 +11,7 @@ using SharedUseCase.InterfacesUC;
 
 namespace ProyectoIntegradorSarga.Controllers
 {
+    [EnableCors]
     [Route("api/prueba/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase

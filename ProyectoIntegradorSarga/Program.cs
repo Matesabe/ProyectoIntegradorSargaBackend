@@ -30,6 +30,8 @@ builder.Services.AddScoped<IRemove, DeleteUser>();
 builder.Services.AddScoped<IUpdate<UserDto>, UpdateUser>();
 builder.Services.AddScoped<IGetByCi<UserDto>, GetByCiUser>();
 
+builder.Services.AddScoped<SeedData>(); // Inyección del SeedData para la inicialización de datos
+
 
 // Add services to the container.
 builder.Services.AddDbContext<SargaContext>(
@@ -77,6 +79,18 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+//Configuración de CORS
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowLocalhost",
+        policy => policy
+            .WithOrigins("http://localhost:3939")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials()); // Solo si estás enviando cookies
+});
+
 var config = new ConfigurationBuilder()
     .Build();
 
@@ -88,6 +102,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 
+    using (var scope = app.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+        var seeder = services.GetRequiredService<SeedData>();
+        seeder.Run();
+    }
+
     //using (var scope = app.Services.CreateScope())
     //{
     //    var services = scope.ServiceProvider;
@@ -96,14 +117,15 @@ if (app.Environment.IsDevelopment())
     //    var seeder = services.GetRequiredService<SeedData>();
     //    seeder.Run();
     //}
-
-
 }
+
 
 app.UseHttpsRedirection();
 
+app.UseCors("AllowLocalhost"); 
+
 app.UseAuthentication();
-app.UseAuthorization();
+app.UseAuthorization(); 
 
 
 app.MapControllers();

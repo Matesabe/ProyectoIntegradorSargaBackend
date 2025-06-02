@@ -12,18 +12,18 @@ namespace Infrastructure.DataAccess.EF
 
     namespace Infrastructure.DataAccess.EF
     {
-        public class SargaContextFactory : IDesignTimeDbContextFactory<SargaContext>
+        public class SargaContextFactory /*: IDesignTimeDbContextFactory<SargaContext>*/
         {
-            public SargaContext CreateDbContext(string[] args)
-            {
-                var optionsBuilder = new DbContextOptionsBuilder<SargaContext>();
-                optionsBuilder.UseSqlServer(@"
-                Data Source=(localdb)\MSSQLLocalDB;
-                Initial Catalog=PruebaUsuario;
-                Integrated Security=True;");
+            //public SargaContext CreateDbContext(string[] args)
+            //{
+            //    var optionsBuilder = new DbContextOptionsBuilder<SargaContext>();
+            //    optionsBuilder.UseSqlServer(@"
+            //    Data Source=(localdb)\MSSQLLocalDB;
+            //    Initial Catalog=PruebaUsuario;
+            //    Integrated Security=True;");
 
-                return new SargaContext(optionsBuilder.Options);
-            }
+            //    return new SargaContext(optionsBuilder.Options);
+            //}
         }
     }
 
