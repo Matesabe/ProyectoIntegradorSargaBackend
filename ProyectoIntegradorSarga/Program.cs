@@ -90,6 +90,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 
+    using (var scope = app.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+        var seeder = services.GetRequiredService<SeedData>();
+        seeder.Run();
+    }
+
     //using (var scope = app.Services.CreateScope())
     //{
     //    var services = scope.ServiceProvider;
