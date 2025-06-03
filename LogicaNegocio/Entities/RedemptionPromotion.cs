@@ -8,5 +8,7 @@ namespace BusinessLogic.Entities
 {
     public abstract class RedemptionPromotion
     {
+        public int Id { get; set; }
+        public int PointsPerAmount { get; set; }
     }
 }

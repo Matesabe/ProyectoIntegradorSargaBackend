@@ -9,9 +9,10 @@ namespace BusinessLogic.Entities
     public class Purchase
     {
         public int Id { get; set; }
+        public Client Client { get; set; }
         public double Amount { get; set; }
         public int PointsGenerated { get; set; }
-        public List<Product> Products { get; set; } = new();
+        public List<SubProduct> SubProducts { get; set; } = new();
         public List<PurchasePromotion> Promotions { get; set; } = new();
     }
 }

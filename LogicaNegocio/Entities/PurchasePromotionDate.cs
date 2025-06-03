@@ -8,5 +8,7 @@ namespace BusinessLogic.Entities
 {
     public class PurchasePromotionDate
     {
+        public DateTime Date { get; set; }
+        public int PointsPerDate { get; set; }
     }
 }

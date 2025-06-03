@@ -8,5 +8,7 @@ namespace BusinessLogic.Entities
 {
     public class PurchasePromotionProducts
     {
+        public List<Product> Products { get; set; } = new();
+        public int PointsPerProducts { get; set; }
     }
 }

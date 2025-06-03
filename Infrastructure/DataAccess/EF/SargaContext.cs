@@ -12,6 +12,7 @@ namespace Infrastructure.DataAccess.EF
         public DbSet<Seller> Sellers { get; set; }
         public DbSet<Client> Clients { get; set; }
         public DbSet<Administrator> Administrators { get; set; }
+        public DbSet<SubProduct> SubProducts { get; set; }
 
         // Elimina o comenta la línea:
         // public DbSet<User> Users { get; set; }

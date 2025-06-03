@@ -12,7 +12,7 @@ using SharedUseCase.InterfacesUC;
 namespace ProyectoIntegradorSarga.Controllers
 {
     [EnableCors]
-    [Route("api/prueba/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
     {

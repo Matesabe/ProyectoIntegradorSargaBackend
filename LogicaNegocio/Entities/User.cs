@@ -13,6 +13,7 @@ namespace BusinessLogic.Entities
         public Password Password { get; set; }
         public Email Email { get; set; }
         public string Phone { get; set; }
+        public bool Verified { get; set; } = false;
         public string Rol { get; set; } = string.Empty;
 
         protected User() { }
@@ -51,6 +52,7 @@ namespace BusinessLogic.Entities
 
         public void Validar() {
             validarCi();
+            validarPhone();
         }
 
         public override bool Equals(object? obj)

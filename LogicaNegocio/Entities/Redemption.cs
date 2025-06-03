@@ -8,5 +8,11 @@ namespace BusinessLogic.Entities
 {
     public class Redemption
     {
+        public int Id { get; set; }
+        public Client Client { get; set; } 
+        public double Amount { get; set; }
+        public int PointsUsed { get; set; }
+        public List<SubProduct> SubProducts { get; set; } = new();
+        public List<RedemptionPromotion> Promotions { get; set; } = new();
     }
 }
