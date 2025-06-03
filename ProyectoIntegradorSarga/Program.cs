@@ -83,12 +83,16 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowLocalhost",
-        policy => policy
-            .WithOrigins("http://localhost:3939")
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy
+            .WithOrigins(
+                "https://localhost:3939", //  desarrollo local
+                "https://proud-desert-0f4937d0f.6.azurestaticapps.net" //  dominio de producción
+            )
             .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowCredentials()); // Solo si estás enviando cookies
+            .AllowAnyMethod();
+    });
 });
 
 var config = new ConfigurationBuilder()

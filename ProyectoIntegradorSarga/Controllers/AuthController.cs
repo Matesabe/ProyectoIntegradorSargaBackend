@@ -25,7 +25,7 @@ public class AuthController : ControllerBase
     [HttpGet]
     public IActionResult Get()
     {
-        return Ok("API de autenticación en funcionamiento");
+        return Ok(new { message = "API funcionando correctamente"});
     }
 
     [HttpPost]
@@ -35,7 +35,7 @@ public class AuthController : ControllerBase
         // Busca el usuario por email
         var user = _repoUser.GetByEmail(request.Email);
         if (user == null || user.Password.Value != request.Password)
-            return Unauthorized("Credenciales inválidas");
+            return Unauthorized(new {message = "Credenciales inválidas" });
 
         // Genera el token JWT
         var claims = new[]
