@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace SharedUseCase.DTOs.Product
 {
-    public record SubproductDto(int Id,
+    public record SubProductDto(int Id,
+                                int ProductId,
                              string productCode,
                              string Name,
                              double Price,

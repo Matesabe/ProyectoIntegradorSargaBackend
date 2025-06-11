@@ -9,10 +9,11 @@ namespace BusinessLogic.Entities
     public class SubProduct : Product
     {
         public SubProduct() : base() { }
-        public SubProduct(int id, string productCode, string name, double price, string Color, string Size, List<Image> images, string season, string year) : base(id, productCode, name, price, season, year)
+        public SubProduct(int id, int ProductId, string productCode, string name, double price, string Color, string Size, List<Image> images, string season, string year) : base(ProductId, productCode, name, price, season, year)
         {
         }
         public int Id { get; set; }
+        public int ProductId { get; set; }
         public string Code { get; set; }
         public string Color { get; set; }
         public string Size { get; set; }

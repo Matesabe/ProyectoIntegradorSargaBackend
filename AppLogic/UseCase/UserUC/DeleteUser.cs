@@ -22,7 +22,6 @@ namespace AppLogic.UseCase.User
             {
                 throw new DeleteException("Error al eliminar el usuario", ex);
             }
-
         }
     }
 }

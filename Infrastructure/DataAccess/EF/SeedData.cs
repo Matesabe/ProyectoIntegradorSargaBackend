@@ -30,5 +30,6 @@ namespace Infrastructure.DataAccess.EF
             _context.Administrators.Add(unA);
             _context.SaveChanges();
         }
+     
     }
 }

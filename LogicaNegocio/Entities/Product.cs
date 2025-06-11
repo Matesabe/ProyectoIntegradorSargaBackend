@@ -7,7 +7,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace BusinessLogic.Entities
 {
-    public abstract class Product
+    public  class Product
     {
         public Product(int id, string productCode, string name, double price, string season, string year)
         {

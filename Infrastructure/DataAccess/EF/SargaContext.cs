@@ -12,12 +12,17 @@ namespace Infrastructure.DataAccess.EF
         public DbSet<Seller> Sellers { get; set; }
         public DbSet<Client> Clients { get; set; }
         public DbSet<Administrator> Administrators { get; set; }
+        public DbSet<Product> Products { get; set; }
         public DbSet<SubProduct> SubProducts { get; set; }
+        public DbSet<Warehouse> Warehouses { get; set; }
+        public DbSet<Purchase> Purchases { get; set; }
+        public DbSet<PurchasePromotionAmount> PurchasePromotionsAmount { get; set; }
+        public DbSet<PurchasePromotionDate> PurchasePromotionsDate { get; set; }
+        public DbSet<PurchasePromotionRecurrence> PurchasePromotionsRecurrence { get; set; }
+        public DbSet<PurchasePromotionProducts> PurchasePromotionsProducts { get; set; }
 
         // Elimina o comenta la línea:
         // public DbSet<User> Users { get; set; }
-
-
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             //base.OnConfiguring(optionsBuilder);

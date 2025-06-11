@@ -1,6 +1,7 @@
 ﻿
 using AppLogic.Mapper;
 using BusinessLogic.RepositoriesInterfaces;
+using SharedUseCase.DTOs.Product;
 using SharedUseCase.DTOs.User;
 using SharedUseCase.InterfacesUC;
 

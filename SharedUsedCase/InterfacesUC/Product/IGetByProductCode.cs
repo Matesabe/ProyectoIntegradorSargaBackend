@@ -8,6 +8,6 @@ namespace SharedUseCase.InterfacesUC.Product
 {
     public interface IGetByProductCode<T>
     {
-        T Execute(string code);
+        IEnumerable<T> Execute(string code);
     }
 }
