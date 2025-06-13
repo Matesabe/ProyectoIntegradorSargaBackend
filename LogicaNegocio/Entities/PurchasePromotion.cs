@@ -9,6 +9,15 @@ namespace BusinessLogic.Entities
     public abstract class PurchasePromotion
     {
         public int Id { get; set; }
-        public int PointsPerAmount { get; set; }
+        public abstract string Description { get; set; }
+        //public abstract int PointsGenerated { get; set; }
+        public abstract string Type { get; set; }
+        public abstract bool IsActive { get; set; }
+        public abstract int generatePoints(Purchase purchase);
+        public PurchasePromotion() { }
+        public PurchasePromotion(int id)
+        {
+            Id = id;
+        }
     }
 }

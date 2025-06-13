@@ -17,13 +17,17 @@ namespace BusinessLogic.Entities
         {
             Points = 0;
             Rol = rol;
+            RecurrenceCount = 0;
         }
 
         public int Points { get; set; }
+        public int RecurrenceCount { get; set; }
 
         protected override string RolUsuario()
         {
             return "Client";
         }
+
+        
     }
 }

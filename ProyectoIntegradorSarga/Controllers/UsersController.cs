@@ -1,6 +1,7 @@
 ﻿
 using AppLogic.Mapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SharedUseCase.DTOs.User;
@@ -11,7 +12,8 @@ using Xunit.Abstractions;
 
 namespace ProyectoIntegradorSarga.Controllers
 {
-    [Route("api/prueba/[controller]")]
+    [EnableCors]
+    [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
     {
@@ -91,12 +93,13 @@ namespace ProyectoIntegradorSarga.Controllers
                 if (user == null)
                 {
                     return BadRequest("El objeto no puede ser nulo");
-                } 
-                if(user.Rol == "Client"){
-                        int id = _add.Execute(user);
-                        UserDto userCreated = _getByEmail.Execute(user.Email);
-                        return CreatedAtAction(nameof(GetById), new { id }, userCreated);
-                    }
+                }
+                if (user.Rol == "Client")
+                {
+                    int id = _add.Execute(user);
+                    UserDto userCreated = _getByEmail.Execute(user.Email);
+                    return CreatedAtAction(nameof(GetById), new { id }, userCreated);
+                }
                 else if (user.Rol == "Seller")
                 {
                     return CreateSeller(user);
@@ -131,10 +134,10 @@ namespace ProyectoIntegradorSarga.Controllers
                 {
                     return BadRequest("El objeto no puede ser nulo");
                 }
-                
-                 int id = _add.Execute(user);
-                 UserDto userCreated = _getByEmail.Execute(user.Email);
-                 return CreatedAtAction(nameof(GetById), new { id }, userCreated);
+
+                int id = _add.Execute(user);
+                UserDto userCreated = _getByEmail.Execute(user.Email);
+                return CreatedAtAction(nameof(GetById), new { id }, userCreated);
 
             }
             catch (Exception ex)

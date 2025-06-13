@@ -7,7 +7,6 @@ namespace AppLogic.UseCase.User
     public class DeleteUser: IRemove
     {
         private IRepoUser _repo;
-
         public DeleteUser(IRepoUser repo)
         {
             _repo = repo;
@@ -22,7 +21,6 @@ namespace AppLogic.UseCase.User
             {
                 throw new DeleteException("Error al eliminar el usuario", ex);
             }
-
         }
     }
 }

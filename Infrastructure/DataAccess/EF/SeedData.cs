@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Infrastructure.DataAccess.EF
 {
@@ -25,9 +26,10 @@ namespace Infrastructure.DataAccess.EF
         private void loadAdmin()
         {
             Administrator unA = null;
-            unA = new Administrator(0, "87654321", new Name("Administrador Sarga"), new Password("SargaPass983"), new Email("adminSarga@mail.com"), "123456789", "Administrator");
+            unA = new Administrator(0, "87654321", new Name("Administrador Sarga"), new Password("SargaPass983"), new Email("adminSarga@mail.com"), "123456789", "Administrator" );
             _context.Administrators.Add(unA);
             _context.SaveChanges();
         }
+     
     }
 }
