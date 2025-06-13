@@ -67,6 +67,7 @@ namespace ProyectoIntegradorSarga.Controllers
             }
         }
 
+        [HttpGet("by-product/{productId}")]
         public IActionResult GetByProductId(int productId)
         {
             try
@@ -87,6 +88,7 @@ namespace ProyectoIntegradorSarga.Controllers
             }
         }
 
+        [HttpGet("by-productCode/{productCode}")]
         public IActionResult GetByProductCode(string productCode)
         {
             try

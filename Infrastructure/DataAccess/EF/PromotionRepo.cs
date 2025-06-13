@@ -102,7 +102,7 @@ namespace Infrastructure.DataAccess.EF
                         _context.PurchasePromotionsAmount.Remove(amountPromotion);
                         break;
                     default:
-                        throw new ArgumentException("Tipo de promoción desconocido", nameof(obj.Type));
+                        throw new ArgumentException("Tipo de promoción desconocido", nameof(promotion.Type));
                 }
                 _context.SaveChanges();
             }
