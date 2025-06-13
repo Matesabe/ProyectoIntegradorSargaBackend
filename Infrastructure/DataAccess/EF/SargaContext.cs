@@ -20,6 +20,7 @@ namespace Infrastructure.DataAccess.EF
         public DbSet<PurchasePromotionDate> PurchasePromotionsDate { get; set; }
         public DbSet<PurchasePromotionRecurrence> PurchasePromotionsRecurrence { get; set; }
         public DbSet<PurchasePromotionProducts> PurchasePromotionsProducts { get; set; }
+        public DbSet<Redemption> Redemptions { get; set; }
 
         // Elimina o comenta la línea:
         // public DbSet<User> Users { get; set; }

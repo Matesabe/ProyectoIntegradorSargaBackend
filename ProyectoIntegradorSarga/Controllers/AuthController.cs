@@ -41,7 +41,8 @@ public class AuthController : ControllerBase
         var claims = new[]
         {
             new Claim(ClaimTypes.Name, user.Email.Value),
-            new Claim("Rol", user.Rol)
+            new Claim("Rol", user.Rol),
+            new Claim("Id", user.Id.ToString())
         };
 
         JwtSecurityToken token = null;

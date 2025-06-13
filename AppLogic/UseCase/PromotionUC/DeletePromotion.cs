@@ -12,7 +12,7 @@ namespace AppLogic.UseCase.PromotionUC
 {
     public class DeletePromotion : IRemove
     {
-        private readonly IRepoPromotion _repo;
+        private IRepoPromotion _repo;
         public DeletePromotion(IRepoPromotion repo)
         {
             _repo = repo;

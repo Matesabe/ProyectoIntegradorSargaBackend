@@ -13,7 +13,7 @@ namespace AppLogic.UseCase.ProductUC
 {
     public class AddSubProduct : IAdd<SubProductDto>
     {
-        private readonly IRepoSubProduct _repo;
+        private IRepoSubProduct _repo;
         public AddSubProduct(IRepoSubProduct repo)
         {
             _repo = repo;

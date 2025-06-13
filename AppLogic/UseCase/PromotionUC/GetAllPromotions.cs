@@ -1,6 +1,8 @@
-﻿using BusinessLogic.Entities;
+﻿using AppLogic.Mapper;
+using BusinessLogic.Entities;
 using BusinessLogic.RepositoriesInterfaces.PromotionInterface;
 using Libreria.LogicaNegocio.InterfacesRepositorios;
+using SharedUseCase.DTOs.Promotion;
 using SharedUseCase.InterfacesUC;
 using System;
 using System.Collections.Generic;
@@ -10,18 +12,18 @@ using System.Threading.Tasks;
 
 namespace AppLogic.UseCase.PromotionUC
 {
-    public class GetAllPromotions:IGetAll<PurchasePromotion>
+    public class GetAllPromotions:IGetAll<PromotionDto>
     {
-        IRepoPromotion _repo;
+        private IRepoPromotion _repo;
         public GetAllPromotions(IRepoPromotion repo)
         {
             _repo = repo;
         }
-        public IEnumerable<PurchasePromotion> Execute()
+        public IEnumerable<PromotionDto> Execute()
         {
             try
             {
-                return _repo.GetAll();
+                return PromotionMapper.ToListDto(_repo.GetAll());
             }
             catch (Exception ex)
             {

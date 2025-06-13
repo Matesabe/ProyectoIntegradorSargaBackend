@@ -13,7 +13,7 @@ namespace AppLogic.UseCase.WarehouseUC
 {
     public class AddWarehouse : IAdd<WarehouseDto>
     {
-        IRepoWarehouse _repo;
+        private IRepoWarehouse _repo;
         public AddWarehouse(IRepoWarehouse repo)
         {
             _repo = repo;

@@ -11,7 +11,7 @@ namespace AppLogic.UseCase.ProdUC
 {
     public class UpdateProduct : IUpdate<ProductDto>
     {
-        IRepoProducts _repo;
+        private IRepoProducts _repo;
         public UpdateProduct(IRepoProducts repo)
         {
             _repo = repo;

@@ -9,6 +9,6 @@ namespace BusinessLogic.RepositoriesInterfaces.PurchaseInterface
 {
     public interface IRepoGetPurchaseByClientId <T>
     {
-        IEnumerable<Purchase> GetPurchaseByClientId (string clientId);
+        IEnumerable<Purchase> GetPurchaseByClientId (int clientId);
     }
 }

@@ -8,11 +8,12 @@ using System.Threading.Tasks;
 
 namespace BusinessLogic.RepositoriesInterfaces.PurchaseInterface
 {
-    public interface IRepoPurchases: IRepoPurchaseSetPointsToUser<int>, 
+    public interface IRepoPurchase: IRepoPurchaseSetPointsToUser<int>, 
                                         IRepoAdd<Purchase>,
         IRepoGetById<Purchase>,
         IRepoGetAll<Purchase>,
         IRepoDelete<Purchase>,
+        IRepoUpdate<Purchase>,
         IRepoGetPurchaseByClientId<Purchase>,
         IRepoDeleteProductsFromWarehouse<Purchase>
     {

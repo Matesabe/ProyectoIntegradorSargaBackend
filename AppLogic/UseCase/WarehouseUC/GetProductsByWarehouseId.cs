@@ -12,7 +12,7 @@ namespace AppLogic.UseCase.WarehouseUC
 {
     public class GetProductsByWarehouseId : IGetProductosByWarehouseId<SubProductDto>
     {
-        IRepoWarehouse _repo;
+        private IRepoWarehouse _repo;
         public GetProductsByWarehouseId(IRepoWarehouse repo)
         {
             _repo = repo;

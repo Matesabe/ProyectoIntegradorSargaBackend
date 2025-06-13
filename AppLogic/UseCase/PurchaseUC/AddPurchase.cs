@@ -1,4 +1,5 @@
-﻿using BusinessLogic.RepositoriesInterfaces.PurchaseInterface;
+﻿using AppLogic.Mapper;
+using BusinessLogic.RepositoriesInterfaces.PurchaseInterface;
 using BusinessLogic.RepositoriesInterfaces.SubProductInterface;
 using SharedUseCase.DTOs.Purchase;
 using SharedUseCase.InterfacesUC;
@@ -12,9 +13,8 @@ namespace AppLogic.UseCase.PurchaseUC
 {
     public class AddPurchase : IAdd<PurchaseDto>
     {
-
-        private readonly IRepoPromotions _repo;
-        public AddPurchase(IRepoPromotions repo)
+        private IRepoPurchase _repo;
+        public AddPurchase(IRepoPurchase repo)
         {
             _repo = repo;
         }
@@ -26,19 +26,15 @@ namespace AppLogic.UseCase.PurchaseUC
                 {
                     throw new ArgumentNullException(nameof(obj), "El objeto no puede ser nulo");
                 }
-                if (string.IsNullOrWhiteSpace(obj.ProductCode))
+                if (obj.Client == null)
                 {
-                    throw new ArgumentException("El campo 'ProductCode' no puede estar vacío", nameof(obj.ProductCode));
+                    throw new ArgumentException("El cliente no puede ser nulo", nameof(obj.Client));
                 }
-                if (obj.Quantity <= 0)
+                if (obj.SubProducts == null || !obj.SubProducts.Any())
                 {
-                    throw new ArgumentException("El campo 'Quantity' debe ser mayor que cero", nameof(obj.Quantity));
+                    throw new ArgumentException("La lista de subproductos no puede estar vacía", nameof(obj.SubProducts));
                 }
-                if (obj.Price <= 0)
-                {
-                    throw new ArgumentException("El campo 'Price' debe ser mayor que cero", nameof(obj.Price));
-                }
-                return _repo.Add(obj);
+                return _repo.Add(PurchaseMapper.FromDto(obj));
             }
             catch (Exception ex)
             {

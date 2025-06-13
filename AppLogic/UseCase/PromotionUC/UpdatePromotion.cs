@@ -1,6 +1,8 @@
-﻿using BusinessLogic.Entities;
+﻿using AppLogic.Mapper;
+using BusinessLogic.Entities;
 using BusinessLogic.RepositoriesInterfaces.PromotionInterface;
 using Libreria.LogicaNegocio.InterfacesRepositorios;
+using SharedUseCase.DTOs.Promotion;
 using SharedUseCase.InterfacesUC;
 using System;
 using System.Collections.Generic;
@@ -10,15 +12,15 @@ using System.Threading.Tasks;
 
 namespace AppLogic.UseCase.PromotionUC
 {
-    public class UpdatePromotion:IUpdate<PurchasePromotion>
+    public class UpdatePromotion:IUpdate<PromotionDto>
     {
-        IRepoPromotion _repo;
+        private IRepoPromotion _repo;
         public UpdatePromotion(IRepoPromotion repo)
         {
             _repo = repo;
         }
 
-        public void Execute(int id, PurchasePromotion obj)
+        public void Execute(int id, PromotionDto obj)
         {
             try
             {
@@ -35,7 +37,7 @@ namespace AppLogic.UseCase.PromotionUC
                 {
                     throw new KeyNotFoundException("Promoción no encontrada");
                 }
-                _repo.Update(id, obj);
+                _repo.Update(id, PromotionMapper.FromDto(obj));
             }
             catch (Exception ex)
             {

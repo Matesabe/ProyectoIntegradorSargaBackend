@@ -13,7 +13,7 @@ namespace AppLogic.UseCase.ProductUC
 {
     public class GetByProductCode : IGetByProductCode<SubProductDto>
     {
-        IRepoSubProduct _repo;
+        private IRepoSubProduct _repo;
         public GetByProductCode(IRepoSubProduct repo)
         {
             _repo = repo;

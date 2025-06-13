@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.DataAccess.EF
 {
-    public class PurchaseRepo : IRepoPurchases
+    public class PurchaseRepo : IRepoPurchase
     {
         SargaContext _context;
         public PurchaseRepo(SargaContext context)
@@ -38,7 +38,7 @@ namespace Infrastructure.DataAccess.EF
                 SetPointsToPurchase(obj);
                 _context.Purchases.Add(obj);
                 SetPointsToUser(obj.Client.Id, obj.PointsGenerated);
-                DeleteProductsFromWarehouse(obj);
+                //DeleteProductsFromWarehouse(obj); -> Omitido hasta implementar la lógica completa de los almacenes
                 _context.SaveChanges();
                 return obj.Id; // Asumiendo que el Id se genera automáticamente
             }
@@ -164,14 +164,14 @@ namespace Infrastructure.DataAccess.EF
             }
         }
 
-        public IEnumerable<Purchase> GetPurchaseByClientId(string clientId)
+        public IEnumerable<Purchase> GetPurchaseByClientId(int clientId)
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(clientId))
-                    throw new ArgumentException("El ID del cliente no puede estar vacío", nameof(clientId));
+                if (clientId < 0)
+                    throw new ArgumentException("El ID del cliente no puede ser menor a cero", nameof(clientId));
                 return _context.Purchases
-                    .Where(p => p.Client != null && p.Client.Ci == clientId)
+                    .Where(p => p.Client != null && p.Client.Id == clientId)
                     .ToList();
             }
             catch (Exception ex)
@@ -195,6 +195,51 @@ namespace Infrastructure.DataAccess.EF
             }catch(Exception ex) {
                 throw new Exception(ex.Message, ex);
             }
+        }
+
+        public void Update(int id, Purchase obj)
+        {
+            try
+            {
+                if (id <= 0)
+                {
+                    throw new ArgumentException("El ID debe ser mayor que cero", nameof(id));
+                }
+                if (obj == null)
+                {
+                    throw new ArgumentNullException(nameof(obj), "El objeto no puede ser nulo");
+                }
+                if (obj.Client == null)
+                {
+                    throw new ArgumentException("El campo 'Client' no puede estar vacío", nameof(obj.Client));
+                }
+                if (obj.Amount <= 0)
+                {
+                    throw new ArgumentException("El campo 'Amount' debe ser mayor que cero", nameof(obj.Amount));
+                }
+                if (obj.SubProducts == null || !obj.SubProducts.Any())
+                {
+                    throw new ArgumentException("El campo 'SubProducts' no puede estar vacío", nameof(obj.SubProducts));
+                }
+                var existingPurchase = GetById(id);
+                if (existingPurchase == null)
+                {
+                    throw new KeyNotFoundException("Compra no encontrada");
+                }
+                // Actualizar los campos necesarios
+                existingPurchase.Client = obj.Client;
+                existingPurchase.Amount = obj.Amount;
+                existingPurchase.SubProducts = obj.SubProducts;
+                SetPointsToPurchase(existingPurchase);
+
+                _context.Purchases.Update(existingPurchase);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al actualizar la compra: " + ex.Message, ex);
+            }
+
         }
     }
 }

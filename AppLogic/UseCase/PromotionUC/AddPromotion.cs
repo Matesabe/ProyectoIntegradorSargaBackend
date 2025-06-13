@@ -1,5 +1,7 @@
-﻿using BusinessLogic.Entities;
+﻿using AppLogic.Mapper;
+using BusinessLogic.Entities;
 using BusinessLogic.RepositoriesInterfaces.PromotionInterface;
+using SharedUseCase.DTOs.Promotion;
 using SharedUseCase.InterfacesUC;
 using System;
 using System.Collections.Generic;
@@ -9,14 +11,14 @@ using System.Threading.Tasks;
 
 namespace AppLogic.UseCase.PromotionUC
 {
-    public class AddPromotion : IAdd<PurchasePromotion>
+    public class AddPromotion : IAdd<PromotionDto>
     {
-        private readonly IRepoPromotion _repo;
+        private IRepoPromotion _repo;
         public AddPromotion(IRepoPromotion repo)
         {
             _repo = repo;
         }
-        public int Execute(PurchasePromotion obj)
+        public int Execute(PromotionDto obj)
         {
             try
             {
@@ -28,7 +30,7 @@ namespace AppLogic.UseCase.PromotionUC
                 {
                     throw new ArgumentException("El tipo de la promoción es nulo");
                 }
-                return _repo.Add(obj);
+                return _repo.Add(PromotionMapper.FromDto(obj));
             }
             catch (Exception ex)
             {

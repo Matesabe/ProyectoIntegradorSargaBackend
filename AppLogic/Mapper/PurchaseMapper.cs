@@ -33,7 +33,6 @@ namespace AppLogic.Mapper
             );
         }
 
-
         public static IEnumerable<PurchaseDto> ToListDto(IEnumerable<Purchase> purchases)
         {
             List<PurchaseDto> purchasesDto = new List<PurchaseDto>(); ;

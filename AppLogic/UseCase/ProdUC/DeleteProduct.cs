@@ -12,7 +12,7 @@ namespace AppLogic.UseCase.ProdUC
 {
     public class DeleteProduct : IRemove
     {
-        IRepoProducts _repo;
+        private IRepoProducts _repo;
         public DeleteProduct(IRepoProducts repo)
         {
             _repo = repo;

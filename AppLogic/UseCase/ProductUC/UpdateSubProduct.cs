@@ -12,7 +12,7 @@ namespace AppLogic.UseCase.ProductUC
 {
     internal class UpdateSubProduct : IUpdate<SubProductDto>
     {
-        IRepoSubProduct _repo;
+        private IRepoSubProduct _repo;
         public UpdateSubProduct(IRepoSubProduct repo)
         {
             _repo = repo;

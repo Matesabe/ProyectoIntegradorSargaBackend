@@ -9,7 +9,6 @@ namespace AppLogic.UseCase.User
     public class AddUser: IAdd<UserDto>
     {
         private IRepoUser _repo;
-
         public AddUser(IRepoUser repo)
         {
             _repo = repo;
