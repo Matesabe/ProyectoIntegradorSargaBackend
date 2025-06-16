@@ -140,6 +140,10 @@ namespace Infrastructure.DataAccess.EF
                 }
                 return redemptions;
             }
+            catch (KeyNotFoundException)
+            {
+               return Enumerable.Empty<Redemption>();
+            }
             catch (Exception ex)
             {
                 throw new Exception("Error al obtener los canjes por ID de cliente: " + ex.Message, ex);

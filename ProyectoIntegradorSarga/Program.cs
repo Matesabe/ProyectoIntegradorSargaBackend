@@ -2,12 +2,14 @@
 using AppLogic.UseCase.ProductUC;
 using AppLogic.UseCase.PromotionUC;
 using AppLogic.UseCase.PurchaseUC;
+using AppLogic.UseCase.RedemptionUC;
 using AppLogic.UseCase.User;
 using AppLogic.UseCase.UserUC;
 using BusinessLogic.RepositoriesInterfaces;
 using BusinessLogic.RepositoriesInterfaces.ProductsInterface;
 using BusinessLogic.RepositoriesInterfaces.PromotionInterface;
 using BusinessLogic.RepositoriesInterfaces.PurchaseInterface;
+using BusinessLogic.RepositoriesInterfaces.RedemptionInterface;
 using BusinessLogic.RepositoriesInterfaces.SubProductInterface;
 using Infrastructure.DataAccess.EF;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -17,10 +19,12 @@ using Microsoft.OpenApi.Models;
 using SharedUseCase.DTOs.Product;
 using SharedUseCase.DTOs.Promotion;
 using SharedUseCase.DTOs.Purchase;
+using SharedUseCase.DTOs.Redemption;
 using SharedUseCase.DTOs.User;
 using SharedUseCase.InterfacesUC;
 using SharedUseCase.InterfacesUC.Product;
 using SharedUseCase.InterfacesUC.Purchase;
+using SharedUseCase.InterfacesUC.Redemption;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -68,6 +72,16 @@ builder.Services.AddScoped<IRepoPurchase, PurchaseRepo>();
 builder.Services.AddScoped<IGetPurchaseByClientId<PurchaseDto>, GetPurchaseByClientId>();
 builder.Services.AddScoped<IGetById<PurchaseDto>, GetByIdPurchase>();
 
+//Inyecciones de los Caso de Uso de Canjes
+builder.Services.AddScoped<IRepoRedemption, RedemptionRepo>();
+builder.Services.AddScoped<IAdd<RedemptionDto>, AddRedemption>();
+builder.Services.AddScoped<IGetAll<RedemptionDto>, GetAllRedemptions>();
+builder.Services.AddScoped<IGetById<RedemptionDto>, GetByIdRedemption>();
+builder.Services.AddScoped<IGetRedemptionByUserId<RedemptionDto>, GetRedemptionByUserId>();
+builder.Services.AddScoped<IUpdate<RedemptionDto>, UpdateRedemption>();
+builder.Services.AddScoped<IRemove, DeleteRedemption>();
+
+
 // Inyección de SeedData para la inicialización de datos
 builder.Services.AddScoped<SeedData>(); // Inyección del SeedData para la inicialización de datos
 
@@ -95,6 +109,22 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
         };
     });
+
+//Configuración de CORS
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowLocalHost", policy =>
+    {
+        policy
+            .WithOrigins(
+                "https://localhost:7170" //  desarrollo local
+            )
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 //Configuración de Swagger, headers de tokens
 builder.Services.AddSwaggerGen(c =>
 {
@@ -154,6 +184,8 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization(); 
+
+app.UseCors("AllowLocalHost");
 
 
 app.MapControllers();

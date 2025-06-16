@@ -1,4 +1,5 @@
 ﻿using BusinessLogic.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using SharedUseCase.DTOs.Purchase;
@@ -21,6 +22,7 @@ namespace ProyectoIntegradorSarga.Controllers
             _getById = getById;
         }
 
+        [Authorize]
         [HttpGet("client/{clientId}")]
         public IActionResult GetByClientId(int clientId)
         {
