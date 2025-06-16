@@ -77,6 +77,7 @@ builder.Services.AddDbContext<SargaContext>(
     options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
+
 //Configuración de seguridad
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
