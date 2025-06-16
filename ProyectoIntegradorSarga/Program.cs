@@ -71,7 +71,6 @@ builder.Services.AddScoped<IGetById<PurchaseDto>, GetByIdPurchase>();
 // Inyección de SeedData para la inicialización de datos
 builder.Services.AddScoped<SeedData>(); // Inyección del SeedData para la inicialización de datos
 
-
 // Add services to the container.
 builder.Services.AddDbContext<SargaContext>(
     options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
