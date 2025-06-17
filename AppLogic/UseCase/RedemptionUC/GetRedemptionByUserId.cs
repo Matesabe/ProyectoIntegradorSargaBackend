@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 
 namespace AppLogic.UseCase.RedemptionUC
 {
+    
+
     public class GetRedemptionByUserId : IGetRedemptionByUserId<RedemptionDto>
     {
         IRepoRedemption _repo;
