@@ -8,6 +8,7 @@ namespace Infrastructure.Migrations
     public partial class PruebaMigracionUsuarios : Migration
     {
         /// <inheritdoc />
+
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(

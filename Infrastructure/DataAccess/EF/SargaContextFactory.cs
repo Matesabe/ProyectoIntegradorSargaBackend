@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,25 +8,16 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.DataAccess.EF
 {
-    // Archivo: Infrastructure/DataAccess/EF/SargaContextFactory.cs
-    using Microsoft.EntityFrameworkCore;
-    using Microsoft.EntityFrameworkCore.Design;
+    //public class SargaContextFactory : IDesignTimeDbContextFactory<SargaContext>
+    //{
+    //    public SargaContext CreateDbContext(string[] args)
+    //    {
+    //        var optionsBuilder = new DbContextOptionsBuilder<SargaContext>();
 
-    namespace Infrastructure.DataAccess.EF
-    {
-        public class SargaContextFactory /*: IDesignTimeDbContextFactory<SargaContext>*/
-        {
-            //public SargaContext CreateDbContext(string[] args)
-            //{
-            //    var optionsBuilder = new DbContextOptionsBuilder<SargaContext>();
-            //    optionsBuilder.UseSqlServer(@"
-            //    Data Source=(localdb)\MSSQLLocalDB;
-            //    Initial Catalog=PruebaUsuario;
-            //    Integrated Security=True;");
+    //        var connectionString = "cadena";
+    //        optionsBuilder.UseSqlServer(connectionString);
 
-            //    return new SargaContext(optionsBuilder.Options);
-            //}
-        }
-    }
-
+    //        return new SargaContext(optionsBuilder.Options);
+    //    }
+    //}
 }
