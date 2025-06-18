@@ -87,7 +87,7 @@ builder.Services.AddScoped<SeedData>(); // Inyección del SeedData para la inici
 
 // Add services to the container.
 builder.Services.AddDbContext<SargaContext>(
-    options => options.UseSqlServer(builder.Configuration.GetConnectionString("PruebaUsuarios"))
+    options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
 

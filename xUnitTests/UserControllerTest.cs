@@ -40,7 +40,7 @@ namespace xUnitTests
             var controller = new UsersController(
                 mockGetAll.Object,
                 Mock.Of<IAdd<UserDto>>(),
-                Mock.Of<IRemove>(),
+                Mock.Of<IRemove<UserDto>>(),
                 Mock.Of<IGetByName<UserDto>>(),
                 Mock.Of<IGetById<UserDto>>(),
                 Mock.Of<IUpdate<UserDto>>(),
@@ -65,7 +65,7 @@ namespace xUnitTests
             var controller = new UsersController(
                 Mock.Of<IGetAll<UserDto>>(),
                 mockAdd.Object,
-                Mock.Of<IRemove>(),
+                Mock.Of<IRemove<UserDto>>(),
                 Mock.Of<IGetByName<UserDto>>(),
                 Mock.Of<IGetById<UserDto>>(),
                 Mock.Of<IUpdate<UserDto>>(),
@@ -90,7 +90,7 @@ namespace xUnitTests
             var controller = new UsersController(
                 Mock.Of<IGetAll<UserDto>>(),
                 mockAdd.Object,
-                Mock.Of<IRemove>(),
+                Mock.Of<IRemove<UserDto>>(),
                 Mock.Of<IGetByName<UserDto>>(),
                 Mock.Of<IGetById<UserDto>>(),
                 Mock.Of<IUpdate<UserDto>>(),
@@ -115,7 +115,7 @@ namespace xUnitTests
             var controller = new UsersController(
                 Mock.Of<IGetAll<UserDto>>(),
                 mockAdd.Object,
-                Mock.Of<IRemove>(),
+                Mock.Of<IRemove<UserDto>>(),
                 Mock.Of<IGetByName<UserDto>>(),
                 Mock.Of<IGetById<UserDto>>(),
                 Mock.Of<IUpdate<UserDto>>(),
@@ -140,7 +140,7 @@ namespace xUnitTests
             var controller = new UsersController(
                 Mock.Of<IGetAll<UserDto>>(),
                 mockAdd.Object,
-                Mock.Of<IRemove>(),
+                Mock.Of<IRemove<UserDto>>(),
                 Mock.Of<IGetByName<UserDto>>(),
                 Mock.Of<IGetById<UserDto>>(),
                 Mock.Of<IUpdate<UserDto>>(),
@@ -165,7 +165,7 @@ namespace xUnitTests
             var controller = new UsersController(
                 Mock.Of<IGetAll<UserDto>>(),
                 mockAdd.Object,
-                Mock.Of<IRemove>(),
+                Mock.Of<IRemove<UserDto>>(),
                 Mock.Of<IGetByName<UserDto>>(),
                 Mock.Of<IGetById<UserDto>>(),
                 Mock.Of<IUpdate<UserDto>>(),
@@ -190,7 +190,7 @@ namespace xUnitTests
             var controller = new UsersController(
                 Mock.Of<IGetAll<UserDto>>(),
                 mockAdd.Object,
-                Mock.Of<IRemove>(),
+                Mock.Of<IRemove<UserDto>>(),
                 Mock.Of<IGetByName<UserDto>>(),
                 Mock.Of<IGetById<UserDto>>(),
                 Mock.Of<IUpdate<UserDto>>(),
@@ -215,7 +215,7 @@ namespace xUnitTests
             var controller = new UsersController(
                 Mock.Of<IGetAll<UserDto>>(),
                 mockAdd.Object,
-                Mock.Of<IRemove>(),
+                Mock.Of<IRemove<UserDto>>(),
                 Mock.Of<IGetByName<UserDto>>(),
                 Mock.Of<IGetById<UserDto>>(),
                 Mock.Of<IUpdate<UserDto>>(),
@@ -240,7 +240,7 @@ namespace xUnitTests
             var controller = new UsersController(
                 Mock.Of<IGetAll<UserDto>>(),
                 mockAdd.Object,
-                Mock.Of<IRemove>(),
+                Mock.Of<IRemove<UserDto>>(),
                 Mock.Of<IGetByName<UserDto>>(),
                 Mock.Of<IGetById<UserDto>>(),
                 Mock.Of<IUpdate<UserDto>>(),
