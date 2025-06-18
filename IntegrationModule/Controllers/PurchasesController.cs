@@ -104,7 +104,7 @@ namespace IntegrationModule.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete]
         public IActionResult Delete(PurchaseDto pur) {
             try
             {

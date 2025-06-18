@@ -163,7 +163,6 @@ namespace ProyectoIntegradorSarga.Controllers
 
         [HttpDelete]
         [Authorize]
-        [Route("remove/{id}")]
         public IActionResult Delete(RedemptionDto red) {
             try
             {
