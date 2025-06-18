@@ -1,6 +1,7 @@
 ﻿using AppLogic.Exceptions.RepoException;
 using BusinessLogic.RepositoriesInterfaces;
 using BusinessLogic.RepositoriesInterfaces.WarehouseInterface;
+using SharedUseCase.DTOs.Warehouse;
 using SharedUseCase.InterfacesUC;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace AppLogic.UseCase.WarehouseUC
 {
-    public class DeleteWarehouse: IRemove
+    public class DeleteWarehouse: IRemove<WarehouseDto>
     {
         private IRepoWarehouse _repo;
 
@@ -18,10 +19,11 @@ namespace AppLogic.UseCase.WarehouseUC
         {
             _repo = repo;
         }
-        public void Execute(int id)
+        public void Execute(WarehouseDto ware)
         {
             try
             {
+                int id = ware.Id;
                 _repo.Delete(id);
             }
             catch (Exception ex)

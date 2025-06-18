@@ -33,4 +33,8 @@
     <ProjectReference Include="..\SharedUsedCase\SharedUseCase.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="NewFolder\" />
+  </ItemGroup>
+
 </Project>

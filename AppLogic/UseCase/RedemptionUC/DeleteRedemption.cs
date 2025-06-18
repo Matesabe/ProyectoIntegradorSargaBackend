@@ -1,4 +1,5 @@
 ﻿using BusinessLogic.RepositoriesInterfaces.RedemptionInterface;
+using SharedUseCase.DTOs.Redemption;
 using SharedUseCase.InterfacesUC;
 using System;
 using System.Collections.Generic;
@@ -8,17 +9,18 @@ using System.Threading.Tasks;
 
 namespace AppLogic.UseCase.RedemptionUC
 {
-    public class DeleteRedemption : IRemove
+    public class DeleteRedemption : IRemove<RedemptionDto>
     {
         private IRepoRedemption _repo;
         public DeleteRedemption(IRepoRedemption repo)
         {
             _repo = repo ?? throw new ArgumentNullException(nameof(repo), "El repositorio no puede ser nulo");
         }
-        public void Execute(int id)
+        public void Execute(RedemptionDto red)
         {
             try
             {
+                int id = red.Id;
                 if (id <= 0)
                 {
                     throw new ArgumentException("El ID debe ser mayor que cero", nameof(id));

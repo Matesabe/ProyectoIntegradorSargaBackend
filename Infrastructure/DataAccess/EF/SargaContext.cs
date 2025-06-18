@@ -26,11 +26,17 @@ namespace Infrastructure.DataAccess.EF
         // public DbSet<User> Users { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            //base.OnConfiguring(optionsBuilder);
-            //optionsBuilder.UseSqlServer(@"
-            //            Data Source=(localdb)\MSSQLLocalDB;
-            //            Initial Catalog=PruebaUsuario;   
-            //            Integrated Security=True;");
+           base.OnConfiguring(optionsBuilder);
+           optionsBuilder.UseSqlServer(@"
+                       Data Source=(localdb)\MSSQLLocalDB;
+                      Initial Catalog=PruebaUsuario;   
+                      Integrated Security=True;");
+        }
+        public SargaContext() : base(
+    new DbContextOptionsBuilder<SargaContext>()
+        .UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=PruebaUsuario;Integrated Security=True;")
+        .Options)
+        {
         }
 
         public SargaContext(DbContextOptions<SargaContext> options) : base(options)

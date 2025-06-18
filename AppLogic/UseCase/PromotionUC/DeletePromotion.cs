@@ -1,6 +1,7 @@
 ﻿using BusinessLogic.Entities;
 using BusinessLogic.RepositoriesInterfaces.PromotionInterface;
 using Libreria.LogicaNegocio.InterfacesRepositorios;
+using SharedUseCase.DTOs.Promotion;
 using SharedUseCase.InterfacesUC;
 using System;
 using System.Collections.Generic;
@@ -10,17 +11,18 @@ using System.Threading.Tasks;
 
 namespace AppLogic.UseCase.PromotionUC
 {
-    public class DeletePromotion : IRemove
+    public class DeletePromotion : IRemove<PromotionDto>
     {
         private IRepoPromotion _repo;
         public DeletePromotion(IRepoPromotion repo)
         {
             _repo = repo;
         }
-        public void Execute(int id)
+        public void Execute(PromotionDto pro)
         {
             try
             {
+                int id = pro.Id;
                 if (id <= 0)
                 {
                     throw new ArgumentException("El ID debe ser mayor que cero", nameof(id));

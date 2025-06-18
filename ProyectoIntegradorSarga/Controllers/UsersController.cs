@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SharedUseCase.DTOs.User;
 using SharedUseCase.InterfacesUC;
+using Xunit.Abstractions;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -20,14 +21,14 @@ namespace ProyectoIntegradorSarga.Controllers
         IGetById<UserDto> _getById;
         IAdd<UserDto> _add;
         IUpdate<UserDto> _update;
-        IRemove _remove;
+        IRemove<UserDto> _remove;
         IGetByName<UserDto> _getByName;
         IGetByEmail<UserDto> _getByEmail;
 
 
         public UsersController(IGetAll<UserDto> getAll,
                                  IAdd<UserDto> add,
-                                 IRemove remove,
+                                 IRemove<UserDto> remove,
                                  IGetByName<UserDto> getByName,
                                  IGetById<UserDto> getById,
                                  IUpdate<UserDto> update,
@@ -203,11 +204,20 @@ namespace ProyectoIntegradorSarga.Controllers
 
         // DELETE api/<ValuesController>/5
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(UserDto user)
         {
             try
             {
-                _remove.Execute(id);
+                var rol = User.Claims.FirstOrDefault(c => c.Type == "Rol")?.Value;
+                if (rol != "Administrator")
+                {
+                    return BadRequest("Usuario con rol inválido para eliminar un canje.");
+                }
+                if (user == null)
+                {
+                    return BadRequest("El objeto no puede ser nulo");
+                }
+                _remove.Execute(user);
                 return Ok();
             }
             catch (Exception ex)

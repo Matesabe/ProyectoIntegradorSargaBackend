@@ -13,21 +13,16 @@ namespace AppLogic.UseCase.RedemptionUC
 {
     public class GetAllRedemptions : IGetAll<RedemptionDto>
     {
-        IRepoRedemption _repo;
+        private IRepoRedemption _repo;
         public GetAllRedemptions(IRepoRedemption repo)
         {
-            _repo = repo ?? throw new ArgumentNullException(nameof(repo), "El repositorio de canjes no puede ser nulo");
+            _repo = repo;
         }
         public IEnumerable<RedemptionDto> Execute()
         {
             try
             {
-                var redemptions = _repo.GetAll();
-                if (redemptions == null || !redemptions.Any())
-                {
-                    throw new Exception("No se encontraron canjes");
-                }
-                return RedemptionMapper.ToListDto(redemptions);
+                return RedemptionMapper.ToListDto(_repo.GetAll());
             }
             catch (Exception ex)
             {

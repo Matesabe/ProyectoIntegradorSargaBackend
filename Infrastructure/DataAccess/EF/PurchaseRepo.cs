@@ -68,6 +68,7 @@ namespace Infrastructure.DataAccess.EF
                 {
                     pointsGenerated = promotion.generatePoints(obj);
                     obj.PointsGenerated += pointsGenerated;
+                    //plantearse si pueden ser acumulables o no
                 }
             }
             catch (Exception ex)

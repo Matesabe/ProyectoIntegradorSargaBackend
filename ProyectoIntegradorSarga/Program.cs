@@ -2,12 +2,14 @@
 using AppLogic.UseCase.ProductUC;
 using AppLogic.UseCase.PromotionUC;
 using AppLogic.UseCase.PurchaseUC;
+using AppLogic.UseCase.RedemptionUC;
 using AppLogic.UseCase.User;
 using AppLogic.UseCase.UserUC;
 using BusinessLogic.RepositoriesInterfaces;
 using BusinessLogic.RepositoriesInterfaces.ProductsInterface;
 using BusinessLogic.RepositoriesInterfaces.PromotionInterface;
 using BusinessLogic.RepositoriesInterfaces.PurchaseInterface;
+using BusinessLogic.RepositoriesInterfaces.RedemptionInterface;
 using BusinessLogic.RepositoriesInterfaces.SubProductInterface;
 using Infrastructure.DataAccess.EF;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -17,10 +19,12 @@ using Microsoft.OpenApi.Models;
 using SharedUseCase.DTOs.Product;
 using SharedUseCase.DTOs.Promotion;
 using SharedUseCase.DTOs.Purchase;
+using SharedUseCase.DTOs.Redemption;
 using SharedUseCase.DTOs.User;
 using SharedUseCase.InterfacesUC;
 using SharedUseCase.InterfacesUC.Product;
 using SharedUseCase.InterfacesUC.Purchase;
+using SharedUseCase.InterfacesUC.Redemption;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -39,7 +43,7 @@ builder.Services.AddScoped<IGetById<UserDto>, GetByIdUser>();
 builder.Services.AddScoped<IGetByName<UserDto>, GetByNameUser>();
 builder.Services.AddScoped<IGetByEmail<UserDto>, GetByEmailUser>();
 builder.Services.AddScoped<IAdd<UserDto>, AddUser>();
-builder.Services.AddScoped<IRemove, DeleteUser>();
+builder.Services.AddScoped<IRemove<UserDto>, DeleteUser>();
 builder.Services.AddScoped<IUpdate<UserDto>, UpdateUser>();
 builder.Services.AddScoped<IGetByCi<UserDto>, GetByCiUser>();
 
@@ -49,7 +53,7 @@ builder.Services.AddScoped<IGetAll<PromotionDto>, GetAllPromotions>();
 builder.Services.AddScoped<IGetById<PromotionDto>, GetByIdPromotion>();
 builder.Services.AddScoped<IAdd<PromotionDto>, AddPromotion>();
 builder.Services.AddScoped<IUpdate<PromotionDto>, UpdatePromotion>();
-builder.Services.AddScoped<IRemove, DeletePromotion>();
+builder.Services.AddScoped<IRemove<PromotionDto>, DeletePromotion>();
 
 //Inyecciones para los Caso de Uso de Producto
 builder.Services.AddScoped<IRepoProducts, ProductRepo>();
@@ -68,12 +72,22 @@ builder.Services.AddScoped<IRepoPurchase, PurchaseRepo>();
 builder.Services.AddScoped<IGetPurchaseByClientId<PurchaseDto>, GetPurchaseByClientId>();
 builder.Services.AddScoped<IGetById<PurchaseDto>, GetByIdPurchase>();
 
+//Inyecciones de los Caso de Uso de Canjes
+builder.Services.AddScoped<IRepoRedemption, RedemptionRepo>();
+builder.Services.AddScoped<IAdd<RedemptionDto>, AddRedemption>();
+builder.Services.AddScoped<IGetAll<RedemptionDto>, GetAllRedemptions>();
+builder.Services.AddScoped<IGetById<RedemptionDto>, GetByIdRedemption>();
+builder.Services.AddScoped<IGetRedemptionByUserId<RedemptionDto>, GetRedemptionByUserId>();
+builder.Services.AddScoped<IUpdate<RedemptionDto>, UpdateRedemption>();
+builder.Services.AddScoped<IRemove<RedemptionDto>, DeleteRedemption>();
+
+
 // Inyección de SeedData para la inicialización de datos
 builder.Services.AddScoped<SeedData>(); // Inyección del SeedData para la inicialización de datos
 
 // Add services to the container.
 builder.Services.AddDbContext<SargaContext>(
-    options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+    options => options.UseSqlServer(builder.Configuration.GetConnectionString("PruebaUsuarios"))
 );
 
 

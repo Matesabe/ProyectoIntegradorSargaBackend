@@ -11,8 +11,8 @@ namespace xUnitTests
 {
     public class UsersControllerTests
     {
-        // Usuarios de prueba para los tests
-        UserDto userOk = new UserDto(0, "12345678", "Juan Pérez", "juan.perez@email.com", "Pass123", "600123456", "Administrator");
+        // Reemplaza int.any por cualquier valor entero válido, por ejemplo 1
+        UserDto userOk = new UserDto(1, "12345678", "Juan Pérez", "juan.perez@email.com", "Pass123", "600123456", "Administrator");
 
         UserDto userRepetido = new UserDto(0, "12345678", "Juan Pérez", "juan.perez@email.com", "Pass123", "600123456", "Administrator");
 
