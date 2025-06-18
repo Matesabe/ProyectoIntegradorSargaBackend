@@ -11,12 +11,12 @@ namespace IntegrationModule.Controllers
         IGetById<PurchaseDto> _getById;
         IAdd<PurchaseDto> _add;
         IUpdate<PurchaseDto> _update;
-        IRemove _remove;
+        IRemove<PurchaseDto> _remove;
         public PurchasesController(IGetAll<PurchaseDto> getAll,
                                  IGetById<PurchaseDto> getById,
                                  IAdd<PurchaseDto> add,
                                  IUpdate<PurchaseDto> update,
-                                 IRemove remove)
+                                 IRemove<PurchaseDto> remove)
         {
             _getAll = getAll;
             _getById = getById;
@@ -105,10 +105,10 @@ namespace IntegrationModule.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id) {
+        public IActionResult Delete(PurchaseDto pur) {
             try
             {
-                _remove.Execute(id);
+                _remove.Execute(pur);
                 return NoContent();
             }
             catch (Exception ex)

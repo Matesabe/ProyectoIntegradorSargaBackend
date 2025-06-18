@@ -10,13 +10,14 @@ using System.Threading.Tasks;
 
 namespace AppLogic.UseCase.ProductUC
 {
-    public class DeleteSubProduct : IRemove
+    public class DeleteSubProduct : IRemove<SubProductDto>
     {
         private IRepoSubProduct _repo;
-        public void Execute(int id)
+        public void Execute(SubProductDto sub)
         {
             try
             {
+                int id = sub.Id;
                 if (id <= 0)
                 {
                     throw new ArgumentException("El ID debe ser mayor que cero", nameof(id));

@@ -1,7 +1,7 @@
 ﻿namespace SharedUseCase.InterfacesUC
 {
-    public interface IRemove
+    public interface IRemove<T>
     {
-        void Execute(int id);
+        void Execute(T item);
     }
 }

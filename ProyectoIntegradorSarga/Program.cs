@@ -43,7 +43,7 @@ builder.Services.AddScoped<IGetById<UserDto>, GetByIdUser>();
 builder.Services.AddScoped<IGetByName<UserDto>, GetByNameUser>();
 builder.Services.AddScoped<IGetByEmail<UserDto>, GetByEmailUser>();
 builder.Services.AddScoped<IAdd<UserDto>, AddUser>();
-builder.Services.AddScoped<IRemove, DeleteUser>();
+builder.Services.AddScoped<IRemove<UserDto>, DeleteUser>();
 builder.Services.AddScoped<IUpdate<UserDto>, UpdateUser>();
 builder.Services.AddScoped<IGetByCi<UserDto>, GetByCiUser>();
 
@@ -53,7 +53,7 @@ builder.Services.AddScoped<IGetAll<PromotionDto>, GetAllPromotions>();
 builder.Services.AddScoped<IGetById<PromotionDto>, GetByIdPromotion>();
 builder.Services.AddScoped<IAdd<PromotionDto>, AddPromotion>();
 builder.Services.AddScoped<IUpdate<PromotionDto>, UpdatePromotion>();
-builder.Services.AddScoped<IRemove, DeletePromotion>();
+builder.Services.AddScoped<IRemove<PromotionDto>, DeletePromotion>();
 
 //Inyecciones para los Caso de Uso de Producto
 builder.Services.AddScoped<IRepoProducts, ProductRepo>();
@@ -79,7 +79,7 @@ builder.Services.AddScoped<IGetAll<RedemptionDto>, GetAllRedemptions>();
 builder.Services.AddScoped<IGetById<RedemptionDto>, GetByIdRedemption>();
 builder.Services.AddScoped<IGetRedemptionByUserId<RedemptionDto>, GetRedemptionByUserId>();
 builder.Services.AddScoped<IUpdate<RedemptionDto>, UpdateRedemption>();
-builder.Services.AddScoped<IRemove, DeleteRedemption>();
+builder.Services.AddScoped<IRemove<RedemptionDto>, DeleteRedemption>();
 
 
 // Inyección de SeedData para la inicialización de datos

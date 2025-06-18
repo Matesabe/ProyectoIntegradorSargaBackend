@@ -16,10 +16,10 @@ namespace ProyectoIntegradorSarga.Controllers
         IGetById<PromotionDto> _getById;
         IAdd<PromotionDto> _add;
         IUpdate<PromotionDto> _update;
-        IRemove _remove;
+        IRemove<PromotionDto> _remove;
         public PromotionsController(IGetAll<PromotionDto> getAll,
                                  IAdd<PromotionDto> add,
-                                 IRemove remove,
+                                 IRemove<PromotionDto> remove,
                                  IGetById<PromotionDto> getById,
                                  IUpdate<PromotionDto> update)
         {
@@ -191,7 +191,7 @@ namespace ProyectoIntegradorSarga.Controllers
         // DELETE api/<ValuesController>/5
         [Authorize]
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(PromotionDto pro)
         {
             try
             {
@@ -200,7 +200,7 @@ namespace ProyectoIntegradorSarga.Controllers
                 {
                     return BadRequest("Usuario con rol inválido para actualizar promociones.");
                 }
-                _remove.Execute(id);
+                _remove.Execute(pro);
                 return Ok();
             }
             catch (Exception ex)

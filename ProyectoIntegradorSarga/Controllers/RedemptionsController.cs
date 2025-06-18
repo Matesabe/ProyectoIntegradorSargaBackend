@@ -17,10 +17,10 @@ namespace ProyectoIntegradorSarga.Controllers
         IGetById<RedemptionDto> _getById;
         IAdd<RedemptionDto> _add;
         IUpdate<RedemptionDto> _update;
-        IRemove _remove;
+        IRemove<RedemptionDto> _remove;
         IGetRedemptionByUserId<RedemptionDto> _getRedemptionByUserId;
 
-        public RedemptionsController(IGetAll<RedemptionDto> getAll, IGetById<RedemptionDto> getById, IAdd<RedemptionDto> add, IUpdate<RedemptionDto> update, IRemove remove, IGetRedemptionByUserId<RedemptionDto> getRedemptionByUserId)
+        public RedemptionsController(IGetAll<RedemptionDto> getAll, IGetById<RedemptionDto> getById, IAdd<RedemptionDto> add, IUpdate<RedemptionDto> update, IRemove<RedemptionDto> remove, IGetRedemptionByUserId<RedemptionDto> getRedemptionByUserId)
         {
             _getAll = getAll;
             _getById = getById;
@@ -164,7 +164,7 @@ namespace ProyectoIntegradorSarga.Controllers
         [HttpDelete]
         [Authorize]
         [Route("remove/{id}")]
-        public IActionResult Delete(int id) {
+        public IActionResult Delete(RedemptionDto red) {
             try
             {
                 var rol = User.Claims.FirstOrDefault(c => c.Type == "Rol")?.Value;
@@ -172,7 +172,7 @@ namespace ProyectoIntegradorSarga.Controllers
                 {
                     return BadRequest("Usuario con rol inválido para eliminar un canje.");
                 }
-                _remove.Execute(id);
+                _remove.Execute(red);
                 return Ok();
             }
             catch (Exception ex)

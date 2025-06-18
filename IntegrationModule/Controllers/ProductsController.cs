@@ -10,12 +10,12 @@ namespace IntegrationModule.Controllers
         IGetById<ProductDto> _getById;
         IAdd<ProductDto> _add;
         IUpdate<ProductDto> _update;
-        IRemove _remove;
+        IRemove<ProductDto> _remove;
         public ProductsController(IGetAll<ProductDto> getAll,
                                  IGetById<ProductDto> getById,
                                  IAdd<ProductDto> add,
                                  IUpdate<ProductDto> update,
-                                 IRemove remove)
+                                 IRemove<ProductDto> remove)
         {
             _getAll = getAll;
             _getById = getById;
@@ -105,10 +105,14 @@ namespace IntegrationModule.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id) {
+        public IActionResult Delete(ProductDto pro) {
             try
             {
-                _remove.Execute(id);
+                if (pro == null)
+                {
+                    return BadRequest("El producto no puede ser nulo.");
+                }
+                _remove.Execute(pro);
                 return NoContent();
             }
             catch (Exception ex)

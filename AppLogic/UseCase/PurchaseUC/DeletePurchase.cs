@@ -1,4 +1,5 @@
 ﻿using BusinessLogic.RepositoriesInterfaces.PurchaseInterface;
+using SharedUseCase.DTOs.Purchase;
 using SharedUseCase.InterfacesUC;
 using System;
 using System.Collections.Generic;
@@ -8,17 +9,18 @@ using System.Threading.Tasks;
 
 namespace AppLogic.UseCase.PurchaseUC
 {
-    internal class DeletePurchase : IRemove
+    internal class DeletePurchase : IRemove<PurchaseDto>
     {
         private IRepoPurchase _repo;
         public DeletePurchase(IRepoPurchase repo)
         {
             _repo = repo;
         }
-        public void Execute(int id)
+        public void Execute(PurchaseDto pur)
         {
             try
             {
+                int id = pur.Id;
                 if (id <= 0)
                 {
                     throw new ArgumentException("El ID debe ser mayor que cero", nameof(id));
