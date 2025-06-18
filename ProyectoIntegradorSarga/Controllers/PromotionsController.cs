@@ -190,7 +190,7 @@ namespace ProyectoIntegradorSarga.Controllers
 
         // DELETE api/<ValuesController>/5
         [Authorize]
-        [HttpDelete("{id}")]
+        [HttpDelete]
         public IActionResult Delete(PromotionDto pro)
         {
             try

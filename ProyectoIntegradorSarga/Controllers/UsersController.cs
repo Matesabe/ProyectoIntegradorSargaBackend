@@ -203,7 +203,7 @@ namespace ProyectoIntegradorSarga.Controllers
 
 
         // DELETE api/<ValuesController>/5
-        [HttpDelete("{id}")]
+        [HttpDelete]
         public IActionResult Delete(UserDto user)
         {
             try
