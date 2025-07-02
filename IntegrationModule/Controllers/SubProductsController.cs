@@ -1,27 +1,33 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SharedUseCase.DTOs.Product;
 using SharedUseCase.InterfacesUC;
+using SharedUseCase.InterfacesUC.Product;
 
 namespace IntegrationModule.Controllers
 {
-    public class ProductsController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class SubProductsController : Controller
     {
-        IGetAll<ProductDto> _getAll;
-        IGetById<ProductDto> _getById;
-        IAdd<ProductDto> _add;
-        IUpdate<ProductDto> _update;
-        IRemove<ProductDto> _remove;
-        public ProductsController(IGetAll<ProductDto> getAll,
-                                 IGetById<ProductDto> getById,
-                                 IAdd<ProductDto> add,
-                                 IUpdate<ProductDto> update,
-                                 IRemove<ProductDto> remove)
+        IGetAll<SubProductDto> _getAll;
+        IGetById<SubProductDto> _getById;
+        IAdd<SubProductDto> _add;
+        IUpdate<SubProductDto> _update;
+        IRemove<SubProductDto> _remove;
+        IClearSubProducts _clearSubProducts;
+        public SubProductsController(IGetAll<SubProductDto> getAll,
+                                 IGetById<SubProductDto> getById,
+                                 IAdd<SubProductDto> add,
+                                 IUpdate<SubProductDto> update,
+                                 IRemove<SubProductDto> remove,
+                                 IClearSubProducts clearSubProducts)
         {
             _getAll = getAll;
             _getById = getById;
             _add = add;
             _update = update;
             _remove = remove;
+            _clearSubProducts = clearSubProducts;
         }
 
         [HttpGet]
@@ -63,7 +69,7 @@ namespace IntegrationModule.Controllers
         }
 
         [HttpPost]
-        public IActionResult Add([FromBody] ProductDto product)
+        public IActionResult Add([FromBody] SubProductDto product)
         {
             try
             {
@@ -72,7 +78,7 @@ namespace IntegrationModule.Controllers
                     return BadRequest("El producto no puede ser nulo.");
                 }
                 int addedProductId = _add.Execute(product);
-                return CreatedAtAction(nameof(GetById), new { id = addedProductId }, GetById(addedProductId));
+                return Ok(addedProductId);
             }
             catch (Exception ex)
             {
@@ -84,16 +90,31 @@ namespace IntegrationModule.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(int id, [FromBody] ProductDto product)
+        public IActionResult Update(int id, [FromBody] SubProductDto product)
         {
             try
             {
-                if (product == null || product.id != id)
+                if (product == null || product.Id != id)
                 {
                     return BadRequest("El producto no puede ser nulo y debe coincidir con el ID.");
                 }
-                _update.Execute(product.id, product);
-                return Ok(GetById(product.id));
+                _update.Execute(product.Id, product);
+                return Ok(GetById(product.Id));
+            }
+            catch (Exception ex)
+            {
+                var errorMessage = ex.InnerException != null
+                    ? $"{ex.Message} - InnerException: {ex.InnerException.Message}"
+                    : ex.Message;
+                return BadRequest(errorMessage);
+            }
+        }
+
+        [HttpDelete("clear")]
+        public IActionResult ClearSubProducts() {
+            try {
+                _clearSubProducts.Execute();
+                return NoContent();
             }
             catch (Exception ex)
             {
@@ -105,7 +126,7 @@ namespace IntegrationModule.Controllers
         }
 
         [HttpDelete]
-        public IActionResult Delete(ProductDto pro) {
+        public IActionResult Delete(SubProductDto pro) {
             try
             {
                 if (pro == null)

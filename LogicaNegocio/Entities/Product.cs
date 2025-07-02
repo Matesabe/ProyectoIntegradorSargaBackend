@@ -9,7 +9,7 @@ namespace BusinessLogic.Entities
 {
     public  class Product
     {
-        public Product(int id, string productCode, string name, double price, string season, string year)
+        public Product(int id, string productCode, string name, double price, string season, string year, string genre, string brand, string type)
         {
             Id = id;
             this.productCode = productCode;
@@ -17,6 +17,9 @@ namespace BusinessLogic.Entities
             Price = price;
             Season = season;
             Year = year;
+            Genre = genre; 
+            Brand = brand;
+            Type = type;
         }
 
         protected Product() { }
@@ -26,5 +29,8 @@ namespace BusinessLogic.Entities
         public double Price { get; set; }
         public string Season { get; set; }
         public string Year { get; set; }
+        public string Genre { get; set; } 
+        public string Brand { get; set; }
+        public string Type { get; set; } 
     }
 }

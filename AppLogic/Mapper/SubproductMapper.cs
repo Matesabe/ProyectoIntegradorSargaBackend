@@ -23,7 +23,10 @@ namespace AppLogic.Mapper
                                     dto.Size,
                                     dto.Images,
                                     dto.Season,
-                                    dto.Year
+                                    dto.Year,
+                                    dto.genre,
+                                    dto.brand,
+                                    dto.type
                                );
          
         }
@@ -31,9 +34,32 @@ namespace AppLogic.Mapper
         public static SubProductDto ToDto(SubProduct subproduct)
         {
             return new SubProductDto(
-                subproduct.Id, subproduct.ProductId, subproduct.productCode, subproduct.Name, subproduct.Price, subproduct.Color, subproduct.Size, subproduct.Season, subproduct.Year, subproduct.Images);
+                subproduct.Id, subproduct.ProductId, subproduct.productCode, subproduct.Name, subproduct.Price, subproduct.Color, subproduct.Size, subproduct.Season, subproduct.Year, subproduct.Images, subproduct.Genre, subproduct.Brand, subproduct.Type, null, null, null, null, null);
         }
 
+        public static SubProductDto changeId(SubProductDto subId, SubProductDto sub)
+        {
+            return new SubProductDto(
+                subId.Id,
+                sub.ProductId,
+                sub.productCode,
+                sub.Name,
+                sub.Price,
+                sub.Color,
+                sub.Size,
+                sub.Season,
+                sub.Year,
+                sub.Images,
+                sub.genre,
+                sub.brand,
+                sub.type,
+                sub.stockPdelE ?? 0,
+                sub.stockCol ?? 0,
+                sub.stockPay ?? 0,
+                sub.stockPeat ?? 0,
+                sub.stockSal ?? 0
+            );
+        }
 
         public static IEnumerable<SubProductDto> ToListDto(IEnumerable<SubProduct> products)
         {

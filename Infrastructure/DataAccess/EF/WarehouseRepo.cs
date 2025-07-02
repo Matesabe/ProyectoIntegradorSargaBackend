@@ -135,5 +135,171 @@ namespace Infrastructure.DataAccess.EF
             }
         }
 
+        public void UpdateStocks(SubProduct sub, int stockPdelE, int stockCol, int stockPay, int stockPeat, int stockSal)
+        {
+            try
+            {
+                if (sub == null)
+                {
+                    throw new ArgumentNullException(nameof(sub), "El subproducto no puede ser nulo");
+                }
+                var existingSubProduct = _context.SubProducts.FirstOrDefault(s => s.Id == sub.Id);
+                if (existingSubProduct == null)
+                {
+                    throw new KeyNotFoundException("Subproducto no encontrado");
+                }
+                UpdateStockPdE(existingSubProduct, stockPdelE);
+                UpdateStockCol(existingSubProduct, stockCol);
+                UpdateStockPay(existingSubProduct, stockPay);
+                UpdateStockPeat(existingSubProduct, stockPeat);
+                UpdateStockSal(existingSubProduct, stockSal);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al actualizar los stocks del subproducto: " + ex.Message, ex);
+            }
+        }
+
+        private void UpdateStockSal(SubProduct SubProduct, int stockSal)
+        {
+            try
+            {
+                if (stockSal < 0)
+                {
+                    throw new ArgumentException("El stock de sal no puede ser negativo", nameof(stockSal));
+                }
+                var salto = _context.Warehouses.FirstOrDefault(w => w.Name == "Sarga Salto");
+                if (salto == null)
+                {
+                    throw new KeyNotFoundException("Depósito Sarga Salto no encontrado");
+                }
+                for (global::System.Int32 i = 0; i < stockSal; i++)
+                {
+                    salto.SubProducts.Append(SubProduct);
+                }    
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al actualizar el stock de sal: " + ex.Message, ex);
+            }
+        }
+
+        private void UpdateStockPeat(SubProduct SubProduct, int stockPeat)
+        {
+            try
+            {
+                if (stockPeat < 0)
+                {
+                    throw new ArgumentException("El stock de sal no puede ser negativo", nameof(stockPeat));
+                }
+                var salto = _context.Warehouses.FirstOrDefault(w => w.Name == "Sarga Peatonal Maldonado");
+                if (salto == null)
+                {
+                    throw new KeyNotFoundException("Depósito Sarga Salto no encontrado");
+                }
+                for (global::System.Int32 i = 0; i < stockPeat; i++)
+                {
+                    salto.SubProducts.Append(SubProduct);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al actualizar el stock de sal: " + ex.Message, ex);
+            }
+        }
+
+        private void UpdateStockPay(SubProduct SubProduct, int stockPay)
+        {
+            try
+            {
+                if (stockPay < 0)
+                {
+                    throw new ArgumentException("El stock de sal no puede ser negativo", nameof(stockPay));
+                }
+                var salto = _context.Warehouses.FirstOrDefault(w => w.Name == "Sarga Paysandú");
+                if (salto == null)
+                {
+                    throw new KeyNotFoundException("Depósito Sarga Salto no encontrado");
+                }
+                for (global::System.Int32 i = 0; i < stockPay; i++)
+                {
+                    salto.SubProducts.Append(SubProduct);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al actualizar el stock de sal: " + ex.Message, ex);
+            }
+        }
+
+        private void UpdateStockCol(SubProduct SubProduct, int stockCol)
+        {
+            try
+            {
+                if (stockCol < 0)
+                {
+                    throw new ArgumentException("El stock de sal no puede ser negativo", nameof(stockCol));
+                }
+                var salto = _context.Warehouses.FirstOrDefault(w => w.Name == "Sarga Colonia");
+                if (salto == null)
+                {
+                    throw new KeyNotFoundException("Depósito Sarga Salto no encontrado");
+                }
+                for (global::System.Int32 i = 0; i < stockCol; i++)
+                {
+                    salto.SubProducts.Append(SubProduct);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al actualizar el stock de sal: " + ex.Message, ex);
+            }
+        }
+
+        private void UpdateStockPdE(SubProduct SubProduct, int stockPdelE)
+        {
+            try
+            {
+                if (stockPdelE < 0)
+                {
+                    throw new ArgumentException("El stock de sal no puede ser negativo", nameof(stockPdelE));
+                }
+                var salto = _context.Warehouses.FirstOrDefault(w => w.Name == "Sarga Punta del Este");
+                if (salto == null)
+                {
+                    throw new KeyNotFoundException("Depósito Sarga Salto no encontrado");
+                }
+                for (global::System.Int32 i = 0; i < stockPdelE; i++)
+                {
+                    salto.SubProducts.Append(SubProduct);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al actualizar el stock de sal: " + ex.Message, ex);
+            }
+        }
+
+        public void ClearStocks()
+        {
+            IEnumerable<Warehouse> warehouses = GetAll();
+            try
+            {
+                foreach (var warehouse in warehouses)
+                {
+                    if (warehouse.SubProducts != null && warehouse.SubProducts.Any())
+                    {
+                        // Elimina todos los subproductos del depósito
+                        warehouse.SubProducts = new List<SubProduct>();
+                    }
+                }
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al limpiar los stocks de los depósitos: " + ex.Message, ex);
+            }
+        }
     }
 }

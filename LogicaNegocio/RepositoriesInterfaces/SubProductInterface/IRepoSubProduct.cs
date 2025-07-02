@@ -17,5 +17,6 @@ namespace BusinessLogic.RepositoriesInterfaces.SubProductInterface
     {
         IEnumerable<SubProduct> GetByProductCode(string value);
         IEnumerable<SubProduct> GetByProductId(int id);
+        void Clear();
     }
 }

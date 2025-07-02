@@ -13,9 +13,11 @@ namespace BusinessLogic.RepositoriesInterfaces.WarehouseInterface
                                      IRepoDelete<Warehouse>,
                                      IRepoGetAll<Warehouse>,
                                      IRepoGetById<Warehouse>
+                                   
 
     {
         IEnumerable<SubProduct> GetProductsByWarehouseId(int id);
-       
+        void UpdateStocks(SubProduct sub, int stockPdelE, int stockCol, int stockPay, int stockPeat, int stockSal);
+        void ClearStocks();
     }
 }

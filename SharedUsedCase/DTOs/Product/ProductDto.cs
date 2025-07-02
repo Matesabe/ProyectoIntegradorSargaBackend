@@ -8,7 +8,7 @@ namespace SharedUseCase.DTOs.Product
 {
     public record ProductDto
     (
-        int id, string productCode, string name, double price, string season, string year
+        int id, string productCode, string name, double price, string season, string year, string genre, string brand, string type
     )
     { }
 }

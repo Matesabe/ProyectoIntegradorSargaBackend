@@ -36,6 +36,17 @@ namespace Infrastructure.DataAccess.EF
                 {
                     throw new ArgumentException("El campo 'Price' debe ser mayor que cero", nameof(obj.Price));
                 }
+                try { 
+                Product product = _context.Products.FirstOrDefault(p => p.productCode == obj.productCode);
+                    if (product == null)
+                    {
+                        throw new KeyNotFoundException("Producto no encontrado con el código proporcionado");
+                    }
+                }
+                catch(KeyNotFoundException e)
+                {
+                    _context.Products.Add(new Product(0, obj.productCode, obj.Name, obj.Price, obj.Season, obj.Year, obj.Genre, obj.Brand, obj.Type));
+                }
                 _context.SubProducts.Add(obj);
                 _context.SaveChanges();
                 return obj.Id; // Asumiendo que el Id se genera automáticamente
@@ -43,6 +54,22 @@ namespace Infrastructure.DataAccess.EF
             catch (Exception ex)
             {
                 throw new Exception("Error al agregar el subproducto: " + ex.Message, ex);
+            }
+        }
+
+        public void Clear()
+        {
+            try
+            {
+                var subProducts = _context.SubProducts.ToList();
+                
+                // Elimina todos los subproductos
+                _context.SubProducts.RemoveRange(subProducts);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al limpiar los subproductos: " + ex.Message, ex);
             }
         }
 

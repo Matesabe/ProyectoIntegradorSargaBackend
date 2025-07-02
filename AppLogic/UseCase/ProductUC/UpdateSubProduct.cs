@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace AppLogic.UseCase.ProductUC
 {
-    internal class UpdateSubProduct : IUpdate<SubProductDto>
+    public class UpdateSubProduct : IUpdate<SubProductDto>
     {
         private IRepoSubProduct _repo;
         public UpdateSubProduct(IRepoSubProduct repo)

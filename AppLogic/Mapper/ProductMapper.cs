@@ -18,7 +18,10 @@ namespace AppLogic.Mapper
                 dto.name,
                 dto.price,
                 dto.season,
-                dto.year
+                dto.year,
+                dto.genre,
+                dto.brand,
+                dto.type
             );
 
         }
@@ -30,7 +33,10 @@ namespace AppLogic.Mapper
                                   product.Name,
                                   product.Price,
                                   product.Season,
-                                  product.Year
+                                  product.Year,
+                                    product.Genre,
+                                    product.Brand,
+                                    product.Type
             );
         }
 

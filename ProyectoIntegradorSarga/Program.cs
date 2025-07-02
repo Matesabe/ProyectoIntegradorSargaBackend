@@ -81,7 +81,6 @@ builder.Services.AddScoped<IGetRedemptionByUserId<RedemptionDto>, GetRedemptionB
 builder.Services.AddScoped<IUpdate<RedemptionDto>, UpdateRedemption>();
 builder.Services.AddScoped<IRemove<RedemptionDto>, DeleteRedemption>();
 
-
 // Inyección de SeedData para la inicialización de datos
 builder.Services.AddScoped<SeedData>(); // Inyección del SeedData para la inicialización de datos
 
@@ -89,7 +88,6 @@ builder.Services.AddScoped<SeedData>(); // Inyección del SeedData para la inici
 builder.Services.AddDbContext<SargaContext>(
     options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
-
 
 //Configuración de seguridad
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -174,6 +172,12 @@ if (app.Environment.IsDevelopment())
     //    var seeder = services.GetRequiredService<SeedData>();
     //    seeder.Run();
     //}
+}
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var seeder = services.GetRequiredService<SeedData>();
+    seeder.Run();
 }
 
 

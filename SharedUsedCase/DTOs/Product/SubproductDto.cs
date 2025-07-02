@@ -16,7 +16,19 @@ namespace SharedUseCase.DTOs.Product
                              string Size,
                              string Season,
                                 string Year,
-                             List<Image> Images) 
-    {}
+                             List<Image>? Images,
+                             string genre,
+                             string brand,
+                             string type,
+                             int? stockPdelE, int? stockCol, int? stockPay, int? stockPeat, int? stockSal) 
+    {
+        public override string ToString()
+        {
+            var imagesStr = Images != null ? string.Join(", ", Images.Select(img => $"{{id: {img.id}, url: '{img.url}'}}")) : "null";
+            return $"SubProductDto {{ Id = {Id}, ProductId = {ProductId}, productCode = '{productCode}', Name = '{Name}', Price = {Price}, Color = '{Color}', Size = '{Size}', Season = '{Season}', Year = '{Year}', Images = [{imagesStr}], genre = '{genre}', brand = '{brand}', type = '{type}' }}";
+        }
+    
+            }
+
 
 }
