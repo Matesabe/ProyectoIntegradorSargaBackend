@@ -122,7 +122,7 @@ namespace MonitoreoDeArchivos.ApiCalls
             try
             {
                 using var client = new HttpClient();
-                var url = $"http://localhost:5246/api/subproducts?Id={id}";
+                var url = $"http://localhost:5246/api/subproducts/{id}";
                 var response = await client.GetAsync(url);
 
                 if (!response.IsSuccessStatusCode)
@@ -132,11 +132,11 @@ namespace MonitoreoDeArchivos.ApiCalls
                 }
 
                 var json = await response.Content.ReadAsStringAsync();
-                var subProducts = JsonSerializer.Deserialize<List<SubProductDto>>(json, new JsonSerializerOptions
+                var subProduct = JsonSerializer.Deserialize<SubProductDto>(json, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
-                return subProducts?.FirstOrDefault();
+                return subProduct;
             }
             catch (Exception ex)
             {
@@ -145,5 +145,35 @@ namespace MonitoreoDeArchivos.ApiCalls
             }
         }
 
+        public static async Task<ProductDto> GetProductByCode(string v)
+        {
+            try
+            {
+                using var client = new HttpClient();
+                var url = $"http://localhost:5246/api/SubProducts/products/{v}";
+                var response = await client.GetAsync(url);
+                if (!response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine($"Error al obtener el producto por código: {response.StatusCode}");
+                    return null;
+                }
+                var json = await response.Content.ReadAsStringAsync();
+                var product = JsonSerializer.Deserialize<List<ProductDto>>(json, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+                if (product == null || product.Count == 0)
+                {
+                    Console.WriteLine("No se encontró ningún producto con el código especificado.");
+                    return null;
+                }
+                return product.First();
+                
+            }catch(Exception ex)
+            {
+                Console.WriteLine($"Error al obtener el producto por código: {ex.Message}");
+                return null;
+            }
+        }
     }
 }

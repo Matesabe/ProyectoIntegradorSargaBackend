@@ -25,7 +25,7 @@ namespace AppLogic.UseCase.WarehouseUC
             try
             {
                 var products = _repo.GetProductsByWarehouseId(id);
-                return products.Select(p => SubproductMapper.ToDto(p)).ToList();
+                return products.Select(p => SubproductMapper.ToDto(p.SubProduct)).ToList();
             }
             catch (Exception ex)
             {

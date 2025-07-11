@@ -18,7 +18,7 @@ namespace AppLogic.Mapper
                                 (Client)UserMapper.FromDto(dto.Client), 
                                 dto.Amount,
                                 dto.PointsGenerated,
-                                SubproductMapper.FromListDtoToProduct(dto.SubProducts) // SubProducts will be set later
+                                ProductMapper.FromListDtoToProduct(dto.Products) // SubProducts will be set later
             );  
         }
 
@@ -28,8 +28,7 @@ namespace AppLogic.Mapper
                                    UserMapper.ToDto(purchase.Client), // Assuming Client has an Id property
                                    purchase.Amount,
                                    purchase.PointsGenerated,
-                                   purchase.Warehouse?.Id ?? 0, // Assuming Warehouse has an Id property
-                                   SubproductMapper.ToListDto(purchase.SubProducts)
+                                   ProductMapper.ToListDto(purchase.Products)
             );
         }
 

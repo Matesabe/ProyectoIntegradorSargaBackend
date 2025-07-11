@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace AppLogic.UseCase.PurchaseUC
 {
-    internal class DeletePurchase : IRemove<PurchaseDto>
+    public class DeletePurchase : IRemove<PurchaseDto>
     {
         private IRepoPurchase _repo;
         public DeletePurchase(IRepoPurchase repo)

@@ -10,24 +10,30 @@ namespace IntegrationModule.Controllers
     public class SubProductsController : Controller
     {
         IGetAll<SubProductDto> _getAll;
+        IGetAll<ProductDto> _getAllProducts;
         IGetById<SubProductDto> _getById;
         IAdd<SubProductDto> _add;
         IUpdate<SubProductDto> _update;
         IRemove<SubProductDto> _remove;
         IClearSubProducts _clearSubProducts;
+        IGetByProductCode<ProductDto> _getByProductCode;
         public SubProductsController(IGetAll<SubProductDto> getAll,
+                                 IGetAll<ProductDto> getAllProducts,
                                  IGetById<SubProductDto> getById,
                                  IAdd<SubProductDto> add,
                                  IUpdate<SubProductDto> update,
                                  IRemove<SubProductDto> remove,
-                                 IClearSubProducts clearSubProducts)
+                                 IClearSubProducts clearSubProducts,
+                                 IGetByProductCode<ProductDto> getProductByCode)
         {
             _getAll = getAll;
+            _getAllProducts = getAllProducts;
             _getById = getById;
             _add = add;
             _update = update;
             _remove = remove;
             _clearSubProducts = clearSubProducts;
+            _getByProductCode = getProductByCode;
         }
 
         [HttpGet]
@@ -36,6 +42,23 @@ namespace IntegrationModule.Controllers
             try
             {
                 var products = _getAll.Execute();
+                return Ok(products);
+            }
+            catch (Exception ex)
+            {
+                var errorMessage = ex.InnerException != null
+                    ? $"{ex.Message} - InnerException: {ex.InnerException.Message}"
+                    : ex.Message;
+                return BadRequest(errorMessage);
+            }
+        }
+
+        [HttpGet("products")]
+        public IActionResult GetAllProducts()
+        {
+            try
+            {
+                var products = _getAllProducts.Execute();
                 return Ok(products);
             }
             catch (Exception ex)
@@ -135,6 +158,27 @@ namespace IntegrationModule.Controllers
                 }
                 _remove.Execute(pro);
                 return NoContent();
+            }
+            catch (Exception ex)
+            {
+                var errorMessage = ex.InnerException != null
+                    ? $"{ex.Message} - InnerException: {ex.InnerException.Message}"
+                    : ex.Message;
+                return BadRequest(errorMessage);
+            }
+        }
+
+        [HttpGet("products/{code}")]
+        public IActionResult GetProductByCode(string code)
+        {
+            try
+            {
+                var product = _getByProductCode.Execute(code);
+                if (product == null)
+                {
+                    return NotFound();
+                }
+                return Ok(product);
             }
             catch (Exception ex)
             {

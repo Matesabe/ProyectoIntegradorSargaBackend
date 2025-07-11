@@ -4,6 +4,7 @@ using Infrastructure.DataAccess.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(SargaContext))]
-    partial class SargaContextModelSnapshot : ModelSnapshot
+    [Migration("20250704061610_asd4del7")]
+    partial class asd4del7
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -67,9 +70,6 @@ namespace Infrastructure.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
-                    b.Property<int?>("PurchaseId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Season")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -87,8 +87,6 @@ namespace Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PurchaseId");
 
                     b.ToTable("Products");
                 });
@@ -113,9 +111,14 @@ namespace Infrastructure.Migrations
                     b.Property<int>("PointsGenerated")
                         .HasColumnType("int");
 
+                    b.Property<int>("WarehouseId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ClientId");
+
+                    b.HasIndex("WarehouseId");
 
                     b.ToTable("Purchases");
                 });
@@ -298,6 +301,9 @@ namespace Infrastructure.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("PurchaseId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("PurchasePromotionProductsId")
                         .HasColumnType("int");
 
@@ -321,6 +327,8 @@ namespace Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("PurchaseId");
 
                     b.HasIndex("PurchasePromotionProductsId");
 
@@ -435,13 +443,6 @@ namespace Infrastructure.Migrations
                         .HasForeignKey("SubProductId");
                 });
 
-            modelBuilder.Entity("BusinessLogic.Entities.Product", b =>
-                {
-                    b.HasOne("BusinessLogic.Entities.Purchase", null)
-                        .WithMany("Products")
-                        .HasForeignKey("PurchaseId");
-                });
-
             modelBuilder.Entity("BusinessLogic.Entities.Purchase", b =>
                 {
                     b.HasOne("BusinessLogic.Entities.Client", "Client")
@@ -450,7 +451,15 @@ namespace Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("BusinessLogic.Entities.Warehouse", "Warehouse")
+                        .WithMany()
+                        .HasForeignKey("WarehouseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Client");
+
+                    b.Navigation("Warehouse");
                 });
 
             modelBuilder.Entity("BusinessLogic.Entities.Redemption", b =>
@@ -466,6 +475,10 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("BusinessLogic.Entities.SubProduct", b =>
                 {
+                    b.HasOne("BusinessLogic.Entities.Purchase", null)
+                        .WithMany("SubProducts")
+                        .HasForeignKey("PurchaseId");
+
                     b.HasOne("BusinessLogic.Entities.PurchasePromotionProducts", null)
                         .WithMany("PromotionProducts")
                         .HasForeignKey("PurchasePromotionProductsId");
@@ -562,7 +575,7 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("BusinessLogic.Entities.Purchase", b =>
                 {
-                    b.Navigation("Products");
+                    b.Navigation("SubProducts");
                 });
 
             modelBuilder.Entity("BusinessLogic.Entities.PurchasePromotionProducts", b =>

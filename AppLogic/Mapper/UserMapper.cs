@@ -24,7 +24,7 @@ namespace AppLogic.Mapper
         }
         public static User FromDtoClient(UserDto userDto)
         {
-            return new Client(0,
+            return new Client(userDto.Id,
                               userDto.Ci, // Fixed: Accessing the 'Ci' property from the 'userDto' instance
                               new Name(userDto.Name),
                               new Password(userDto.Password),
@@ -35,7 +35,7 @@ namespace AppLogic.Mapper
 
         public static User FromDtoSeller(UserDto userDto)
         {
-            return new Seller(0,
+            return new Seller(userDto.Id,
                               userDto.Ci, // Fixed: Accessing the 'Ci' property from the 'userDto' instance
                               new Name(userDto.Name),
                               new Password(userDto.Password),
@@ -46,7 +46,7 @@ namespace AppLogic.Mapper
 
         public static User FromDtoAdministrator(UserDto userDto)
         {
-            return new Administrator(0,
+            return new Administrator(userDto.Id,
                               userDto.Ci, // Fixed: Accessing the 'Ci' property from the 'userDto' instance
                               new Name(userDto.Name),
                               new Password(userDto.Password),

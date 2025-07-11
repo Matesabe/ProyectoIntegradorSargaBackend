@@ -6,8 +6,6 @@ namespace Infrastructure.DataAccess.EF
 {
     public class SargaContext : DbContext
     {
-        // En SargaContext, cambia el DbSet<User> por DbSet<Seller>, DbSet<Client>, y/o DbSet<Administrator>
-        // según las clases concretas que heredan de User.
 
         public DbSet<Seller> Sellers { get; set; }
         public DbSet<Client> Clients { get; set; }
@@ -22,12 +20,10 @@ namespace Infrastructure.DataAccess.EF
         public DbSet<PurchasePromotionProducts> PurchasePromotionsProducts { get; set; }
         public DbSet<Redemption> Redemptions { get; set; }
 
-        // Elimina o comenta la línea:
-        // public DbSet<User> Users { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
-            
+            optionsBuilder.UseSqlServer(@"REMOVED");
             //base.OnConfiguring(optionsBuilder);
             //optionsBuilder.UseSqlServer(@"
             //            Data Source=(localdb)\MSSQLLocalDB;
@@ -38,15 +34,30 @@ namespace Infrastructure.DataAccess.EF
         
         public SargaContext() : base()
         {
+        
         }
 
-        public SargaContext(DbContextOptions<SargaContext> options) : base(options)
+        public SargaContext(DbContextOptions<SargaContext> options) : 
+            base(options)
         {
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<WarehouseStock>()
+                .HasKey(ws => new { ws.WarehouseId, ws.SubProductId });
+
+            modelBuilder.Entity<WarehouseStock>()
+                .HasOne(ws => ws.Warehouse)
+                .WithMany(w => w.Stocks)
+                .HasForeignKey(ws => ws.WarehouseId);
+
+            modelBuilder.Entity<WarehouseStock>()
+                .HasOne(ws => ws.SubProduct)
+                .WithMany(sp => sp.Stocks)
+                .HasForeignKey(ws => ws.SubProductId);
             modelBuilder.ApplyConfiguration(new UserConfiguration());
         }
     }

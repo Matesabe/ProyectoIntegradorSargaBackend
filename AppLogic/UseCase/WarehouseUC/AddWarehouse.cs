@@ -28,9 +28,9 @@ namespace AppLogic.UseCase.WarehouseUC
             {
                 throw new ArgumentException("El campo 'Name' no puede estar vacío", nameof(obj.Name));
             }
-            if (obj.SubProducts == null || !obj.SubProducts.Any())
+            if (obj.Stocks == null || !obj.Stocks.Any())
             {
-                throw new ArgumentException("El campo 'SubProducts' no puede estar vacío", nameof(obj.SubProducts));
+                throw new ArgumentException("El campo 'SubProducts' no puede estar vacío", nameof(obj.Stocks));
             }
             try
             {

@@ -14,8 +14,8 @@ namespace BusinessLogic.RepositoriesInterfaces.PurchaseInterface
         IRepoGetAll<Purchase>,
         IRepoDelete<Purchase>,
         IRepoUpdate<Purchase>,
-        IRepoGetPurchaseByClientId<Purchase>,
-        IRepoDeleteProductsFromWarehouse<Purchase>
+        IRepoGetPurchaseByClientId<Purchase>
     {
+        void Clear();
     }
 }

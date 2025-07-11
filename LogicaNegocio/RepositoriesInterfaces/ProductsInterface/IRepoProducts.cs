@@ -10,14 +10,12 @@ using System.Threading.Tasks;
 
 namespace BusinessLogic.RepositoriesInterfaces.ProductsInterface
 {
-    public interface IRepoProducts: IRepoAdd<Product>,
+    public interface IRepoProducts : IRepoAdd<Product>,
             IRepoUpdate<Product>,
             IRepoDelete<Product>,
             IRepoGetAll<Product>,
             IRepoGetById<Product>
     {
-        
-        
-  
+        IEnumerable<Product> GetByProductCode(string code);
     }
 }

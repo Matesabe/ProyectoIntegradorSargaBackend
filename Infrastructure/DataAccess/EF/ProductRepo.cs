@@ -93,6 +93,17 @@ namespace Infrastructure.DataAccess.EF
             }
         }
 
+        public IEnumerable<Product> GetByProductCode(string code)
+        {
+            try { 
+                return _context.Products.Where(p => p.productCode == code).ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al obtener el producto por código: " + ex.Message, ex);
+            }
+        }
+
         public void Update(int id, Product obj)
         {
             try

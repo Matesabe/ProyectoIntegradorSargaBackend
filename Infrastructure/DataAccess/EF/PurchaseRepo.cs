@@ -31,14 +31,13 @@ namespace Infrastructure.DataAccess.EF
                 {
                     throw new ArgumentException("El campo 'Amount' debe ser mayor que cero", nameof(obj.Amount));
                 }
-                if (obj.SubProducts == null || !obj.SubProducts.Any())
+                if (obj.Products == null || !obj.Products.Any())
                 {
-                    throw new ArgumentException("El campo 'SubProducts' no puede estar vacío", nameof(obj.SubProducts));
+                    throw new ArgumentException("El campo 'SubProducts' no puede estar vacío", nameof(obj.Products));
                 }
                 SetPointsToPurchase(obj);
                 _context.Purchases.Add(obj);
                 SetPointsToUser(obj.Client.Id, obj.PointsGenerated);
-                //DeleteProductsFromWarehouse(obj); -> Omitido hasta implementar la lógica completa de los almacenes
                 _context.SaveChanges();
                 return obj.Id; // Asumiendo que el Id se genera automáticamente
             }
@@ -55,12 +54,11 @@ namespace Infrastructure.DataAccess.EF
                 int pointsGenerated = 0;
 
                 // Combine all active promotions into a single list
-                var activePromotions = _context.PurchasePromotionsDate
-                    .Where(p => p.IsActive)
+                var activePromotions = _context.PurchasePromotionsDate.Where(p => p.IsActive).ToList()
                     .Cast<PurchasePromotion>()
-                    .Concat(_context.PurchasePromotionsProducts.Where(p => p.IsActive))
-                    .Concat(_context.PurchasePromotionsRecurrence.Where(p => p.IsActive))
-                    .Concat(_context.PurchasePromotionsAmount.Where(p => p.IsActive))
+                    .Concat(_context.PurchasePromotionsProducts.Where(p => p.IsActive).ToList())
+                    .Concat(_context.PurchasePromotionsRecurrence.Where(p => p.IsActive).ToList())
+                    .Concat(_context.PurchasePromotionsAmount.Where(p => p.IsActive).ToList())
                     .ToList();
 
                 // Apply each promotion to the purchase
@@ -95,46 +93,7 @@ namespace Infrastructure.DataAccess.EF
             }
         }
 
-        public void DeleteProductsFromWarehouse(Purchase obj)
-        {
-            try
-            {
-                if (obj == null)
-                    throw new ArgumentNullException(nameof(obj), "El objeto compra no puede ser nulo");
-                if (obj.Warehouse == null)
-                    throw new ArgumentException("La compra no tiene un almacén asociado", nameof(obj.Warehouse));
-                if (obj.SubProducts == null || !obj.SubProducts.Any())
-                    throw new ArgumentException("La compra no tiene subproductos para eliminar", nameof(obj.SubProducts));
-
-                // Obtener el almacén actualizado desde la base de datos
-                var warehouse = _context.Warehouses
-                    .Where(w => w.Id == obj.Warehouse.Id)
-                    .Select(w => new
-                    {
-                        Warehouse = w,
-                        SubProducts = w.SubProducts.ToList()
-                    })
-                    .FirstOrDefault();
-
-                if (warehouse == null)
-                    throw new InvalidOperationException("No se encontró el almacén asociado a la compra");
-
-                // Eliminar los subproductos de la compra del almacén
-                foreach (var subProduct in obj.SubProducts)
-                {
-                    var subProductInWarehouse = warehouse.SubProducts.FirstOrDefault(sp => sp.Id == subProduct.Id);
-                    if (subProductInWarehouse != null)
-                    {
-                        warehouse.SubProducts.Remove(subProductInWarehouse);
-                    }
-                }
-                _context.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error al eliminar los productos del almacén: " + ex.Message, ex);
-            }
-        }
+  
 
         public IEnumerable<Purchase> GetAll()
         {
@@ -192,8 +151,35 @@ namespace Infrastructure.DataAccess.EF
                 throw new InvalidOperationException($"No se encontró un cliente con el ID {userId}");
 
             client.Points += points;
-            _context.SaveChanges();
+            _context.Clients.Update(client);
+                _context.SaveChanges();
             }catch(Exception ex) {
+                throw new Exception(ex.Message, ex);
+            }
+        }
+
+        public void SubstractPointsFromUser(int userId, int points)
+        {
+            try
+            {
+                if (points > 0)
+                    throw new ArgumentException("Los puntos no pueden ser positivos", nameof(points));
+
+                var client = _context.Clients.FirstOrDefault(c => c.Id == userId);
+                if (client == null)
+                    throw new InvalidOperationException($"No se encontró un cliente con el ID {userId}");
+
+                client.Points += points;
+
+                if (client.Points < 0)
+                {
+                    throw new InvalidOperationException("Los puntos del cliente no pueden ser negativos");
+                }
+                _context.Clients.Update(client);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
                 throw new Exception(ex.Message, ex);
             }
         }
@@ -218,20 +204,24 @@ namespace Infrastructure.DataAccess.EF
                 {
                     throw new ArgumentException("El campo 'Amount' debe ser mayor que cero", nameof(obj.Amount));
                 }
-                if (obj.SubProducts == null || !obj.SubProducts.Any())
+                if (obj.Products == null || !obj.Products.Any())
                 {
-                    throw new ArgumentException("El campo 'SubProducts' no puede estar vacío", nameof(obj.SubProducts));
+                    throw new ArgumentException("El campo 'SubProducts' no puede estar vacío", nameof(obj.Products));
                 }
                 var existingPurchase = GetById(id);
                 if (existingPurchase == null)
                 {
                     throw new KeyNotFoundException("Compra no encontrada");
                 }
+                // Restar los puntos generados de la compra anterior a la modificación para luego agregarlos desde la modificada
+                SubstractPointsFromUser(existingPurchase.Client.Id, obj.PointsGenerated * -1);
+
                 // Actualizar los campos necesarios
                 existingPurchase.Client = obj.Client;
                 existingPurchase.Amount = obj.Amount;
-                existingPurchase.SubProducts = obj.SubProducts;
+                existingPurchase.Products = obj.Products;
                 SetPointsToPurchase(existingPurchase);
+                SetPointsToUser(existingPurchase.Client.Id, existingPurchase.PointsGenerated);
 
                 _context.Purchases.Update(existingPurchase);
                 _context.SaveChanges();
@@ -241,6 +231,22 @@ namespace Infrastructure.DataAccess.EF
                 throw new Exception("Error al actualizar la compra: " + ex.Message, ex);
             }
 
+        }
+
+        public void Clear()
+        {
+            try
+            {
+                var purchases = _context.Purchases.ToList();
+
+                // Elimina todos las ventas
+                _context.Purchases.RemoveRange(purchases);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al limpiar las ventas: " + ex.Message, ex);
+            }
         }
     }
 }

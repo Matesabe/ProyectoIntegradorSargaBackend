@@ -14,48 +14,6 @@ namespace MonitoreoDeArchivos.fromXlsx
 {
     internal class xlsxConverterSubProducts
     {
-        public async Task<SubProductDto> ConvertLine(string[] line)
-        {
-            // Assuming the line contains data in a specific format, e.g.:
-            // [0] = ProductId, [1] = Name, [2] = Description, [3] = Price, [4] = Stock
-            if (line.Length < 10)
-                throw new ArgumentException("Line does not contain enough data to convert to ProductDto.");
-            int stockPdelE = int.Parse(line[11]);
-            int stockCol = int.Parse(line[12]);
-            int stockPay = int.Parse(line[13]);
-            int stockPeat = int.Parse(line[14]);
-            int stockSal = int.Parse(line[15]);
-            int stockTotal = stockPdelE + stockPay + stockCol + stockPeat + stockSal;
-            if (stockTotal > 0)
-            {
-                SubProductDto sub = new SubProductDto(
-                Id: 0, // Assuming ID is auto-generated or not provided in the line
-                ProductId: 0, // Assuming ProductId is at index 0
-                productCode: line[7], // Assuming productCode is at index 
-                Name: line[3],
-                Price: double.TryParse(line[16], out double price) ? double.Parse(line[16]) : 0.0,
-                Color: line[2],
-                Size: line[1],
-                Year: line[9],
-                Images: null,
-                Season: line[10],
-                genre: line[8],
-                brand: line[6],
-                type: line[5],
-                stockPdelE: stockPdelE > 0 ? stockPdelE : null, // Set to null if stock is 0
-                stockCol: stockCol > 0 ? stockCol : null, // Set to null if stock is 0
-                stockPay: stockPay > 0 ? stockPay : null, // Set to null if stock is 0
-                stockPeat: stockPeat > 0 ? stockPeat : null, // Set to null if stock is 0
-                stockSal: stockSal > 0 ? stockSal : null // Set to null if stock is 0
-                );
-                SubProductDto newSub = await AddSubProduct(sub);
-                SubProductDto updatedSub = SubproductMapper.changeId(newSub, sub);
-                UpdateStocks(updatedSub);
-                return sub;
-            }
-            return null;
-        }
-
         public List<SubProductDto> ConvertFromXlsx(string filePath)
         {
             if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
@@ -105,12 +63,55 @@ namespace MonitoreoDeArchivos.fromXlsx
                     var subProduct = ConvertLine(line).Result;
                     subProducts.Add(subProduct);
 
-                    if (subProducts.Count == 10)
-                        break; // límite de 10 para pruebas SACAR DESPUÉS
+                    //if (subProducts.Count == 10)
+                    //    break; // límite de 10 para pruebas SACAR DESPUÉS
                 }
             }
             return subProducts;
         }
+
+        public async Task<SubProductDto> ConvertLine(string[] line)
+        {
+            // Assuming the line contains data in a specific format, e.g.:
+            // [0] = ProductId, [1] = Name, [2] = Description, [3] = Price, [4] = Stock
+            if (line.Length < 10)
+                throw new ArgumentException("Line does not contain enough data to convert to ProductDto.");
+            int stockPdelE = int.Parse(line[11]);
+            int stockCol = int.Parse(line[12]);
+            int stockPay = int.Parse(line[13]);
+            int stockPeat = int.Parse(line[14]);
+            int stockSal = int.Parse(line[15]);
+            int stockTotal = stockPdelE + stockPay + stockCol + stockPeat + stockSal;
+            if (stockTotal > 0)
+            {
+                SubProductDto sub = new SubProductDto(
+                Id: 0, // Assuming ID is auto-generated or not provided in the line
+                ProductId: 0, // Assuming ProductId is at index 0
+                productCode: line[7], // Assuming productCode is at index 
+                Name: line[3],
+                Price: double.TryParse(line[16], out double price) ? double.Parse(line[16]) : 0.0,
+                Color: line[2],
+                Size: line[1],
+                Year: line[9],
+                Images: null,
+                Season: line[10],
+                genre: line[8],
+                brand: line[6],
+                type: line[5],
+                stockPdelE: stockPdelE > 0 ? stockPdelE : 0, // Set to null if stock is 0
+                stockCol: stockCol > 0 ? stockCol : 0, // Set to null if stock is 0
+                stockPay: stockPay > 0 ? stockPay : 0, // Set to null if stock is 0
+                stockPeat: stockPeat > 0 ? stockPeat : 0, // Set to null if stock is 0
+                stockSal: stockSal > 0 ? stockSal : 0 // Set to null if stock is 0
+                );
+                SubProductDto newSub = await AddSubProduct(sub);
+                SubProductDto subProductoConStocks = SubproductMapper.MapStocksToSubProductDto(newSub, stockPdelE, stockCol, stockPay, stockPeat, stockSal);
+                UpdateStocks(subProductoConStocks);
+                return newSub;
+            }
+            return null;
+        }
+
         private async static Task<SubProductDto> AddSubProduct(SubProductDto sub)
         {
             try
@@ -119,8 +120,8 @@ namespace MonitoreoDeArchivos.fromXlsx
                 if (id != null)
                 {
                     // Corrected the return type of productsCalls.getSubById to match the expected SubProductDto
-                    SubProductDto subActualizado = await productsCalls.getSubById(id);
-                    Console.WriteLine($"Subproducto agregado: {sub}");
+                    SubProductDto subActualizado = await productsCalls.getSubById(id); //Acá está el problema
+                    Console.WriteLine($"Subproducto agregado: {subActualizado}");
                     
                     return subActualizado; // Return the subproduct if added successfully
 
@@ -142,7 +143,6 @@ namespace MonitoreoDeArchivos.fromXlsx
         {
             try
             {
-             productsCalls.ClearStocks().Wait();
              productsCalls.SetStocksAsync(subProductDto).Wait();
             }
             catch (Exception ex)

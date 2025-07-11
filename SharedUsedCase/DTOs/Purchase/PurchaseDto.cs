@@ -14,8 +14,8 @@ namespace SharedUseCase.DTOs.Purchase
         UserDto Client,
         double Amount,
         int PointsGenerated,
-        int WarehouseId,
-        IEnumerable<SubProductDto> SubProducts)
+        List<ProductDto> Products)
     {
+
     }
 }

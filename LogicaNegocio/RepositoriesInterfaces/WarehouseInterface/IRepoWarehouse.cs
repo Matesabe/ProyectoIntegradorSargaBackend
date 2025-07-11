@@ -16,7 +16,7 @@ namespace BusinessLogic.RepositoriesInterfaces.WarehouseInterface
                                    
 
     {
-        IEnumerable<SubProduct> GetProductsByWarehouseId(int id);
+        List<WarehouseStock> GetProductsByWarehouseId(int id);
         void UpdateStocks(SubProduct sub, int stockPdelE, int stockCol, int stockPay, int stockPeat, int stockSal);
         void ClearStocks();
     }

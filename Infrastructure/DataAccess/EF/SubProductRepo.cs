@@ -24,9 +24,9 @@ namespace Infrastructure.DataAccess.EF
                 {
                     throw new ArgumentNullException(nameof(obj), "El objeto no puede ser nulo");
                 }
-                if (string.IsNullOrWhiteSpace(obj.productCode))
+                if (string.IsNullOrWhiteSpace(obj.Code))
                 {
-                    throw new ArgumentException("El campo 'productCode' no puede estar vacío", nameof(obj.productCode));
+                    throw new ArgumentException("El campo 'productCode' no puede estar vacío", nameof(obj.Code));
                 }
                 if (string.IsNullOrWhiteSpace(obj.Name))
                 {
@@ -37,7 +37,7 @@ namespace Infrastructure.DataAccess.EF
                     throw new ArgumentException("El campo 'Price' debe ser mayor que cero", nameof(obj.Price));
                 }
                 try { 
-                Product product = _context.Products.FirstOrDefault(p => p.productCode == obj.productCode);
+                Product product = _context.Products.FirstOrDefault(p => p.productCode == obj.Code);
                     if (product == null)
                     {
                         throw new KeyNotFoundException("Producto no encontrado con el código proporcionado");
@@ -45,7 +45,7 @@ namespace Infrastructure.DataAccess.EF
                 }
                 catch(KeyNotFoundException e)
                 {
-                    _context.Products.Add(new Product(0, obj.productCode, obj.Name, obj.Price, obj.Season, obj.Year, obj.Genre, obj.Brand, obj.Type));
+                    _context.Products.Add(new Product(0, obj.Code, obj.Name, obj.Price, obj.Season, obj.Year, obj.Genre, obj.Brand, obj.Type));
                 }
                 _context.SubProducts.Add(obj);
                 _context.SaveChanges();
@@ -128,7 +128,7 @@ namespace Infrastructure.DataAccess.EF
                 {
                     throw new ArgumentException("El código del producto no puede estar vacío", nameof(value));
                 }
-                return _context.SubProducts.Where(sp => sp.productCode == value).ToList();
+                return _context.SubProducts.Where(sp => sp.Code == value).ToList();
             }
             catch (Exception ex)
             {
@@ -165,7 +165,7 @@ namespace Infrastructure.DataAccess.EF
                 {
                     throw new KeyNotFoundException("Subproducto no encontrado");
                 }
-                existingSubProduct.productCode = obj.productCode;
+                existingSubProduct.Code = obj.Code;
                 existingSubProduct.Name = obj.Name;
                 existingSubProduct.Price = obj.Price;
                 existingSubProduct.Color = obj.Color;

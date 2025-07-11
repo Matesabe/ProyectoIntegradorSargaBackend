@@ -1,10 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SharedUseCase.DTOs.Product;
 using SharedUseCase.DTOs.Purchase;
+using SharedUseCase.DTOs.User;
 using SharedUseCase.InterfacesUC;
+using SharedUseCase.InterfacesUC.Purchase;
 
 namespace IntegrationModule.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class PurchasesController : Controller
     {
         IGetAll<PurchaseDto> _getAll;
@@ -12,17 +16,20 @@ namespace IntegrationModule.Controllers
         IAdd<PurchaseDto> _add;
         IUpdate<PurchaseDto> _update;
         IRemove<PurchaseDto> _remove;
+        IClearPurchases _clear;
         public PurchasesController(IGetAll<PurchaseDto> getAll,
                                  IGetById<PurchaseDto> getById,
                                  IAdd<PurchaseDto> add,
                                  IUpdate<PurchaseDto> update,
-                                 IRemove<PurchaseDto> remove)
+                                 IRemove<PurchaseDto> remove,
+                                 IClearPurchases clearPurchases)
         {
             _getAll = getAll;
             _getById = getById;
             _add = add;
             _update = update;
             _remove = remove;
+            _clear = clearPurchases;
         }
 
         [HttpGet]
@@ -104,11 +111,11 @@ namespace IntegrationModule.Controllers
             }
         }
 
-        [HttpDelete]
-        public IActionResult Delete(PurchaseDto pur) {
+        [HttpDelete("clear")]
+        public IActionResult ClearPurchases() {
             try
             {
-                _remove.Execute(pur);
+                _clear.Execute();
                 return NoContent();
             }
             catch (Exception ex)

@@ -27,14 +27,14 @@ namespace BusinessLogic.Entities
 
         public override int generatePoints(Purchase purchase)
         {
-            return calculatePoints(purchase.SubProducts);
+            return calculatePoints(purchase.Products);
         }
 
-        public int calculatePoints(IEnumerable<SubProduct> subProducts)
+        public int calculatePoints(IEnumerable<Product> Products)
         {
             // Verifica si todos los productos de la promoción están en subProducts
-            var subProductsSet = new HashSet<int>(subProducts.Select(sp => sp.Id));
-            bool todosPresentes = PromotionProducts.All(pp => subProductsSet.Contains(pp.Id));
+            var ProductsSet = new HashSet<int>(Products.Select(p => p.Id));
+            bool todosPresentes = PromotionProducts.All(pp => ProductsSet.Contains(pp.Id));
             return todosPresentes ? PointsPerProducts : 0;
         }
     }

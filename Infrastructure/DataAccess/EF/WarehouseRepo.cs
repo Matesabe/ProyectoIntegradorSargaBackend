@@ -1,5 +1,6 @@
 ﻿using BusinessLogic.Entities;
 using BusinessLogic.RepositoriesInterfaces.WarehouseInterface;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,9 +28,9 @@ namespace Infrastructure.DataAccess.EF
             {
                 throw new ArgumentException("El campo 'Name' no puede estar vacío", nameof(obj.Name));
             }
-            if (obj.SubProducts == null || !obj.SubProducts.Any())
+            if (obj.Stocks == null || !obj.Stocks.Any())
             {
-                throw new ArgumentException("El campo 'SubProducts' no puede estar vacío", nameof(obj.SubProducts));
+                throw new ArgumentException("El campo 'SubProducts' no puede estar vacío", nameof(obj.Stocks));
             }
             _context.Warehouses.Add(obj);
             _context.SaveChanges();
@@ -62,7 +63,10 @@ namespace Infrastructure.DataAccess.EF
         {
             try
             {
-                return _context.Warehouses.ToList();
+                IEnumerable<Warehouse> warehouses = _context.Warehouses
+                                    .Include(w => w.Stocks)
+                                    .ToList();
+                return warehouses;
             }
             catch (Exception ex)
             {
@@ -87,7 +91,7 @@ namespace Infrastructure.DataAccess.EF
             }
         }
 
-        public IEnumerable<SubProduct> GetProductsByWarehouseId(int id)
+        public List<WarehouseStock> GetProductsByWarehouseId(int id)
         {
             try
             {
@@ -96,7 +100,7 @@ namespace Infrastructure.DataAccess.EF
                 {
                     throw new KeyNotFoundException("Depósito no encontrado");
                 }
-                return warehouse.SubProducts;
+                return warehouse.Stocks;
             }
             catch (Exception ex)
             {
@@ -116,9 +120,9 @@ namespace Infrastructure.DataAccess.EF
                 {
                     throw new ArgumentException("El campo 'Name' no puede estar vacío", nameof(obj.Name));
                 }
-                if (obj.SubProducts == null || !obj.SubProducts.Any())
+                if (obj.Stocks == null || !obj.Stocks.Any())
                 {
-                    throw new ArgumentException("El campo 'SubProducts' no puede estar vacío", nameof(obj.SubProducts));
+                    throw new ArgumentException("El campo 'SubProducts' no puede estar vacío", nameof(obj.Stocks));
                 }
                 var existingWarehouse = GetById(id);
                 if (existingWarehouse == null)
@@ -126,7 +130,7 @@ namespace Infrastructure.DataAccess.EF
                     throw new KeyNotFoundException("Depósito no encontrado");
                 }
                 existingWarehouse.Name = obj.Name;
-                existingWarehouse.SubProducts = obj.SubProducts;
+                existingWarehouse.Stocks = obj.Stocks;
                 _context.SaveChanges();
             }
             catch (Exception ex)
@@ -169,15 +173,23 @@ namespace Infrastructure.DataAccess.EF
                 {
                     throw new ArgumentException("El stock de sal no puede ser negativo", nameof(stockSal));
                 }
-                var salto = _context.Warehouses.FirstOrDefault(w => w.Name == "Sarga Salto");
+                var salto = _context.Warehouses.Include(w => w.Stocks).FirstOrDefault(w => w.Name == "Sarga Salto");
                 if (salto == null)
                 {
                     throw new KeyNotFoundException("Depósito Sarga Salto no encontrado");
                 }
-                for (global::System.Int32 i = 0; i < stockSal; i++)
+                if (salto.Stocks == null)
                 {
-                    salto.SubProducts.Append(SubProduct);
-                }    
+                    salto.Stocks = new List<WarehouseStock>();
+                }
+                WarehouseStock warehouseStock = new WarehouseStock
+                {
+                    Warehouse = salto,
+                    SubProduct = SubProduct,
+                    Quantity = stockSal
+                };
+                salto.Stocks.Add(warehouseStock);
+                _context.SaveChanges();
             }
             catch (Exception ex)
             {
@@ -193,15 +205,23 @@ namespace Infrastructure.DataAccess.EF
                 {
                     throw new ArgumentException("El stock de sal no puede ser negativo", nameof(stockPeat));
                 }
-                var salto = _context.Warehouses.FirstOrDefault(w => w.Name == "Sarga Peatonal Maldonado");
+                var salto = _context.Warehouses.Include(w => w.Stocks).FirstOrDefault(w => w.Name == "Sarga Peatonal Maldonado");
                 if (salto == null)
                 {
                     throw new KeyNotFoundException("Depósito Sarga Salto no encontrado");
                 }
-                for (global::System.Int32 i = 0; i < stockPeat; i++)
+                if (salto.Stocks == null)
                 {
-                    salto.SubProducts.Append(SubProduct);
+                    salto.Stocks = new List<WarehouseStock>();
                 }
+                WarehouseStock warehouseStock = new WarehouseStock
+                {
+                    Warehouse = salto,
+                    SubProduct = SubProduct,
+                    Quantity = stockPeat
+                };
+                salto.Stocks.Add(warehouseStock);
+                _context.SaveChanges();
             }
             catch (Exception ex)
             {
@@ -217,15 +237,23 @@ namespace Infrastructure.DataAccess.EF
                 {
                     throw new ArgumentException("El stock de sal no puede ser negativo", nameof(stockPay));
                 }
-                var salto = _context.Warehouses.FirstOrDefault(w => w.Name == "Sarga Paysandú");
+                var salto = _context.Warehouses.Include(w => w.Stocks).FirstOrDefault(w => w.Name == "Sarga Paysandú");
                 if (salto == null)
                 {
                     throw new KeyNotFoundException("Depósito Sarga Salto no encontrado");
                 }
-                for (global::System.Int32 i = 0; i < stockPay; i++)
+                if (salto.Stocks == null)
                 {
-                    salto.SubProducts.Append(SubProduct);
+                    salto.Stocks = new List<WarehouseStock>();
                 }
+                WarehouseStock warehouseStock = new WarehouseStock
+                {
+                    Warehouse = salto,
+                    SubProduct = SubProduct,
+                    Quantity = stockPay
+                };
+                salto.Stocks.Add(warehouseStock);
+                _context.SaveChanges();
             }
             catch (Exception ex)
             {
@@ -241,15 +269,23 @@ namespace Infrastructure.DataAccess.EF
                 {
                     throw new ArgumentException("El stock de sal no puede ser negativo", nameof(stockCol));
                 }
-                var salto = _context.Warehouses.FirstOrDefault(w => w.Name == "Sarga Colonia");
+                var salto = _context.Warehouses.Include(w => w.Stocks).FirstOrDefault(w => w.Name == "Sarga Colonia");
                 if (salto == null)
                 {
                     throw new KeyNotFoundException("Depósito Sarga Salto no encontrado");
                 }
-                for (global::System.Int32 i = 0; i < stockCol; i++)
+                if (salto.Stocks == null)
                 {
-                    salto.SubProducts.Append(SubProduct);
+                    salto.Stocks = new List<WarehouseStock>();
                 }
+                WarehouseStock warehouseStock = new WarehouseStock
+                {
+                    Warehouse = salto,
+                    SubProduct = SubProduct,
+                    Quantity = stockCol
+                };
+                salto.Stocks.Add(warehouseStock);
+                _context.SaveChanges();
             }
             catch (Exception ex)
             {
@@ -265,15 +301,23 @@ namespace Infrastructure.DataAccess.EF
                 {
                     throw new ArgumentException("El stock de sal no puede ser negativo", nameof(stockPdelE));
                 }
-                var salto = _context.Warehouses.FirstOrDefault(w => w.Name == "Sarga Punta del Este");
+                var salto = _context.Warehouses.Include(w => w.Stocks).FirstOrDefault(w => w.Name == "Sarga Punta del Este");
                 if (salto == null)
                 {
                     throw new KeyNotFoundException("Depósito Sarga Salto no encontrado");
                 }
-                for (global::System.Int32 i = 0; i < stockPdelE; i++)
+                if (salto.Stocks == null)
                 {
-                    salto.SubProducts.Append(SubProduct);
+                    salto.Stocks = new List<WarehouseStock>();
                 }
+                WarehouseStock warehouseStock = new WarehouseStock
+                {
+                    Warehouse = salto,
+                    SubProduct = SubProduct,
+                    Quantity = stockPdelE
+                };
+                salto.Stocks.Add(warehouseStock);
+                _context.SaveChanges();
             }
             catch (Exception ex)
             {
@@ -288,10 +332,10 @@ namespace Infrastructure.DataAccess.EF
             {
                 foreach (var warehouse in warehouses)
                 {
-                    if (warehouse.SubProducts != null && warehouse.SubProducts.Any())
+                    if (warehouse.Stocks != null && warehouse.Stocks.Any())
                     {
                         // Elimina todos los subproductos del depósito
-                        warehouse.SubProducts = new List<SubProduct>();
+                        warehouse.Stocks = new List<WarehouseStock>();
                     }
                 }
                 _context.SaveChanges();

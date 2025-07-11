@@ -3,6 +3,7 @@ using SharedUseCase.DTOs.Product;
 using SharedUseCase.InterfacesUC.Product;
 using SharedUseCase.InterfacesUC;
 using SharedUseCase.InterfacesUC.Warehouse;
+using SharedUseCase.DTOs.Warehouse;
 
 namespace IntegrationModule.Controllers
 {
@@ -12,12 +13,32 @@ namespace IntegrationModule.Controllers
     {
         IClearStocks _clearStocks;
         IUpdateStocks _updateStocks;
+        IGetAll<WarehouseDto> _getAll;
 
         public WarehousesController(IClearStocks clearStocks,
-                                    IUpdateStocks updateStocks)
+                                    IUpdateStocks updateStocks,
+                                    IGetAll<WarehouseDto> getAll)
         {
          _clearStocks = clearStocks;
          _updateStocks = updateStocks;
+         _getAll = getAll;
+        }
+
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            try
+            {
+            var warehouses = _getAll.Execute();
+            return Ok(warehouses);
+            }
+            catch (Exception ex)
+            {
+            var errorMessage = ex.InnerException != null
+                ? $"{ex.Message} - InnerException: {ex.InnerException.Message}"
+                : ex.Message;
+            return BadRequest(new { error = errorMessage});
+            }
         }
 
         [HttpPut("clear-stocks")]

@@ -9,42 +9,41 @@ namespace BusinessLogic.Entities
     public class Purchase
     {
         public Purchase() { }
-        public Purchase(int id, Client client, double amount, int pointsGenerated, IEnumerable<SubProduct> subProducts)
+        public Purchase(int id, Client client, double amount, int pointsGenerated, IEnumerable<Product> products)
         {
             Id = id;
             Client = client;
             Amount = amount; 
-            SubProducts = subProducts;
+            Products = products;
             PointsGenerated = pointsGenerated;
         }
         public int Id { get; set; }
         public Client Client { get; set; }
         public double Amount { get; set; }
         public int PointsGenerated { get; set; }
-        public Warehouse Warehouse { get; set; } // Assuming a Purchase is associated with a Warehouse
-        public IEnumerable<SubProduct> SubProducts { get; set; } 
+        public IEnumerable<Product> Products { get; set; } 
         public bool AppliesPromotions { get; set; } = false; // Indicates if promotions apply to this purchase
 
-        public void AddSubProduct(SubProduct subProduct)
+        public void AddProduct(Product product)
         {
-            if (SubProducts == null)
+            if (Products == null)
             {
-                SubProducts = new List<SubProduct>();
+                Products = new List<Product>();
             }
-            ((List<SubProduct>)SubProducts).Add(subProduct);
+            ((List<Product>)Products).Add(product);
         }
-        public void RemoveSubProduct(SubProduct subProduct)
+        public void RemoveSubProduct(Product Product)
         {
-            if (SubProducts != null && SubProducts.Contains(subProduct))
+            if (Products != null && Products.Contains(Product))
             {
-                ((List<SubProduct>)SubProducts).Remove(subProduct);
+                ((List<Product>)Products).Remove(Product);
             }
         }
         public void ClearSubProducts()
         {
-            if (SubProducts != null)
+            if (Products != null)
             {
-                ((List<SubProduct>)SubProducts).Clear();
+                ((List<SubProduct>)Products).Clear();
             }
         }
     }

@@ -25,7 +25,7 @@ namespace AppLogic.UseCase.UserUC
         {
             try
             {
-                var user = _repo.GetByEmail(ci);
+                var user = _repo.GetByCi(ci);
                 if (user == null)
                     return null;
 

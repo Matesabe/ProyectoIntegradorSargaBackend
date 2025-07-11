@@ -16,14 +16,14 @@ namespace AppLogic.Mapper
         {
             return new Warehouse(dto.Id,
                                     dto.Name,
-                                    SubproductMapper.FromListDtoToProduct(dto.SubProducts));
+                                    WarehouseStockMapper.FromListDto(dto.Stocks));
         }
 
-        public static WarehouseDto ToDto(Warehouse usuario)
+        public static WarehouseDto ToDto(Warehouse warehouse)
         {
-            return new WarehouseDto(usuario.Id,
-                                    usuario.Name,
-                                    SubproductMapper.ToListDto(usuario.SubProducts).ToList());
+            return new WarehouseDto(warehouse.Id,
+                                    warehouse.Name,
+                                    WarehouseStockMapper.ToListDto(warehouse.Stocks));
         }
 
 

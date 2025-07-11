@@ -1,4 +1,5 @@
 ﻿using SharedUseCase.DTOs.Product;
+using SharedUseCase.DTOs.WarehouseStock;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace SharedUseCase.DTOs.Warehouse
 {
     public record WarehouseDto(int Id,
                               string Name,
-                              List<SubProductDto> SubProducts)
+                              List<WarehouseStockDto> Stocks)
     {
     }
 }

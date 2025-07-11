@@ -41,7 +41,7 @@ namespace AppLogic.Mapper
         }
 
 
-        public static IEnumerable<ProductDto> ToListDto(IEnumerable<Product> products)
+        public static List<ProductDto> ToListDto(IEnumerable<Product> products)
         {
             List<ProductDto> productsDto = new List<ProductDto>();
             foreach (var item in products)
@@ -51,7 +51,7 @@ namespace AppLogic.Mapper
             return productsDto;
         }
 
-        public static IEnumerable<Product> FromListDtoToProduct(IEnumerable<ProductDto> productsDto)
+        public static List<Product> FromListDtoToProduct(IEnumerable<ProductDto> productsDto)
         {
             List<Product> products = new List<Product>();
             foreach (var item in productsDto)

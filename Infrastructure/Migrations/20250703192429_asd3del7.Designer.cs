@@ -4,6 +4,7 @@ using Infrastructure.DataAccess.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(SargaContext))]
-    partial class SargaContextModelSnapshot : ModelSnapshot
+    [Migration("20250703192429_asd3del7")]
+    partial class asd3del7
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -67,9 +70,6 @@ namespace Infrastructure.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
-                    b.Property<int?>("PurchaseId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Season")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -87,8 +87,6 @@ namespace Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PurchaseId");
 
                     b.ToTable("Products");
                 });
@@ -113,9 +111,14 @@ namespace Infrastructure.Migrations
                     b.Property<int>("PointsGenerated")
                         .HasColumnType("int");
 
+                    b.Property<int>("WarehouseId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ClientId");
+
+                    b.HasIndex("WarehouseId");
 
                     b.ToTable("Purchases");
                 });
@@ -298,6 +301,9 @@ namespace Infrastructure.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("PurchaseId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("PurchasePromotionProductsId")
                         .HasColumnType("int");
 
@@ -316,15 +322,22 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("WarehouseId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Year")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("PurchaseId");
+
                     b.HasIndex("PurchasePromotionProductsId");
 
                     b.HasIndex("RedemptionId");
+
+                    b.HasIndex("WarehouseId");
 
                     b.ToTable("SubProducts");
                 });
@@ -383,24 +396,6 @@ namespace Infrastructure.Migrations
                     b.ToTable("Warehouses");
                 });
 
-            modelBuilder.Entity("BusinessLogic.Entities.WarehouseStock", b =>
-                {
-                    b.Property<int>("WarehouseId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SubProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.HasKey("WarehouseId", "SubProductId");
-
-                    b.HasIndex("SubProductId");
-
-                    b.ToTable("WarehouseStock");
-                });
-
             modelBuilder.Entity("BusinessLogic.Entities.Administrator", b =>
                 {
                     b.HasBaseType("BusinessLogic.Entities.User");
@@ -435,13 +430,6 @@ namespace Infrastructure.Migrations
                         .HasForeignKey("SubProductId");
                 });
 
-            modelBuilder.Entity("BusinessLogic.Entities.Product", b =>
-                {
-                    b.HasOne("BusinessLogic.Entities.Purchase", null)
-                        .WithMany("Products")
-                        .HasForeignKey("PurchaseId");
-                });
-
             modelBuilder.Entity("BusinessLogic.Entities.Purchase", b =>
                 {
                     b.HasOne("BusinessLogic.Entities.Client", "Client")
@@ -450,7 +438,15 @@ namespace Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("BusinessLogic.Entities.Warehouse", "Warehouse")
+                        .WithMany()
+                        .HasForeignKey("WarehouseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Client");
+
+                    b.Navigation("Warehouse");
                 });
 
             modelBuilder.Entity("BusinessLogic.Entities.Redemption", b =>
@@ -466,6 +462,10 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("BusinessLogic.Entities.SubProduct", b =>
                 {
+                    b.HasOne("BusinessLogic.Entities.Purchase", null)
+                        .WithMany("SubProducts")
+                        .HasForeignKey("PurchaseId");
+
                     b.HasOne("BusinessLogic.Entities.PurchasePromotionProducts", null)
                         .WithMany("PromotionProducts")
                         .HasForeignKey("PurchasePromotionProductsId");
@@ -473,6 +473,10 @@ namespace Infrastructure.Migrations
                     b.HasOne("BusinessLogic.Entities.Redemption", null)
                         .WithMany("SubProducts")
                         .HasForeignKey("RedemptionId");
+
+                    b.HasOne("BusinessLogic.Entities.Warehouse", null)
+                        .WithMany("SubProducts")
+                        .HasForeignKey("WarehouseId");
                 });
 
             modelBuilder.Entity("BusinessLogic.Entities.User", b =>
@@ -541,28 +545,9 @@ namespace Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("BusinessLogic.Entities.WarehouseStock", b =>
-                {
-                    b.HasOne("BusinessLogic.Entities.SubProduct", "SubProduct")
-                        .WithMany("Stocks")
-                        .HasForeignKey("SubProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BusinessLogic.Entities.Warehouse", "Warehouse")
-                        .WithMany("Stocks")
-                        .HasForeignKey("WarehouseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("SubProduct");
-
-                    b.Navigation("Warehouse");
-                });
-
             modelBuilder.Entity("BusinessLogic.Entities.Purchase", b =>
                 {
-                    b.Navigation("Products");
+                    b.Navigation("SubProducts");
                 });
 
             modelBuilder.Entity("BusinessLogic.Entities.PurchasePromotionProducts", b =>
@@ -578,13 +563,11 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("BusinessLogic.Entities.SubProduct", b =>
                 {
                     b.Navigation("Images");
-
-                    b.Navigation("Stocks");
                 });
 
             modelBuilder.Entity("BusinessLogic.Entities.Warehouse", b =>
                 {
-                    b.Navigation("Stocks");
+                    b.Navigation("SubProducts");
                 });
 #pragma warning restore 612, 618
         }

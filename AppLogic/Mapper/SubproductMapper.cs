@@ -34,7 +34,7 @@ namespace AppLogic.Mapper
         public static SubProductDto ToDto(SubProduct subproduct)
         {
             return new SubProductDto(
-                subproduct.Id, subproduct.ProductId, subproduct.productCode, subproduct.Name, subproduct.Price, subproduct.Color, subproduct.Size, subproduct.Season, subproduct.Year, subproduct.Images, subproduct.Genre, subproduct.Brand, subproduct.Type, null, null, null, null, null);
+                subproduct.Id, subproduct.ProductId, subproduct.Code, subproduct.Name, subproduct.Price, subproduct.Color, subproduct.Size, subproduct.Season, subproduct.Year, subproduct.Images, subproduct.Genre, subproduct.Brand, subproduct.Type, null, null, null, null, null);
         }
 
         public static SubProductDto changeId(SubProductDto subId, SubProductDto sub)
@@ -71,7 +71,7 @@ namespace AppLogic.Mapper
             return productsDto;
         }
 
-        public static IEnumerable<SubProduct> FromListDtoToProduct(IEnumerable<SubProductDto> productsDto)
+        public static List<SubProduct> FromListDtoToProduct(IEnumerable<SubProductDto> productsDto)
         {
             List<SubProduct> products = new List<SubProduct>();
             foreach (var item in productsDto)
@@ -79,6 +79,31 @@ namespace AppLogic.Mapper
                 products.Add(FromDto(item));
             }
             return products;
+        }
+
+        public static SubProductDto MapStocksToSubProductDto(SubProductDto newSub, int stockPdelE, int stockCol, int stockPay, int stockPeat, int stockSal)
+        {
+            SubProductDto sub = new SubProductDto(
+                 Id: newSub.Id,
+                 ProductId: newSub.ProductId,
+                 productCode: newSub.productCode,
+                 Name: newSub.Name,
+                 Price: newSub.Price,
+                 Color: newSub.Color,
+                 Size: newSub.Size,
+                 Season: newSub.Season,
+                 Year: newSub.Year,
+                 Images: newSub.Images,
+                 genre: newSub.genre,
+                 brand: newSub.brand,
+                 type: newSub.type,
+                 stockPdelE: stockPdelE > 0 ? stockPdelE : 0,
+                 stockCol: stockCol > 0 ? stockCol : 0,
+                 stockPay: stockPay > 0 ? stockPay : 0,
+                 stockPeat: stockPeat > 0 ? stockPeat : 0,
+                 stockSal: stockSal > 0 ? stockSal : 0
+                );
+            return sub;
         }
     }
 }
