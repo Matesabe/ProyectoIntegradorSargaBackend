@@ -10,32 +10,36 @@ using System.Threading.Tasks;
 
 namespace MonitoreoDeArchivos.ApiCalls
 {
-    public class purchasesCalls{
-        public static async Task ClearPurchases(){
+    public class purchasesCalls
+    {
+        public static void ClearPurchases()
+        {
             using var client = new HttpClient();
             var url = "http://localhost:5246/api/purchases/clear";
-            var response = await client.DeleteAsync(url);
+            var response = client.DeleteAsync(url).GetAwaiter().GetResult();
             if (!response.IsSuccessStatusCode)
             {
-                // Maneja el error según sea necesario
                 throw new Exception($"Error al limpiar las ventas: {response.StatusCode}");
             }
         }
 
-        public static async Task<List<PurchaseDto>?> GetAllPurchases()
+        public static List<PurchaseDto>? GetAllPurchases()
         {
             try
             {
                 using var client = new HttpClient();
                 var url = "http://localhost:5246/api/purchases";
-                var response = await client.GetAsync(url);
+                var response = client.GetAsync(url).GetAwaiter().GetResult();
 
                 if (!response.IsSuccessStatusCode)
                 {
                     throw new Exception($"Error al obtener las compras: {response.StatusCode}");
                 }
-                var content = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<List<PurchaseDto>>(content);
+                var content = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                return JsonSerializer.Deserialize<List<PurchaseDto>>(content, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
             }
             catch (Exception ex)
             {
@@ -44,20 +48,25 @@ namespace MonitoreoDeArchivos.ApiCalls
             }
         }
 
-        public static async void updatePurchase(PurchaseDto updatedPurchase)
+        public static void updatePurchase(PurchaseDto updatedPurchase)
         {
             try
             {
                 using var client = new HttpClient();
                 var url = $"http://localhost:5246/api/purchases/{updatedPurchase.Id}";
-                var json = JsonSerializer.Serialize(updatedPurchase);
-                string contentString = FlattenPurchaseDto(updatedPurchase); // Utiliza el método para aplanar el DTO
-                var content = new StringContent(contentString, Encoding.UTF8, "application/json");
-                var response = await client.PutAsync(url, content);
-                
+
+                string json = JsonSerializer.Serialize(updatedPurchase, new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                });
+
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var response = client.PutAsync(url, content).GetAwaiter().GetResult();
+
                 if (!response.IsSuccessStatusCode)
                 {
-                    throw new Exception($"Error al actualizar la compra: {response.StatusCode}");
+                    string errorResponse = response.Content.ReadAsStringAsync().Result;
+                    throw new Exception($"Error al actualizar la compra: {response.StatusCode} - {errorResponse}");
                 }
             }
             catch (Exception ex)
@@ -66,60 +75,39 @@ namespace MonitoreoDeArchivos.ApiCalls
             }
         }
 
-        public static string FlattenPurchaseDto(PurchaseDto pur)
-        {
-            var dict = new Dictionary<string, object>
-            {
-                { "Id", pur.Id },
-                { "ClientId", pur.Client.Id },
-                { "Amount", pur.Amount },
-                { "PointsGenerated", pur.PointsGenerated },
-            };
-            // Aplanar la lista de productos
-            var products = pur.Products.Select(p => new
-            {
-                Id = p.id, 
-                Name = p.name,
-                Price = p.price,
-            }).ToList();
-            dict.Add("Products", products);
-            return JsonSerializer.Serialize(dict);
-        }
-
-        public static async Task<string> AddSubPurchaseAsync(PurchaseDto pur)
+        public static string AddSubPurchase(PurchaseDto pur)
         {
             using var client = new HttpClient();
-            var url = "http://localhost:5246/api/purchases"; // Verifica que sea correcto
+            var url = "http://localhost:5246/api/purchases";
             var json = JsonSerializer.Serialize(pur);
-
-            /*string contentString = FlattenPurchaseDto(pur); */// Utiliza el método para aplanar el DTO
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await client.PostAsync(url, content);
-
-            // Para depuración, puedes leer el contenido de la respuesta
-            var responseBody = await response.Content.ReadAsStringAsync();
+            var response = client.PostAsync(url, content).GetAwaiter().GetResult();
+            var responseBody = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
 
             if (!response.IsSuccessStatusCode)
             {
                 throw new Exception($"Error al agregar la venta: {response.StatusCode} - {responseBody}");
             }
-            return responseBody; // Devuelve la respuesta de la API
+            return responseBody;
         }
 
-        public static async Task<PurchaseDto> getPurchaseById(int id)
+        public static PurchaseDto? getPurchaseById(int id)
         {
             try
             {
                 using var client = new HttpClient();
                 var url = $"http://localhost:5246/api/purchases/{id}";
-                var response = await client.GetAsync(url);
+                var response = client.GetAsync(url).GetAwaiter().GetResult();
                 if (!response.IsSuccessStatusCode)
                 {
                     throw new Exception($"Error al obtener la compra por ID: {response.StatusCode}");
                 }
-                var content = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<PurchaseDto>(content);
+                var content = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                return JsonSerializer.Deserialize<PurchaseDto>(content, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
             }
             catch (Exception ex)
             {

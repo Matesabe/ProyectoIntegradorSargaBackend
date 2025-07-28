@@ -1,5 +1,6 @@
 ﻿using BusinessLogic.Entities;
 using BusinessLogic.RepositoriesInterfaces.PurchaseInterface;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,10 +32,16 @@ namespace Infrastructure.DataAccess.EF
                 {
                     throw new ArgumentException("El campo 'Amount' debe ser mayor que cero", nameof(obj.Amount));
                 }
-                if (obj.Products == null || !obj.Products.Any())
+                if (obj.PurchaseProducts == null || !obj.PurchaseProducts.Any())
                 {
-                    throw new ArgumentException("El campo 'SubProducts' no puede estar vacío", nameof(obj.Products));
+                    throw new ArgumentException("El campo 'PurchaseProducts' no puede estar vacío", nameof(obj.PurchaseProducts));
                 }
+
+                //setear recurrenceCount de cliente
+                obj.Client = _context.Clients.FirstOrDefault(c => c.Id == obj.Client.Id) ?? throw new InvalidOperationException("Cliente no encontrado.");
+                int cantidadComprasCliente = GetPurchaseCountByClientId(obj.Client.Id);
+                obj.Client.RecurrenceCount = cantidadComprasCliente;
+
                 SetPointsToPurchase(obj);
                 _context.Purchases.Add(obj);
                 SetPointsToUser(obj.Client.Id, obj.PointsGenerated);
@@ -52,21 +59,24 @@ namespace Infrastructure.DataAccess.EF
             try
             {
                 int pointsGenerated = 0;
+                obj.PointsGenerated = 0;
 
-                // Combine all active promotions into a single list
+                // Combina todas las promociones activas en una sola lista
                 var activePromotions = _context.PurchasePromotionsDate.Where(p => p.IsActive).ToList()
                     .Cast<PurchasePromotion>()
-                    .Concat(_context.PurchasePromotionsProducts.Where(p => p.IsActive).ToList())
+                    .Concat(_context.PurchasePromotionsProducts
+                        .Include(pp => pp.ProductPromotions) // Incluye la lista de productos de la promoción
+                        .Where(p => p.IsActive).ToList())
                     .Concat(_context.PurchasePromotionsRecurrence.Where(p => p.IsActive).ToList())
                     .Concat(_context.PurchasePromotionsAmount.Where(p => p.IsActive).ToList())
                     .ToList();
 
-                // Apply each promotion to the purchase
+                // Aplica cada promoción a la compra
                 foreach (var promotion in activePromotions)
                 {
                     pointsGenerated = promotion.generatePoints(obj);
                     obj.PointsGenerated += pointsGenerated;
-                    //plantearse si pueden ser acumulables o no
+                    // plantearse si pueden ser acumulables o no
                 }
             }
             catch (Exception ex)
@@ -97,21 +107,25 @@ namespace Infrastructure.DataAccess.EF
 
         public IEnumerable<Purchase> GetAll()
         {
-            try
-            {
-                return _context.Purchases.ToList();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error al obtener todas las compras: " + ex.Message, ex);
-            }
+                try
+                {
+                    // Incluye los datos del cliente y los datos completos de los productos
+                    return _context.Purchases
+                        .Include(p => p.Client)
+                        .Include(p => p.PurchaseProducts)
+                        .ToList();
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al obtener todas las compras: " + ex.Message, ex);
+                }
         }
 
         public Purchase GetById(int id)
         {
             try
             {
-                var purchase = _context.Purchases.Find(id);
+                var purchase = _context.Purchases.Include(P => P.Client).Include(p => p.PurchaseProducts).FirstOrDefault(p => p.Id==id);
                 if (purchase == null)
                 {
                     throw new KeyNotFoundException("Compra no encontrada");
@@ -204,9 +218,9 @@ namespace Infrastructure.DataAccess.EF
                 {
                     throw new ArgumentException("El campo 'Amount' debe ser mayor que cero", nameof(obj.Amount));
                 }
-                if (obj.Products == null || !obj.Products.Any())
+                if (obj.PurchaseProducts == null || !obj.PurchaseProducts.Any())
                 {
-                    throw new ArgumentException("El campo 'SubProducts' no puede estar vacío", nameof(obj.Products));
+                    throw new ArgumentException("El campo 'PurchaseProducts' no puede estar vacío", nameof(obj.PurchaseProducts));
                 }
                 var existingPurchase = GetById(id);
                 if (existingPurchase == null)
@@ -215,14 +229,14 @@ namespace Infrastructure.DataAccess.EF
                 }
                 // Restar los puntos generados de la compra anterior a la modificación para luego agregarlos desde la modificada
                 SubstractPointsFromUser(existingPurchase.Client.Id, obj.PointsGenerated * -1);
-
-                // Actualizar los campos necesarios
-                existingPurchase.Client = obj.Client;
-                existingPurchase.Amount = obj.Amount;
-                existingPurchase.Products = obj.Products;
                 SetPointsToPurchase(existingPurchase);
                 SetPointsToUser(existingPurchase.Client.Id, existingPurchase.PointsGenerated);
 
+                // Actualizar los campos necesarios
+                existingPurchase.Client = _context.Clients.FirstOrDefault(c => c.Id == obj.Client.Id) ?? throw new InvalidOperationException("Cliente no encontrado.");
+                existingPurchase.Amount = obj.Amount;
+                existingPurchase.PurchaseProducts = obj.PurchaseProducts;
+                
                 _context.Purchases.Update(existingPurchase);
                 _context.SaveChanges();
             }
@@ -230,7 +244,6 @@ namespace Infrastructure.DataAccess.EF
             {
                 throw new Exception("Error al actualizar la compra: " + ex.Message, ex);
             }
-
         }
 
         public void Clear()
@@ -246,6 +259,25 @@ namespace Infrastructure.DataAccess.EF
             catch (Exception ex)
             {
                 throw new Exception("Error al limpiar las ventas: " + ex.Message, ex);
+            }
+        }
+
+        public int GetPurchaseCountByClientId(int clientId)
+        {
+            try
+            {
+                var sixMonthsAgo = DateTime.Now.AddMonths(-6);
+                return _context.Purchases.Count(
+                    p => p.Client != null
+                        && p.Client.Id == clientId
+                        && p.PurchaseProducts != null
+                        && p.PurchaseProducts.Any()
+                        && p.Date >= sixMonthsAgo
+                );
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al contar las compras por ID de cliente: " + ex.Message, ex);
             }
         }
     }

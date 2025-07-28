@@ -20,6 +20,7 @@ namespace BusinessLogic.Entities
             Genre = genre; 
             Brand = brand;
             Type = type;
+            PurchaseProducts = new List<PurchaseProduct>();
         }
 
         protected Product() { }
@@ -31,6 +32,8 @@ namespace BusinessLogic.Entities
         public string Year { get; set; }
         public string Genre { get; set; } 
         public string Brand { get; set; }
-        public string Type { get; set; } 
+        public string Type { get; set; }
+        public List<PurchaseProduct> PurchaseProducts { get; set; } = new();
+        public List<ProductPromotion> ProductPromotions { get; set; }
     }
 }

@@ -22,6 +22,39 @@ namespace Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("BusinessLogic.Entities.Entry", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ErrorMessage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ReportId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Type")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReportId");
+
+                    b.ToTable("Entry");
+                });
+
             modelBuilder.Entity("BusinessLogic.Entities.Image", b =>
                 {
                     b.Property<int>("id")
@@ -67,9 +100,6 @@ namespace Infrastructure.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
-                    b.Property<int?>("PurchaseId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Season")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -88,9 +118,22 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PurchaseId");
-
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("BusinessLogic.Entities.ProductPromotion", b =>
+                {
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PurchasePromotionProductsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductId", "PurchasePromotionProductsId");
+
+                    b.HasIndex("PurchasePromotionProductsId");
+
+                    b.ToTable("ProductPromotion");
                 });
 
             modelBuilder.Entity("BusinessLogic.Entities.Purchase", b =>
@@ -110,6 +153,9 @@ namespace Infrastructure.Migrations
                     b.Property<int>("ClientId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("PointsGenerated")
                         .HasColumnType("int");
 
@@ -118,6 +164,24 @@ namespace Infrastructure.Migrations
                     b.HasIndex("ClientId");
 
                     b.ToTable("Purchases");
+                });
+
+            modelBuilder.Entity("BusinessLogic.Entities.PurchaseProduct", b =>
+                {
+                    b.Property<int>("PurchaseId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("PurchaseId", "ProductId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("PurchaseProduct");
                 });
 
             modelBuilder.Entity("BusinessLogic.Entities.PurchasePromotionAmount", b =>
@@ -264,6 +328,32 @@ namespace Infrastructure.Migrations
                     b.ToTable("Redemptions");
                 });
 
+            modelBuilder.Entity("BusinessLogic.Entities.Report", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+
+                    b.Property<DateTime>("date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("procecedLines")
+                        .HasColumnType("int");
+
+                    b.Property<int>("totalLines")
+                        .HasColumnType("int");
+
+                    b.Property<string>("type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("id");
+
+                    b.ToTable("Reports");
+                });
+
             modelBuilder.Entity("BusinessLogic.Entities.SubProduct", b =>
                 {
                     b.Property<int>("Id")
@@ -298,9 +388,6 @@ namespace Infrastructure.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("PurchasePromotionProductsId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("RedemptionId")
                         .HasColumnType("int");
 
@@ -321,8 +408,6 @@ namespace Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PurchasePromotionProductsId");
 
                     b.HasIndex("RedemptionId");
 
@@ -428,6 +513,17 @@ namespace Infrastructure.Migrations
                     b.HasDiscriminator().HasValue("Seller");
                 });
 
+            modelBuilder.Entity("BusinessLogic.Entities.Entry", b =>
+                {
+                    b.HasOne("BusinessLogic.Entities.Report", "Report")
+                        .WithMany("entries")
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Report");
+                });
+
             modelBuilder.Entity("BusinessLogic.Entities.Image", b =>
                 {
                     b.HasOne("BusinessLogic.Entities.SubProduct", null)
@@ -435,11 +531,23 @@ namespace Infrastructure.Migrations
                         .HasForeignKey("SubProductId");
                 });
 
-            modelBuilder.Entity("BusinessLogic.Entities.Product", b =>
+            modelBuilder.Entity("BusinessLogic.Entities.ProductPromotion", b =>
                 {
-                    b.HasOne("BusinessLogic.Entities.Purchase", null)
-                        .WithMany("Products")
-                        .HasForeignKey("PurchaseId");
+                    b.HasOne("BusinessLogic.Entities.Product", "Product")
+                        .WithMany("ProductPromotions")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BusinessLogic.Entities.PurchasePromotionProducts", "Promotion")
+                        .WithMany("ProductPromotions")
+                        .HasForeignKey("PurchasePromotionProductsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Promotion");
                 });
 
             modelBuilder.Entity("BusinessLogic.Entities.Purchase", b =>
@@ -451,6 +559,25 @@ namespace Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Client");
+                });
+
+            modelBuilder.Entity("BusinessLogic.Entities.PurchaseProduct", b =>
+                {
+                    b.HasOne("BusinessLogic.Entities.Product", "Product")
+                        .WithMany("PurchaseProducts")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BusinessLogic.Entities.Purchase", "Purchase")
+                        .WithMany("PurchaseProducts")
+                        .HasForeignKey("PurchaseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Purchase");
                 });
 
             modelBuilder.Entity("BusinessLogic.Entities.Redemption", b =>
@@ -466,10 +593,6 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("BusinessLogic.Entities.SubProduct", b =>
                 {
-                    b.HasOne("BusinessLogic.Entities.PurchasePromotionProducts", null)
-                        .WithMany("PromotionProducts")
-                        .HasForeignKey("PurchasePromotionProductsId");
-
                     b.HasOne("BusinessLogic.Entities.Redemption", null)
                         .WithMany("SubProducts")
                         .HasForeignKey("RedemptionId");
@@ -560,19 +683,31 @@ namespace Infrastructure.Migrations
                     b.Navigation("Warehouse");
                 });
 
+            modelBuilder.Entity("BusinessLogic.Entities.Product", b =>
+                {
+                    b.Navigation("ProductPromotions");
+
+                    b.Navigation("PurchaseProducts");
+                });
+
             modelBuilder.Entity("BusinessLogic.Entities.Purchase", b =>
                 {
-                    b.Navigation("Products");
+                    b.Navigation("PurchaseProducts");
                 });
 
             modelBuilder.Entity("BusinessLogic.Entities.PurchasePromotionProducts", b =>
                 {
-                    b.Navigation("PromotionProducts");
+                    b.Navigation("ProductPromotions");
                 });
 
             modelBuilder.Entity("BusinessLogic.Entities.Redemption", b =>
                 {
                     b.Navigation("SubProducts");
+                });
+
+            modelBuilder.Entity("BusinessLogic.Entities.Report", b =>
+                {
+                    b.Navigation("entries");
                 });
 
             modelBuilder.Entity("BusinessLogic.Entities.SubProduct", b =>

@@ -10,4 +10,8 @@
     <ProjectReference Include="..\LogicaNegocio\BusinessLogic.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="InterfacesUC\Report\" />
+  </ItemGroup>
+
 </Project>

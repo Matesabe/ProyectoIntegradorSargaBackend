@@ -17,6 +17,7 @@ namespace IntegrationModule.Controllers
         IRemove<SubProductDto> _remove;
         IClearSubProducts _clearSubProducts;
         IGetByProductCode<ProductDto> _getByProductCode;
+        IGetByProductCode<SubProductDto> _getSubsByProductCode;
         public SubProductsController(IGetAll<SubProductDto> getAll,
                                  IGetAll<ProductDto> getAllProducts,
                                  IGetById<SubProductDto> getById,
@@ -24,7 +25,8 @@ namespace IntegrationModule.Controllers
                                  IUpdate<SubProductDto> update,
                                  IRemove<SubProductDto> remove,
                                  IClearSubProducts clearSubProducts,
-                                 IGetByProductCode<ProductDto> getProductByCode)
+                                 IGetByProductCode<ProductDto> getProductByCode,
+                                 IGetByProductCode<SubProductDto> getSubsByProductCode)
         {
             _getAll = getAll;
             _getAllProducts = getAllProducts;
@@ -34,6 +36,8 @@ namespace IntegrationModule.Controllers
             _remove = remove;
             _clearSubProducts = clearSubProducts;
             _getByProductCode = getProductByCode;
+            _getSubsByProductCode = getSubsByProductCode;
+
         }
 
         [HttpGet]
@@ -168,6 +172,26 @@ namespace IntegrationModule.Controllers
             }
         }
 
+        [HttpGet("byProductCode/{code}")]
+        public IActionResult GetSubProductsByProductCode(string code) {
+            try
+            {
+                var products = _getSubsByProductCode.Execute(code);
+                if (products == null || !products.Any())
+                {
+                    return NotFound();
+                }
+                return Ok(products);
+            }
+            catch (Exception ex)
+            {
+                var errorMessage = ex.InnerException != null
+                    ? $"{ex.Message} - InnerException: {ex.InnerException.Message}"
+                    : ex.Message;
+                return BadRequest(errorMessage);
+            }
+        }
+
         [HttpGet("products/{code}")]
         public IActionResult GetProductByCode(string code)
         {
@@ -188,5 +212,6 @@ namespace IntegrationModule.Controllers
                 return BadRequest(errorMessage);
             }
         }
+
     }
 }

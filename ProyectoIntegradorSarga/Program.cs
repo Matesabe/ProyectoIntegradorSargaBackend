@@ -3,6 +3,7 @@ using AppLogic.UseCase.ProductUC;
 using AppLogic.UseCase.PromotionUC;
 using AppLogic.UseCase.PurchaseUC;
 using AppLogic.UseCase.RedemptionUC;
+using AppLogic.UseCase.ReportUC;
 using AppLogic.UseCase.User;
 using AppLogic.UseCase.UserUC;
 using BusinessLogic.RepositoriesInterfaces;
@@ -10,6 +11,7 @@ using BusinessLogic.RepositoriesInterfaces.ProductsInterface;
 using BusinessLogic.RepositoriesInterfaces.PromotionInterface;
 using BusinessLogic.RepositoriesInterfaces.PurchaseInterface;
 using BusinessLogic.RepositoriesInterfaces.RedemptionInterface;
+using BusinessLogic.RepositoriesInterfaces.ReportsInterface;
 using BusinessLogic.RepositoriesInterfaces.SubProductInterface;
 using Infrastructure.DataAccess.EF;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -20,6 +22,7 @@ using SharedUseCase.DTOs.Product;
 using SharedUseCase.DTOs.Promotion;
 using SharedUseCase.DTOs.Purchase;
 using SharedUseCase.DTOs.Redemption;
+using SharedUseCase.DTOs.Reports;
 using SharedUseCase.DTOs.User;
 using SharedUseCase.InterfacesUC;
 using SharedUseCase.InterfacesUC.Product;
@@ -80,6 +83,9 @@ builder.Services.AddScoped<IGetById<RedemptionDto>, GetByIdRedemption>();
 builder.Services.AddScoped<IGetRedemptionByUserId<RedemptionDto>, GetRedemptionByUserId>();
 builder.Services.AddScoped<IUpdate<RedemptionDto>, UpdateRedemption>();
 builder.Services.AddScoped<IRemove<RedemptionDto>, DeleteRedemption>();
+
+builder.Services.AddScoped<IRepoReport, ReportRepo>();
+builder.Services.AddScoped<IGetAll<ReportDto>, GetAllReports>();
 
 // Inyección de SeedData para la inicialización de datos
 builder.Services.AddScoped<SeedData>(); // Inyección del SeedData para la inicialización de datos

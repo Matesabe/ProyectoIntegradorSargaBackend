@@ -14,46 +14,32 @@ namespace MonitoreoDeArchivos.ApiCalls
 {
     public class productsCalls
     {
-
-        public static async Task ClearStocks()
+        public static void ClearStocks()
         {
             using var client = new HttpClient();
             var url = "http://localhost:5246/api/warehouses/clear-stocks";
-            var response = await client.PutAsync(url, null);
+            var response = client.PutAsync(url, null).GetAwaiter().GetResult();
             if (!response.IsSuccessStatusCode)
             {
-                // Maneja el error según sea necesario
                 throw new Exception($"Error al limpiar los stocks: {response.StatusCode}");
             }
         }
 
-        public static async Task<string> AddSubProductAsync(SubProductDto sub)
+        public static string AddSubProduct(SubProductDto sub)
         {
             using var client = new HttpClient();
-            var url = "http://localhost:5246/api/subproducts"; // Verifica que sea correcto
-            var json = JsonSerializer.Serialize(sub);
-
-            string contentString = FlattenSubProductDto(sub); // Utiliza el método para aplanar el DTO
-            var content = new StringContent(contentString, Encoding.UTF8, "application/json"); 
-
-            // Cambia PutAsync por PostAsync para probar si el endpoint lo requiere
-            var response = await client.PostAsync(url, content);
-
-            // Para depuración, puedes leer el contenido de la respuesta
-            var responseBody = await response.Content.ReadAsStringAsync();
-
+            var url = "http://localhost:5246/api/subproducts";
+            string contentString = FlattenSubProductDto(sub);
+            var content = new StringContent(contentString, Encoding.UTF8, "application/json");
+            var response = client.PostAsync(url, content).GetAwaiter().GetResult();
+            var responseBody = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
             if (!response.IsSuccessStatusCode)
             {
                 throw new Exception($"Error al agregar el subproducto: {response.StatusCode} - {responseBody}");
             }
-            return responseBody; // Devuelve la respuesta de la API
+            return responseBody;
         }
 
-        // Plan en pseudocódigo:
-        // 1. Crear un método que reciba un SubProductDto y devuelva un diccionario plano (Dictionary<string, object>)
-        // 2. Extraer las propiedades de SubProductDto y agregarlas al diccionario con clave/valor simple
-        // 3. Si hay listas (como Images), serializarlas a JSON string o ignorarlas según necesidad
-        // 4. Serializar el diccionario plano a JSON antes de enviarlo en la petición
         public static string FlattenSubProductDto(SubProductDto sub)
         {
             var dict = new Dictionary<string, object>
@@ -77,61 +63,52 @@ namespace MonitoreoDeArchivos.ApiCalls
                 ["stockSal"] = sub.stockSal
             };
 
-            // Si necesitas incluir Images como string JSON:
             if (sub.Images != null)
                 dict["Images"] = JsonSerializer.Serialize(sub.Images);
 
             return JsonSerializer.Serialize(dict);
         }
 
-        public static async Task ClearSubProducts()
+        public static void ClearSubProducts()
         {
             using var client = new HttpClient();
             var url = "http://localhost:5246/api/subproducts/clear";
-            var response = await client.DeleteAsync(url);
+            var response = client.DeleteAsync(url).GetAwaiter().GetResult();
             if (!response.IsSuccessStatusCode)
             {
-                // Maneja el error según sea necesario
                 throw new Exception($"Error al limpiar los subproductos: {response.StatusCode}");
             }
         }
 
-        public static async Task SetStocksAsync(SubProductDto sub)
+        public static void SetStocks(SubProductDto sub)
         {
-                using var client = new HttpClient();
-                var url = "http://localhost:5246/api/warehouses/update-stocks"; 
-
-                var json = JsonSerializer.Serialize(sub);
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-            var response = await client.PutAsync(url, content);
-            var responseBody = await response.Content.ReadAsStringAsync();
+            using var client = new HttpClient();
+            var url = "http://localhost:5246/api/warehouses/update-stocks";
+            var json = JsonSerializer.Serialize(sub);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = client.PutAsync(url, content).GetAwaiter().GetResult();
+            var responseBody = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
             Console.WriteLine($"Status: {response.StatusCode}");
             Console.WriteLine($"Body: {responseBody}");
-
-
             if (!response.IsSuccessStatusCode)
-                {
-                    // Maneja el error según sea necesario
-                    throw new Exception($"Error al actualizar stocks: {response.StatusCode}");
-                }
+            {
+                throw new Exception($"Error al actualizar stocks: {response.StatusCode}");
+            }
         }
 
-        public static async Task<SubProductDto?> getSubById(int id)
+        public static SubProductDto? getSubById(int id)
         {
             try
             {
                 using var client = new HttpClient();
                 var url = $"http://localhost:5246/api/subproducts/{id}";
-                var response = await client.GetAsync(url);
-
+                var response = client.GetAsync(url).GetAwaiter().GetResult();
                 if (!response.IsSuccessStatusCode)
                 {
                     Console.WriteLine($"Error al obtener el subproducto por ID: {response.StatusCode}");
                     return null;
                 }
-
-                var json = await response.Content.ReadAsStringAsync();
+                var json = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
                 var subProduct = JsonSerializer.Deserialize<SubProductDto>(json, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
@@ -145,19 +122,45 @@ namespace MonitoreoDeArchivos.ApiCalls
             }
         }
 
-        public static async Task<ProductDto> GetProductByCode(string v)
+        public static List<SubProductDto> getSubProductsByProductCode(string productCode)
+        {
+            try
+            {
+                using var client = new HttpClient();
+                var url = $"http://localhost:5246/api/subproducts/byProductCode/{productCode}";
+                var response = client.GetAsync(url).GetAwaiter().GetResult();
+                if (!response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine($"Error al obtener los subproductos por código de producto: {response.StatusCode}");
+                    return new List<SubProductDto>();
+                }
+                var json = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                var subProducts = JsonSerializer.Deserialize<List<SubProductDto>>(json, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+                return subProducts ?? new List<SubProductDto>();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al obtener los subproductos por código de producto: {ex.Message}");
+                return new List<SubProductDto>();
+            }
+        }
+
+        public static ProductDto? GetProductByCode(string v)
         {
             try
             {
                 using var client = new HttpClient();
                 var url = $"http://localhost:5246/api/SubProducts/products/{v}";
-                var response = await client.GetAsync(url);
+                var response = client.GetAsync(url).GetAwaiter().GetResult();
                 if (!response.IsSuccessStatusCode)
                 {
                     Console.WriteLine($"Error al obtener el producto por código: {response.StatusCode}");
                     return null;
                 }
-                var json = await response.Content.ReadAsStringAsync();
+                var json = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
                 var product = JsonSerializer.Deserialize<List<ProductDto>>(json, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
@@ -168,11 +171,29 @@ namespace MonitoreoDeArchivos.ApiCalls
                     return null;
                 }
                 return product.First();
-                
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 Console.WriteLine($"Error al obtener el producto por código: {ex.Message}");
                 return null;
+            }
+        }
+
+        public static void DeleteSubProduct(int id)
+        {
+            try
+            {
+                using var client = new HttpClient();
+                var url = $"http://localhost:5246/api/subproducts/{id}";
+                var response = client.DeleteAsync(url).GetAwaiter().GetResult();
+                if (!response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine($"Error al eliminar el subproducto: {response.StatusCode}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al eliminar el subproducto: {ex.Message}");
             }
         }
     }

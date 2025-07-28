@@ -19,11 +19,10 @@ namespace Infrastructure.DataAccess.EF
         public DbSet<PurchasePromotionRecurrence> PurchasePromotionsRecurrence { get; set; }
         public DbSet<PurchasePromotionProducts> PurchasePromotionsProducts { get; set; }
         public DbSet<Redemption> Redemptions { get; set; }
+        public DbSet<Report> Reports { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            base.OnConfiguring(optionsBuilder);
-            optionsBuilder.UseSqlServer(@"REMOVED");
             //base.OnConfiguring(optionsBuilder);
             //optionsBuilder.UseSqlServer(@"
             //            Data Source=(localdb)\MSSQLLocalDB;
@@ -46,6 +45,19 @@ namespace Infrastructure.DataAccess.EF
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<PurchaseProduct>()
+            .HasKey(pp => new { pp.PurchaseId, pp.ProductId });
+
+            modelBuilder.Entity<PurchaseProduct>()
+                .HasOne(pp => pp.Purchase)
+                .WithMany(p => p.PurchaseProducts)
+                .HasForeignKey(pp => pp.PurchaseId);
+
+            modelBuilder.Entity<PurchaseProduct>()
+                .HasOne(pp => pp.Product)
+                .WithMany(p => p.PurchaseProducts)
+                .HasForeignKey(pp => pp.ProductId);
+
             modelBuilder.Entity<WarehouseStock>()
                 .HasKey(ws => new { ws.WarehouseId, ws.SubProductId });
 
@@ -59,6 +71,25 @@ namespace Infrastructure.DataAccess.EF
                 .WithMany(sp => sp.Stocks)
                 .HasForeignKey(ws => ws.SubProductId);
             modelBuilder.ApplyConfiguration(new UserConfiguration());
+
+            modelBuilder.Entity<Entry>()
+        .HasOne(e => e.Report)
+        .WithMany(r => r.entries)
+        .HasForeignKey(e => e.ReportId)
+        .OnDelete(DeleteBehavior.Cascade); // Esto habilita el borrado en cascada
+
+            modelBuilder.Entity<ProductPromotion>()
+    .HasKey(pp => new { pp.ProductId, pp.PurchasePromotionProductsId });
+
+            modelBuilder.Entity<ProductPromotion>()
+                .HasOne(pp => pp.Product)
+                .WithMany(p => p.ProductPromotions)
+                .HasForeignKey(pp => pp.ProductId);
+
+            modelBuilder.Entity<ProductPromotion>()
+                .HasOne(pp => pp.Promotion)
+                .WithMany(p => p.ProductPromotions)
+                .HasForeignKey(pp => pp.PurchasePromotionProductsId);
         }
     }
 }

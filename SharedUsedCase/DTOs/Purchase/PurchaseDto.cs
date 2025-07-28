@@ -1,6 +1,7 @@
 ﻿using BusinessLogic.Entities;
 using SharedUseCase.DTOs.Product;
 using SharedUseCase.DTOs.Promotion;
+using SharedUseCase.DTOs.PurchaseProduct;
 using SharedUseCase.DTOs.User;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,8 @@ namespace SharedUseCase.DTOs.Purchase
         UserDto Client,
         double Amount,
         int PointsGenerated,
-        List<ProductDto> Products)
+        List<PurchaseProductDto> PurchaseProducts,
+        DateTime Date)
     {
 
     }

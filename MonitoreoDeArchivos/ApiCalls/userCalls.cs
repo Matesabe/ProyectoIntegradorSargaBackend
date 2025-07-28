@@ -11,13 +11,14 @@ namespace MonitoreoDeArchivos.ApiCalls
 {
     public class userCalls
     {
-        public static async Task<UserDto?> GetClientByCi(string ci)
+        public static UserDto? GetClientByCi(string ci)
         {
             try
             {
                 using var client = new HttpClient();
                 var url = $"http://localhost:5246/api/users/ci/{ci}";
-                var response = await client.GetAsync(url);
+
+                var response = client.GetAsync(url).Result; // Bloquea hasta que se reciba la respuesta
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -25,11 +26,13 @@ namespace MonitoreoDeArchivos.ApiCalls
                     return null;
                 }
 
-                var json = await response.Content.ReadAsStringAsync();
+                var json = response.Content.ReadAsStringAsync().Result; // Bloquea para leer contenido
+
                 UserDto user = JsonSerializer.Deserialize<UserDto>(json, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
+
                 return user;
             }
             catch (Exception ex)

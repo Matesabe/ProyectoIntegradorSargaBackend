@@ -1,4 +1,6 @@
-﻿using SharedUseCase.DTOs.Product;
+﻿using BusinessLogic.Entities;
+using SharedUseCase.DTOs.Product;
+using SharedUseCase.DTOs.Purchase;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +15,7 @@ namespace SharedUseCase.DTOs.Promotion
         string Type,
         bool IsActive,
         int AmountPerPoint,
-        IEnumerable<SubProductDto> PromotionProducts,
+        List<ProductPromotionDto> PromotionProducts,
         int PointsPerProducts,
         DateTime PromotionDateStart,
         DateTime PromotionDateEnd,

@@ -78,8 +78,8 @@ namespace IntegrationModule.Controllers
                 {
                     return BadRequest("Purchase data is null.");
                 }
-                int addedPurchase = _add.Execute(purchase);
-                return CreatedAtAction(nameof(GetById), GetById(addedPurchase), addedPurchase);
+                int addedPurchaseId = _add.Execute(purchase);
+                return Ok(addedPurchaseId);
             }
             catch (Exception ex)
             {

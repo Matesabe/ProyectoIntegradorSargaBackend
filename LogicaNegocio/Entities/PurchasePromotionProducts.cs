@@ -8,18 +8,18 @@ namespace BusinessLogic.Entities
 {
     public class PurchasePromotionProducts : PurchasePromotion 
     {
-        public IEnumerable<SubProduct> PromotionProducts { get; set; }
+        public List<ProductPromotion> ProductPromotions { get; set; }
         public int PointsPerProducts { get; set; }
         public override string Description { get; set; }
         public override string Type { get; set; }
         public override bool IsActive { get; set; }
         public PurchasePromotionProducts() { }
         public PurchasePromotionProducts(int id) : base(id) { }
-        public PurchasePromotionProducts(int id, string description, IEnumerable<SubProduct> promotionProducts, int pointsPerProducts)
+        public PurchasePromotionProducts(int id, string description, List<ProductPromotion> productPromotions, int pointsPerProducts)
             : base(id)
         {
             Description = description;
-            PromotionProducts = promotionProducts;
+            ProductPromotions = productPromotions;
             PointsPerProducts = pointsPerProducts;
             Type = "Products";
             IsActive = true;
@@ -27,14 +27,14 @@ namespace BusinessLogic.Entities
 
         public override int generatePoints(Purchase purchase)
         {
-            return calculatePoints(purchase.Products);
+            return calculatePoints(purchase.PurchaseProducts);
         }
 
-        public int calculatePoints(IEnumerable<Product> Products)
+        public int calculatePoints(List<PurchaseProduct> Products)
         {
             // Verifica si todos los productos de la promoción están en subProducts
-            var ProductsSet = new HashSet<int>(Products.Select(p => p.Id));
-            bool todosPresentes = PromotionProducts.All(pp => ProductsSet.Contains(pp.Id));
+            var ProductsSet = new HashSet<int>(Products.Select(p => p.ProductId));
+            bool todosPresentes = ProductPromotions.All(pp => ProductsSet.Contains(pp.ProductId));
             return todosPresentes ? PointsPerProducts : 0;
         }
     }

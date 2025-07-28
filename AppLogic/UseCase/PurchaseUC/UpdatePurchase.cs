@@ -34,9 +34,9 @@ namespace AppLogic.UseCase.PurchaseUC
                 {
                     throw new ArgumentException("El cliente no puede ser nulo", nameof(obj.Client));
                 }
-                if (obj.Products == null || !obj.Products.Any())
+                if (obj.PurchaseProducts == null || !obj.PurchaseProducts.Any())
                 {
-                    throw new ArgumentException("La lista de subproductos no puede estar vacía", nameof(obj.Products));
+                    throw new ArgumentException("La lista de PurchaseProducts no puede estar vacía", nameof(obj.PurchaseProducts));
                 }
                 _repo.Update(id, PurchaseMapper.FromDto(obj));
             }

@@ -40,7 +40,7 @@ namespace Infrastructure.DataAccess.EF
                         break;
                     case "Products":
                         var productPromotion = obj as PurchasePromotionProducts;
-                        if (productPromotion == null || productPromotion.PromotionProducts == null || !productPromotion.PromotionProducts.Any())
+                        if (productPromotion == null || productPromotion.ProductPromotions == null || !productPromotion.ProductPromotions.Any())
                         {
                             throw new ArgumentException("La lista de productos no puede estar vacía al dar de alta una promoción de productos.");
                         }
@@ -179,7 +179,7 @@ namespace Infrastructure.DataAccess.EF
                         break;
                     case "Products":
                         var productPromotion = promotion as PurchasePromotionProducts;
-                        productPromotion.PromotionProducts = (obj as PurchasePromotionProducts).PromotionProducts;
+                        productPromotion.ProductPromotions = (obj as PurchasePromotionProducts).ProductPromotions;
                         break;
                     case "Recurrence":
                         var recurrencePromotion = promotion as PurchasePromotionRecurrence;

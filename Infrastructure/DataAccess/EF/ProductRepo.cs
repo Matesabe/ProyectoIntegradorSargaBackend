@@ -21,6 +21,7 @@ namespace Infrastructure.DataAccess.EF
         {
             try
             {
+                obj.Id = 0; // Ensure Id is reset for new product
                 if (obj == null)
                 {
                     throw new ArgumentNullException(nameof(obj), "El objeto no puede ser nulo");

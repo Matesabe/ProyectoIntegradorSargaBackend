@@ -182,13 +182,22 @@ namespace Infrastructure.DataAccess.EF
                 {
                     salto.Stocks = new List<WarehouseStock>();
                 }
-                WarehouseStock warehouseStock = new WarehouseStock
+
+                var existingStock = salto.Stocks.FirstOrDefault(ws => ws.SubProductId == SubProduct.Id);
+                if (existingStock != null)
                 {
-                    Warehouse = salto,
-                    SubProduct = SubProduct,
-                    Quantity = stockSal
-                };
-                salto.Stocks.Add(warehouseStock);
+                    existingStock.Quantity = stockSal;
+                }
+                else
+                {
+                    WarehouseStock warehouseStock = new WarehouseStock
+                    {
+                        Warehouse = salto,
+                        SubProduct = SubProduct,
+                        Quantity = stockSal
+                    };
+                    salto.Stocks.Add(warehouseStock);
+                }
                 _context.SaveChanges();
             }
             catch (Exception ex)
@@ -214,13 +223,22 @@ namespace Infrastructure.DataAccess.EF
                 {
                     salto.Stocks = new List<WarehouseStock>();
                 }
-                WarehouseStock warehouseStock = new WarehouseStock
+
+                var existingStock = salto.Stocks.FirstOrDefault(ws => ws.SubProductId == SubProduct.Id);
+                if (existingStock != null)
                 {
-                    Warehouse = salto,
-                    SubProduct = SubProduct,
-                    Quantity = stockPeat
-                };
-                salto.Stocks.Add(warehouseStock);
+                    existingStock.Quantity = stockPeat;
+                }
+                else
+                {
+                    WarehouseStock warehouseStock = new WarehouseStock
+                    {
+                        Warehouse = salto,
+                        SubProduct = SubProduct,
+                        Quantity = stockPeat
+                    };
+                    salto.Stocks.Add(warehouseStock);
+                }
                 _context.SaveChanges();
             }
             catch (Exception ex)
@@ -246,13 +264,22 @@ namespace Infrastructure.DataAccess.EF
                 {
                     salto.Stocks = new List<WarehouseStock>();
                 }
-                WarehouseStock warehouseStock = new WarehouseStock
+
+                var existingStock = salto.Stocks.FirstOrDefault(ws => ws.SubProductId == SubProduct.Id);
+                if (existingStock != null)
                 {
-                    Warehouse = salto,
-                    SubProduct = SubProduct,
-                    Quantity = stockPay
-                };
-                salto.Stocks.Add(warehouseStock);
+                    existingStock.Quantity = stockPay;
+                }
+                else
+                {
+                    WarehouseStock warehouseStock = new WarehouseStock
+                    {
+                        Warehouse = salto,
+                        SubProduct = SubProduct,
+                        Quantity = stockPay
+                    };
+                    salto.Stocks.Add(warehouseStock);
+                }
                 _context.SaveChanges();
             }
             catch (Exception ex)
@@ -278,13 +305,22 @@ namespace Infrastructure.DataAccess.EF
                 {
                     salto.Stocks = new List<WarehouseStock>();
                 }
-                WarehouseStock warehouseStock = new WarehouseStock
+
+                var existingStock = salto.Stocks.FirstOrDefault(ws => ws.SubProductId == SubProduct.Id);
+                if (existingStock != null)
                 {
-                    Warehouse = salto,
-                    SubProduct = SubProduct,
-                    Quantity = stockCol
-                };
-                salto.Stocks.Add(warehouseStock);
+                    existingStock.Quantity = stockCol;
+                }
+                else
+                {
+                    WarehouseStock warehouseStock = new WarehouseStock
+                    {
+                        Warehouse = salto,
+                        SubProduct = SubProduct,
+                        Quantity = stockCol
+                    };
+                    salto.Stocks.Add(warehouseStock);
+                }
                 _context.SaveChanges();
             }
             catch (Exception ex)
@@ -310,13 +346,22 @@ namespace Infrastructure.DataAccess.EF
                 {
                     salto.Stocks = new List<WarehouseStock>();
                 }
-                WarehouseStock warehouseStock = new WarehouseStock
+
+                var existingStock = salto.Stocks.FirstOrDefault(ws => ws.SubProductId == SubProduct.Id);
+                if (existingStock != null)
                 {
-                    Warehouse = salto,
-                    SubProduct = SubProduct,
-                    Quantity = stockPdelE
-                };
-                salto.Stocks.Add(warehouseStock);
+                    existingStock.Quantity = stockPdelE;
+                }
+                else
+                {
+                    WarehouseStock warehouseStock = new WarehouseStock
+                    {
+                        Warehouse = salto,
+                        SubProduct = SubProduct,
+                        Quantity = stockPdelE
+                    };
+                    salto.Stocks.Add(warehouseStock);
+                }
                 _context.SaveChanges();
             }
             catch (Exception ex)

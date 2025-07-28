@@ -39,7 +39,7 @@ namespace AppLogic.Mapper
                 return new PurchasePromotionProducts(
                     dto.Id,
                     dto.Description,
-                    SubproductMapper.FromListDtoToProduct(dto.PromotionProducts),
+                    ProductPromotionMapper.FromDtoList(dto.PromotionProducts),
                     dto.PointsPerProducts
                 );
             }
@@ -102,7 +102,7 @@ namespace AppLogic.Mapper
                     promotion.Type,
                     promotion.IsActive, // Use IsActive instead of PointsGenerated
                     0,
-                    SubproductMapper.ToListDto((promotion as PurchasePromotionProducts).PromotionProducts), 
+                    ProductPromotionMapper.ToDtoList((promotion as PurchasePromotionProducts).ProductPromotions), 
                     (promotion as PurchasePromotionProducts).PointsPerProducts, 
                     default(DateTime), // Use default(DateTime) instead of null
                     default(DateTime),
