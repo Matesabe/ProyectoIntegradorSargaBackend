@@ -23,14 +23,9 @@ namespace Infrastructure.DataAccess.EF
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            //base.OnConfiguring(optionsBuilder);
-            //optionsBuilder.UseSqlServer(@"
-            //            Data Source=(localdb)\MSSQLLocalDB;
-            //           Initial Catalog=PruebaUsuario;   
-            //           Integrated Security=True;");
-
+            
         }
-        
+
         public SargaContext() : base()
         {
         
