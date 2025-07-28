@@ -20,33 +20,7 @@ namespace Infrastructure.DataAccess.EF
 
         public void Run()
         {
-            clearReports();
-            clearPromotions();
-            clearPurchases();
-            if (!_context.Administrators.Any()) loadAdmin();
-            if (!_context.Clients.Any(c => c.Ci == "40861254")){
-                usuarioPrueba();
-            }
-            else
-            {
-                resetUsuarioPrueba();
-                CargarComprasPruebaCliente();
-            }
-            if (!_context.Clients.Any(c => c.Ci == "01930539"))
-            {
-                usuarioPrueba2();
-                CargarComprasPruebaCliente2();
-            }
-            else
-            {
-                CargarComprasPruebaCliente2();
-            }
-            if (!_context.Warehouses.Any()) loadWarehouses();
-            if (!_context.Products.Any(p => p.productCode == "1000316497")) articuloPrueba1();
-            if (!_context.Products.Any(p => p.productCode == "ARSAL")) articuloPrueba2();
-            if (!_context.Products.Any(p => p.productCode == "112344960")) articuloPrueba3();
 
-            PromotionPruebaFecha();
         }
 
         private void clearPurchases()
