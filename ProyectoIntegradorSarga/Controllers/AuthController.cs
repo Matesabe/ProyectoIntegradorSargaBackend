@@ -1,4 +1,5 @@
 using AppLogic.Mapper;
+using BusinessLogic.Entities;
 using BusinessLogic.RepositoriesInterfaces;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
@@ -73,7 +74,9 @@ public class AuthController : ControllerBase
             user.Email.Value,
             user.Password.Value,
             user.Phone,
-            user.Rol
+            user.Rol,
+            user.Rol == "Client" ? ((Client)user).Points : 0, // Asume que Points es 0 para usuarios no clientes
+            user.Rol == "Client" ? ((Client)user).RecurrenceCount : 0 // Asume que RecurrenceCount es 0 para usuarios no clientes
         );
 
         return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token), userData });

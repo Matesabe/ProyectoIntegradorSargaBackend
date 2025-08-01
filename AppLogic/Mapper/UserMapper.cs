@@ -57,13 +57,44 @@ namespace AppLogic.Mapper
 
         public static UserDto ToDto(User usuario)
         {
-            return new UserDto(usuario.Id,
-                                usuario.Ci,
-                                usuario.Name.Value,
-                               usuario.Email.Value,
-                               usuario.Password.Value,
-                               usuario.Phone,
-                               usuario.Rol);
+            return usuario.Rol switch // Fixed: Changed 'dto' to 'usuario' to match the parameter name
+            {
+                "Client" => ToDtoClient(usuario), // Fixed: Changed 'dto' to 'usuario'
+                "Seller" => ToDtoNormal(usuario), // Fixed: Added missing case for "Seller"
+                "Administrator" => ToDtoNormal(usuario), // Fixed: Added missing case for "Administrator"
+                _ => throw new ArgumentException("Rol de usuario no válido") // Fixed: Replaced 'default' with '_'
+            };
+        }
+
+        public static UserDto ToDtoNormal(User user)
+        {
+            return new UserDto(
+                user.Id,
+                user.Ci,
+                user.Name.ToString(),
+                user.Email.ToString(),
+                user.Password.ToString(),
+                user.Phone,
+                user.Rol,
+                0, // Asume que Points es 0 para usuarios no clientes
+                0
+            );
+        }
+
+        public static UserDto ToDtoClient(User user)
+        {
+            var client = user as Client;
+            return new UserDto(
+                user.Id,
+                user.Ci,
+                user.Name.ToString(),
+                user.Email.ToString(),
+                user.Password.ToString(),
+                user.Phone,
+                "Client",
+                client != null ? client.Points : 0, // Asume que Points es una propiedad de Client
+                client != null ? client.RecurrenceCount : 0 // Asume que RecurrenceCount es una propiedad de Client
+            );
         }
 
 

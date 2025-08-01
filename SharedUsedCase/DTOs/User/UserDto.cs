@@ -6,7 +6,9 @@
                              string Email,
                              string Password,
                              string Phone,
-                             string Rol)
+                             string Rol,
+                             int Points,
+                             int RecurrenceCount)
     {
    
     }
