@@ -94,6 +94,22 @@ namespace Infrastructure.DataAccess.EF
             }
         }
 
+        public IEnumerable<Product> GetByBrand(string brand)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(brand))
+                {
+                    throw new ArgumentException("El campo 'brand' no puede estar vacío", nameof(brand));
+                }
+                return _context.Products.Where(p => p.Brand.ToUpper().Contains(brand.ToUpper())).ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al obtener los productos por marca: " + ex.Message, ex);
+            }
+        }
+
         public IEnumerable<Product> GetByProductCode(string code)
         {
             try { 

@@ -69,6 +69,7 @@ builder.Services.AddScoped<IGetAll<SubProductDto>, GetAllSubProducts>();
 builder.Services.AddScoped<IGetById<SubProductDto>, GetByIdSubProduct>();
 builder.Services.AddScoped<IGetByProductId<SubProductDto>, GetByProductId>();
 builder.Services.AddScoped<IGetByProductCode<ProductDto>, GetByProductCode>();
+builder.Services.AddScoped<IGetByBrand<ProductDto>, GetByBrand>();
 
 // Inyecciones de los Caso de Uso de Compras
 builder.Services.AddScoped<IRepoPurchase, PurchaseRepo>();

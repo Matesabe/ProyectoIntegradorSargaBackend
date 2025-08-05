@@ -17,5 +17,6 @@ namespace BusinessLogic.RepositoriesInterfaces.ProductsInterface
             IRepoGetById<Product>
     {
         IEnumerable<Product> GetByProductCode(string code);
+        IEnumerable<Product> GetByBrand(string brand);
     }
 }

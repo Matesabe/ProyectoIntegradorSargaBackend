@@ -13,11 +13,14 @@ namespace ProyectoIntegradorSarga.Controllers
     {
         IGetAll<ProductDto> _getAll;
         IGetById<ProductDto> _getById;
+        IGetByBrand<ProductDto> _getByBrand;
         public ProductsController(IGetAll<ProductDto> getAll,
-                                 IGetById<ProductDto> getById)
+                                 IGetById<ProductDto> getById,
+                                 IGetByBrand<ProductDto> getByBrand)
         {
             _getAll = getAll;
             _getById = getById;
+            _getByBrand = getByBrand;
         }
 
         [HttpGet]
@@ -48,6 +51,27 @@ namespace ProyectoIntegradorSarga.Controllers
                     return NotFound();
                 }
                 return Ok(product);
+            }
+            catch (Exception ex)
+            {
+                var errorMessage = ex.InnerException != null
+                    ? $"{ex.Message} - InnerException: {ex.InnerException.Message}"
+                    : ex.Message;
+                return BadRequest(errorMessage);
+            }
+        }
+
+        [HttpGet("brand/{brand}")]
+        public IActionResult GetByBrand(string brand)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(brand))
+                {
+                    return BadRequest("Brand cannot be null or empty.");
+                }
+                var products = _getByBrand.Execute(brand);
+                return Ok(products);
             }
             catch (Exception ex)
             {
