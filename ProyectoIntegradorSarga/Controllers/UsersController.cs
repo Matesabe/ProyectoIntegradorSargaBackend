@@ -24,6 +24,7 @@ namespace ProyectoIntegradorSarga.Controllers
         IRemove<UserDto> _remove;
         IGetByName<UserDto> _getByName;
         IGetByEmail<UserDto> _getByEmail;
+        IGetByCi<UserDto> _getByCi;
 
 
         public UsersController(IGetAll<UserDto> getAll,
@@ -83,6 +84,29 @@ namespace ProyectoIntegradorSarga.Controllers
                 return BadRequest(errorMessage);
             }
         }
+
+        [HttpGet]
+        [Route("GetByCi/{ci}")]
+        public IActionResult GetByCi(string ci)
+        {
+            try
+            {
+                var user = _getByCi.Execute(ci);
+                if (user == null)
+                {
+                    return NotFound();
+                }
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                var errorMessage = ex.InnerException != null
+                    ? $"{ex.Message} - InnerException: {ex.InnerException.Message}"
+                    : ex.Message;
+                return BadRequest(errorMessage);
+            }
+        }
+        
 
         // POST api/<ValuesController>
         [HttpPost]

@@ -6,6 +6,7 @@ using AppLogic.UseCase.RedemptionUC;
 using AppLogic.UseCase.ReportUC;
 using AppLogic.UseCase.User;
 using AppLogic.UseCase.UserUC;
+using AppLogic.UseCase.WarehouseUC;
 using BusinessLogic.RepositoriesInterfaces;
 using BusinessLogic.RepositoriesInterfaces.ProductsInterface;
 using BusinessLogic.RepositoriesInterfaces.PromotionInterface;
@@ -13,6 +14,7 @@ using BusinessLogic.RepositoriesInterfaces.PurchaseInterface;
 using BusinessLogic.RepositoriesInterfaces.RedemptionInterface;
 using BusinessLogic.RepositoriesInterfaces.ReportsInterface;
 using BusinessLogic.RepositoriesInterfaces.SubProductInterface;
+using BusinessLogic.RepositoriesInterfaces.WarehouseInterface;
 using Infrastructure.DataAccess.EF;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +26,7 @@ using SharedUseCase.DTOs.Purchase;
 using SharedUseCase.DTOs.Redemption;
 using SharedUseCase.DTOs.Reports;
 using SharedUseCase.DTOs.User;
+using SharedUseCase.DTOs.Warehouse;
 using SharedUseCase.InterfacesUC;
 using SharedUseCase.InterfacesUC.Product;
 using SharedUseCase.InterfacesUC.Purchase;
@@ -62,14 +65,15 @@ builder.Services.AddScoped<IRemove<PromotionDto>, DeletePromotion>();
 builder.Services.AddScoped<IRepoProducts, ProductRepo>();
 builder.Services.AddScoped<IGetAll<ProductDto>, GetAllProducts>();
 builder.Services.AddScoped<IGetById<ProductDto>, GetByIdProduct>();
+builder.Services.AddScoped<IGetByProductCode<ProductDto>, GetByProductCode>();
+builder.Services.AddScoped<IGetByBrand<ProductDto>, GetByBrand>();
 
 // Inyecciones para los Caso de Uso de subProducto
 builder.Services.AddScoped<IRepoSubProduct, SubProductRepo>();
 builder.Services.AddScoped<IGetAll<SubProductDto>, GetAllSubProducts>();
 builder.Services.AddScoped<IGetById<SubProductDto>, GetByIdSubProduct>();
 builder.Services.AddScoped<IGetByProductId<SubProductDto>, GetByProductId>();
-builder.Services.AddScoped<IGetByProductCode<ProductDto>, GetByProductCode>();
-builder.Services.AddScoped<IGetByBrand<ProductDto>, GetByBrand>();
+builder.Services.AddScoped<IGetByProductCode<SubProductDto>, GetByProductCodeSubProduct>();
 
 // Inyecciones de los Caso de Uso de Compras
 builder.Services.AddScoped<IRepoPurchase, PurchaseRepo>();
@@ -87,6 +91,9 @@ builder.Services.AddScoped<IRemove<RedemptionDto>, DeleteRedemption>();
 
 builder.Services.AddScoped<IRepoReport, ReportRepo>();
 builder.Services.AddScoped<IGetAll<ReportDto>, GetAllReports>();
+
+builder.Services.AddScoped<IRepoWarehouse, WarehouseRepo>();
+builder.Services.AddScoped<IGetAll<WarehouseDto>, GetAllWarehouses>();
 
 // Inyección de SeedData para la inicialización de datos
 builder.Services.AddScoped<SeedData>(); // Inyección del SeedData para la inicialización de datos

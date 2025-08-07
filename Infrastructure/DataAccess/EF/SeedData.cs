@@ -20,8 +20,97 @@ namespace Infrastructure.DataAccess.EF
 
         public void Run()
         {
-
+            LoadTestData();
         }
+
+        /// <summary>
+        /// DATOS DE PRUEBA PARA WEB
+        /// </summary>
+
+        public void LoadTestData()
+        {
+            try
+            {
+                clearUsuarios();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al cargar datos de prueba: {ex.Message}");
+            }
+        }
+
+        public void clearUsuarios()
+        {
+            try
+            {
+                _context.Clients.RemoveRange(_context.Clients);
+                _context.Sellers.RemoveRange(_context.Sellers);
+                _context.Administrators.RemoveRange(_context.Administrators);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al limpiar usuarios: {ex.Message}");
+            }
+        }
+
+        public void loadUsers()
+        {
+            loadAdmin();
+            loadSeller();
+        }
+
+        private void loadAdmin()
+        {
+            Administrator unA = null;
+            unA = new Administrator(0, "12345678", new Name("Administrador Sarga"), new Password("SargaPass983"), new Email("admin@mail.com"), "1111", "Administrator");
+            _context.Administrators.Add(unA);
+            _context.SaveChanges();
+        }
+
+        public void loadSeller()
+        {
+            Seller unS = null;
+            unS = new Seller(0, "22345678", new Name("Seller Sarga"), new Password("SargaPass983"), new Email("seller@mail.com"), "2222", "Seller");
+            _context.Sellers.Add(unS);
+            _context.SaveChanges();
+        }
+
+        public void loadClient()
+        {
+            Client prueba = null;
+            prueba = new Client(0, "32345678", new Name("Cliente Sarga"), new Password("Pass1234"), new Email("client@mail.com"), "3333", "Client");
+            prueba.Points = 3000;
+            _context.Clients.Add(prueba);
+            _context.SaveChanges();
+        }
+        public void loadComprasCliente()
+        {
+            CargarComprasPruebaCliente();
+        }
+
+        private void CargarComprasPruebaCliente()
+        {
+            Client clientePrueba = _context.Clients.FirstOrDefault(c => c.Ci == "32345678");
+
+            if (clientePrueba == null) return;
+            Purchase compra1 = new Purchase(0, clientePrueba, 2000, 0, new List<PurchaseProduct>(), DateTime.Now);
+            Purchase compra2 = new Purchase(0, clientePrueba, 1000, 0, new List<PurchaseProduct>(), DateTime.Now);
+            Product product1 = _context.Products.FirstOrDefault(p => p.productCode == "2592543I");
+            Product product2 = _context.Products.FirstOrDefault(p => p.productCode == "2590501I");
+            if (product1 != null && product2 != null)
+            {
+                compra1.PurchaseProducts.Add(new PurchaseProduct(compra1.Id, product1.Id, 2));
+                compra2.PurchaseProducts.Add(new PurchaseProduct(compra2.Id, product2.Id, 3));
+            }
+            _context.Purchases.Add(compra1);
+            _context.Purchases.Add(compra2);
+            _context.SaveChanges();
+        }
+
+        /// <summary>
+        /// DATOS DE PRUEBA
+        /// </summary>
 
         private void clearPurchases()
         {
@@ -34,14 +123,6 @@ namespace Infrastructure.DataAccess.EF
             {
                 Console.WriteLine($"Error al limpiar compras: {ex.Message}");
             }
-        }
-
-        private void loadAdmin()
-        {
-            Administrator unA = null;
-            unA = new Administrator(0, "87654321", new Name("Administrador Sarga"), new Password("SargaPass983"), new Email("adminSarga@mail.com"), "123456789", "Administrator" );
-            _context.Administrators.Add(unA);
-            _context.SaveChanges();
         }
 
         private void usuarioPrueba()
@@ -138,24 +219,7 @@ namespace Infrastructure.DataAccess.EF
             _context.SaveChanges();
         }
 
-        private void CargarComprasPruebaCliente()
-        {
-            Client clientePrueba = _context.Clients.FirstOrDefault(c => c.Ci == "40861254");
-
-            if (clientePrueba == null) return;
-            Purchase compra1 = new Purchase(0, clientePrueba, 2000, 0, new List<PurchaseProduct>(), DateTime.Now);
-            Purchase compra2 = new Purchase(0, clientePrueba, 1000, 0, new List<PurchaseProduct>(), DateTime.Now);
-            Product product1 = _context.Products.FirstOrDefault(p => p.productCode == "1000316497");
-            Product product2 = _context.Products.FirstOrDefault(p => p.productCode == "ARSAL");
-            if (product1 != null && product2 != null)
-            {
-                compra1.PurchaseProducts.Add(new PurchaseProduct(compra1.Id, product1.Id, 2));
-                compra2.PurchaseProducts.Add(new PurchaseProduct(compra2.Id, product2.Id, 3));
-            }
-            _context.Purchases.Add(compra1);
-            //_context.Purchases.Add(compra2);
-            _context.SaveChanges();
-        }
+        
 
         private void articuloPrueba1()
         {
