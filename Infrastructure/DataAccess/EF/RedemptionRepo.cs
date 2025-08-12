@@ -29,18 +29,11 @@ namespace Infrastructure.DataAccess.EF
                 {
                     throw new ArgumentException("El campo 'Client' no puede estar vacío", nameof(obj.Client));
                 }
-                if (obj.Amount <= 0)
-                {
-                    throw new ArgumentException("El campo 'Amount' debe ser mayor que cero", nameof(obj.Amount));
-                }
                 if (obj.PointsUsed <= 0)
                 {
                     throw new ArgumentException("El campo 'PointsUsed' debe ser mayor que cero", nameof(obj.PointsUsed));
                 }
-                if (obj.SubProducts == null || !obj.SubProducts.Any())
-                {
-                    throw new ArgumentException("El campo 'SubProducts' no puede estar vacío", nameof(obj.SubProducts));
-                }
+
                 _context.Redemptions.Add(obj);
                 SetPointsToUser(obj.Client.Id, obj.PointsUsed);
                 _context.SaveChanges();
@@ -161,17 +154,9 @@ namespace Infrastructure.DataAccess.EF
                 {
                     throw new ArgumentException("El campo 'Client' no puede estar vacío", nameof(obj.Client));
                 }
-                if (obj.Amount <= 0)
-                {
-                    throw new ArgumentException("El campo 'Amount' debe ser mayor que cero", nameof(obj.Amount));
-                }
                 if (obj.PointsUsed <= 0)
                 {
                     throw new ArgumentException("El campo 'PointsUsed' debe ser mayor que cero", nameof(obj.PointsUsed));
-                }
-                if (obj.SubProducts == null || !obj.SubProducts.Any())
-                {
-                    throw new ArgumentException("El campo 'SubProducts' no puede estar vacío", nameof(obj.SubProducts));
                 }
                 var redemption = _context.Redemptions.FirstOrDefault(r => r.Id == id);
                 if (redemption == null)
@@ -179,9 +164,7 @@ namespace Infrastructure.DataAccess.EF
                     throw new KeyNotFoundException($"No se encontró un canje con el ID {id}");
                 }
                 redemption.Client = obj.Client;
-                redemption.Amount = obj.Amount;
                 redemption.PointsUsed = obj.PointsUsed;
-                redemption.SubProducts = obj.SubProducts;
                 _context.SaveChanges();
             }
             catch (Exception ex)

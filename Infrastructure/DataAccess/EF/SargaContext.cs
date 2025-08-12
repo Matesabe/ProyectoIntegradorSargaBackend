@@ -23,7 +23,7 @@ namespace Infrastructure.DataAccess.EF
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            
+           
         }
 
         public SargaContext() : base()

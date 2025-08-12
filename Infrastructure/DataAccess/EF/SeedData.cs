@@ -32,6 +32,7 @@ namespace Infrastructure.DataAccess.EF
             try
             {
                 clearUsuarios();
+                loadUsers();
             }
             catch (Exception ex)
             {
@@ -58,6 +59,8 @@ namespace Infrastructure.DataAccess.EF
         {
             loadAdmin();
             loadSeller();
+            loadClient();
+            loadComprasCliente();
         }
 
         private void loadAdmin()

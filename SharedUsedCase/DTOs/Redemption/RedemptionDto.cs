@@ -11,9 +11,7 @@ namespace SharedUseCase.DTOs.Redemption
     public record RedemptionDto (
         int Id,
         UserDto Client,
-        double Amount,
-        int PointsUsed,
-        IEnumerable<SubProductDto> SubProducts
+        int PointsUsed
         )
     {
     }

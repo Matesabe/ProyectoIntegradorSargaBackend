@@ -15,9 +15,7 @@ namespace AppLogic.Mapper
         {
             return new Redemption(dto.Id,
                                    (Client)UserMapper.FromDto(dto.Client),
-                                   dto.Amount,
-                                   dto.PointsUsed,
-                                   SubproductMapper.FromListDtoToProduct(dto.SubProducts) // SubProducts will be set later
+                                   dto.PointsUsed
             );
         }
 
@@ -25,10 +23,8 @@ namespace AppLogic.Mapper
         {
             return new RedemptionDto(
                 redemption.Id,
-                UserMapper.ToDto(redemption.Client), // Assuming Client has an Id property
-                redemption.Amount,
-                redemption.PointsUsed,
-                SubproductMapper.ToListDto(redemption.SubProducts)
+                UserMapper.ToDto(redemption.Client), 
+                redemption.PointsUsed
             );
         }
 

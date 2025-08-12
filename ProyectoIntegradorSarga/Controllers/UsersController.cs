@@ -33,7 +33,8 @@ namespace ProyectoIntegradorSarga.Controllers
                                  IGetByName<UserDto> getByName,
                                  IGetById<UserDto> getById,
                                  IUpdate<UserDto> update,
-                                 IGetByEmail<UserDto> getByEmail)
+                                 IGetByEmail<UserDto> getByEmail,
+                                 IGetByCi<UserDto> getByCi)
         {
             _getAll = getAll;
             _add = add;
@@ -42,6 +43,7 @@ namespace ProyectoIntegradorSarga.Controllers
             _getById = getById;
             _update = update;
             _getByEmail = getByEmail;
+            _getByCi = getByCi;
         }
 
         // GET: api/<ValuesController>
@@ -64,17 +66,26 @@ namespace ProyectoIntegradorSarga.Controllers
         }
 
         // GET api/<ValuesController>/5
+        [Authorize]
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
             try
             {
-                var user = _getById.Execute(id);
-                if (user == null)
+                var rol = User.Claims.FirstOrDefault(c => c.Type == "Rol")?.Value;
+                var idToken = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "Id")?.Value);
+                if (rol == "Administrator" || idToken == id)
                 {
-                    return NotFound();
+                    var user = _getById.Execute(id);
+                    if (user == null)
+                    {
+                        return NotFound();
+                    }
+                    return Ok(user);
                 }
-                return Ok(user);
+                else {
+                    return BadRequest("Usuario con rol inválido para acceder a usuario.");
+                }
             }
             catch (Exception ex)
             {
@@ -85,18 +96,27 @@ namespace ProyectoIntegradorSarga.Controllers
             }
         }
 
+        [Authorize]
         [HttpGet]
         [Route("GetByCi/{ci}")]
         public IActionResult GetByCi(string ci)
         {
             try
             {
-                var user = _getByCi.Execute(ci);
-                if (user == null)
+                var rol = User.Claims.FirstOrDefault(c => c.Type == "Rol")?.Value;
+                if (rol == "Administrator" || rol == "Seller")
                 {
-                    return NotFound();
+                    var user = _getByCi.Execute(ci);
+                    if (user == null)
+                    {
+                        return NotFound();
+                    }
+                    return Ok(user);
                 }
-                return Ok(user);
+                else
+                {
+                    return BadRequest("Usuario con rol inválido acceder a usuario.");
+                }
             }
             catch (Exception ex)
             {
