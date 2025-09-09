@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using SharedUseCase.DTOs.Redemption;
+using SharedUseCase.DTOs.User;
 using SharedUseCase.InterfacesUC;
 using SharedUseCase.InterfacesUC.Redemption;
 
@@ -39,7 +40,7 @@ namespace ProyectoIntegradorSarga.Controllers
                 var rol = User.Claims.FirstOrDefault(c => c.Type == "Rol")?.Value;
                 if (rol != "Administrator")
                 {
-                    return BadRequest("Usuario con rol inválido para acceder a todos los canjes.");
+                    return Forbid("Usuario con rol inválido para acceder a todos los canjes.");
                 }
                 var redemptions = _getAll.Execute();
                 return Ok(redemptions);
@@ -55,7 +56,7 @@ namespace ProyectoIntegradorSarga.Controllers
 
         [HttpGet]
         [Authorize]
-        [Route("byId/{redemptionId}")]
+        [Route("byId/{id}")]
         public IActionResult GetById(int id)
         {
             try
@@ -64,11 +65,11 @@ namespace ProyectoIntegradorSarga.Controllers
                 var rol = User.Claims.FirstOrDefault(c => c.Type == "Rol")?.Value;
                 var idLogueado = User.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
                 var redemption = _getById.Execute(id);
-                if (idLogueado != redemption.Client.Id.ToString())
+                if (idLogueado != redemption.ClientId.ToString())
                 {
                     if (rol != "Administrator")
                     {
-                        return BadRequest("Usuario con rol inválido para acceder al canje.");
+                        return Forbid("Usuario con rol inválido para acceder al canje.");
                     }
                 }
                 if (redemption == null)
@@ -121,12 +122,13 @@ namespace ProyectoIntegradorSarga.Controllers
             try
             {
                 var rol = User.Claims.FirstOrDefault(c => c.Type == "Rol")?.Value;
-                if (rol != "Administrator" || rol != "Seller")
+                if (rol != "Administrator" && rol != "Seller")
                 {
-                    return BadRequest("Usuario con rol inválido para dar de alta un canje.");
+                    return BadRequest($"Usuario con rol inválido para dar de alta un canje. Rol: {rol}");
                 }
-                _add.Execute(redemption);
-                return Ok();
+                int id = _add.Execute(redemption);
+                RedemptionDto redemptionCreated = _getById.Execute(id);
+                return CreatedAtAction(nameof(GetById), new { id }, redemptionCreated);
             }
             catch (Exception ex)
             {
@@ -137,15 +139,15 @@ namespace ProyectoIntegradorSarga.Controllers
             }
         }
 
-        [HttpPut]
+        
         [Authorize]
-        [Route("update/{id}")]
+        [HttpPut("{id}")]
         public IActionResult Update(int id, [FromBody] RedemptionDto redemption)
         {
             try
             {
                 var rol = User.Claims.FirstOrDefault(c => c.Type == "Rol")?.Value;
-                if (rol != "Administrator" || rol != "Seller")
+                if (rol != "Administrator" && rol != "Seller")
                 {
                     return BadRequest("Usuario con rol inválido para actualizar un canje.");
                 }
@@ -161,9 +163,9 @@ namespace ProyectoIntegradorSarga.Controllers
             }
         }
 
-        [HttpDelete]
         [Authorize]
-        public IActionResult Delete(RedemptionDto red) {
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id) {
             try
             {
                 var rol = User.Claims.FirstOrDefault(c => c.Type == "Rol")?.Value;
@@ -171,6 +173,7 @@ namespace ProyectoIntegradorSarga.Controllers
                 {
                     return BadRequest("Usuario con rol inválido para eliminar un canje.");
                 }
+                var red = _getById.Execute(id);
                 _remove.Execute(red);
                 return Ok();
             }

@@ -26,10 +26,8 @@ namespace Infrastructure.DataAccess.EF
            
         }
 
-        public SargaContext() : base()
-        {
+        public SargaContext() : base() { }
         
-        }
 
         public SargaContext(DbContextOptions<SargaContext> options) : 
             base(options)

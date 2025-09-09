@@ -1,5 +1,6 @@
 ﻿using BusinessLogic.Entities;
 using BusinessLogic.RepositoriesInterfaces.PromotionInterface;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -118,7 +119,8 @@ namespace Infrastructure.DataAccess.EF
             {
                 var promotions = new List<PurchasePromotion>();
                 promotions.AddRange(_context.PurchasePromotionsDate.ToList());
-                promotions.AddRange(_context.PurchasePromotionsProducts.ToList());
+                promotions.AddRange(_context.PurchasePromotionsProducts.Include(p => p.ProductPromotions)
+        .ThenInclude(pp => pp.Product).ToList());
                 promotions.AddRange(_context.PurchasePromotionsRecurrence.ToList());
                 promotions.AddRange(_context.PurchasePromotionsAmount.ToList());
                 return promotions;
@@ -129,20 +131,29 @@ namespace Infrastructure.DataAccess.EF
             }
         }
 
+
+
         public PurchasePromotion GetById(int id)
         {
             try
             {
-                var promotion = _context.PurchasePromotionsDate.Find(id) as PurchasePromotion ??
-                                _context.PurchasePromotionsProducts.Find(id) as PurchasePromotion ??
-                                _context.PurchasePromotionsRecurrence.Find(id) as PurchasePromotion ??
-                                _context.PurchasePromotionsAmount.Find(id) as PurchasePromotion;
+                // Primero intentamos con Products, que necesita Include
+                var productPromotion = _context.PurchasePromotionsProducts
+                    .Include(p => p.ProductPromotions)
+                    .FirstOrDefault(p => p.Id == id) as PurchasePromotion;
+                if (productPromotion != null) return productPromotion;
 
-                if (promotion == null)
-                {
-                    throw new KeyNotFoundException("Promoción no encontrada");
-                }
-                return promotion;
+                // Los demás tipos
+                var datePromotion = _context.PurchasePromotionsDate.Find(id) as PurchasePromotion;
+                if (datePromotion != null) return datePromotion;
+
+                var recurrencePromotion = _context.PurchasePromotionsRecurrence.Find(id) as PurchasePromotion;
+                if (recurrencePromotion != null) return recurrencePromotion;
+
+                var amountPromotion = _context.PurchasePromotionsAmount.Find(id) as PurchasePromotion;
+                if (amountPromotion != null) return amountPromotion;
+
+                throw new KeyNotFoundException("Promoción no encontrada");
             }
             catch (Exception ex)
             {
@@ -176,10 +187,26 @@ namespace Infrastructure.DataAccess.EF
                         var datePromotion = promotion as PurchasePromotionDate;
                         datePromotion.PromotionDateStart = (obj as PurchasePromotionDate).PromotionDateStart;
                         datePromotion.PromotionDateEnd = (obj as PurchasePromotionDate).PromotionDateEnd;
+                        datePromotion.PointsPerDate = (obj as PurchasePromotionDate).PointsPerDate;
                         break;
                     case "Products":
                         var productPromotion = promotion as PurchasePromotionProducts;
-                        productPromotion.ProductPromotions = (obj as PurchasePromotionProducts).ProductPromotions;
+                        var incoming = (obj as PurchasePromotionProducts).ProductPromotions;
+
+                        // Limpio los productos actuales
+                        productPromotion.ProductPromotions.Clear();
+
+                        // Agregar los nuevos productos
+                        foreach (var p in incoming)
+                        {
+                            productPromotion.ProductPromotions.Add(new ProductPromotion
+                            {
+                                ProductId = p.ProductId,
+                                PurchasePromotionProductsId = productPromotion.Id
+                            });
+                        }
+
+                        productPromotion.PointsPerProducts = (obj as PurchasePromotionProducts).PointsPerProducts;
                         break;
                     case "Recurrence":
                         var recurrencePromotion = promotion as PurchasePromotionRecurrence;
@@ -197,8 +224,8 @@ namespace Infrastructure.DataAccess.EF
             }
             catch (Exception ex)
             {
-                throw new Exception("Error al actualizar la promoción: " + ex.Message, ex);
+                throw new Exception("Error al actualizar la promoción: " + ex.Message, ex.InnerException ?? ex);
             }
-    }
+        }
 }
 }

@@ -14,13 +14,13 @@ namespace BusinessLogic.Entities
         public override string Type { get; set; }
         public override bool IsActive { get; set; }
 
-        public PurchasePromotionAmount(int id, string description, int amountPerPoint, string type)
+        public PurchasePromotionAmount(int id, string description, int amountPerPoint, string type, bool isActive)
             : base(id)
         {
             Description = description;
             AmountPerPoint = amountPerPoint;
             Type = "Amount";
-            IsActive = true; // Assuming the promotion is active by default
+            IsActive = isActive; 
         }
 
         public override int generatePoints(Purchase purchase)

@@ -20,7 +20,8 @@ namespace AppLogic.Mapper
                     dto.Id,
                     dto.Description,
                     dto.AmountPerPoint,
-                    dto.Type
+                    dto.Type,
+                    dto.IsActive 
                 );
             }
             if (dto.Type=="Date")
@@ -31,16 +32,19 @@ namespace AppLogic.Mapper
                     dto.PromotionDateEnd,
                     dto.PointsPerDate,
                     dto.MinimalAmount,
-                    dto.Description
+                    dto.Description,
+                    dto.IsActive
                 );
             }
             if (dto.Type=="Products")
             {
+                Console.WriteLine($"DTO.Products: {dto.PromotionProducts?.Count ?? 0}");
                 return new PurchasePromotionProducts(
                     dto.Id,
                     dto.Description,
-                    ProductPromotionMapper.FromDtoList(dto.PromotionProducts),
-                    dto.PointsPerProducts
+                    ProductPromotionMapper.FromDtoList(dto.PromotionProducts) ?? new List<ProductPromotion>(),
+                    dto.PointsPerProducts,
+                    dto.IsActive
                 );
             }
             if (dto.Type == "Recurrence")
@@ -49,7 +53,8 @@ namespace AppLogic.Mapper
                     dto.Id,
                     dto.Description,
                     dto.RecurrenceValue,
-                    dto.PointsPerRecurrence
+                    dto.PointsPerRecurrence,
+                    dto.IsActive 
                 );
             }
             throw new Exception("Tipo de promoción no reconocido: " + dto.Type);

@@ -145,8 +145,9 @@ namespace Infrastructure.DataAccess.EF
                 if (clientId < 0)
                     throw new ArgumentException("El ID del cliente no puede ser menor a cero", nameof(clientId));
                 return _context.Purchases
-                    .Where(p => p.Client != null && p.Client.Id == clientId)
-                    .ToList();
+                         .Include(p => p.Client)
+                         .Where(p => p.Client.Id == clientId)
+                        .ToList();
             }
             catch (Exception ex)
             {
@@ -200,50 +201,37 @@ namespace Infrastructure.DataAccess.EF
 
         public void Update(int id, Purchase obj)
         {
-            try
-            {
-                if (id <= 0)
-                {
-                    throw new ArgumentException("El ID debe ser mayor que cero", nameof(id));
-                }
-                if (obj == null)
-                {
-                    throw new ArgumentNullException(nameof(obj), "El objeto no puede ser nulo");
-                }
-                if (obj.Client == null)
-                {
-                    throw new ArgumentException("El campo 'Client' no puede estar vacío", nameof(obj.Client));
-                }
-                if (obj.Amount <= 0)
-                {
-                    throw new ArgumentException("El campo 'Amount' debe ser mayor que cero", nameof(obj.Amount));
-                }
-                if (obj.PurchaseProducts == null || !obj.PurchaseProducts.Any())
-                {
-                    throw new ArgumentException("El campo 'PurchaseProducts' no puede estar vacío", nameof(obj.PurchaseProducts));
-                }
-                var existingPurchase = GetById(id);
-                if (existingPurchase == null)
-                {
-                    throw new KeyNotFoundException("Compra no encontrada");
-                }
-                // Restar los puntos generados de la compra anterior a la modificación para luego agregarlos desde la modificada
-                SubstractPointsFromUser(existingPurchase.Client.Id, obj.PointsGenerated * -1);
-                SetPointsToPurchase(existingPurchase);
-                SetPointsToUser(existingPurchase.Client.Id, existingPurchase.PointsGenerated);
+            if (id <= 0) throw new ArgumentException("El ID debe ser mayor que cero", nameof(id));
+            if (obj == null) throw new ArgumentNullException(nameof(obj), "El objeto no puede ser nulo");
+            if (obj.Client == null) throw new ArgumentException("El campo 'Client' no puede estar vacío", nameof(obj.Client));
+            if (obj.Amount <= 0) throw new ArgumentException("El campo 'Amount' debe ser mayor que cero", nameof(obj.Amount));
+            if (obj.PurchaseProducts == null || !obj.PurchaseProducts.Any())
+                throw new ArgumentException("El campo 'PurchaseProducts' no puede estar vacío", nameof(obj.PurchaseProducts));
 
-                // Actualizar los campos necesarios
-                existingPurchase.Client = _context.Clients.FirstOrDefault(c => c.Id == obj.Client.Id) ?? throw new InvalidOperationException("Cliente no encontrado.");
-                existingPurchase.Amount = obj.Amount;
-                existingPurchase.PurchaseProducts = obj.PurchaseProducts;
-                
-                _context.Purchases.Update(existingPurchase);
-                _context.SaveChanges();
-            }
-            catch (Exception ex)
+            var existingPurchase = GetById(id);
+            if (existingPurchase == null) throw new KeyNotFoundException("Compra no encontrada");
+
+            // Restar puntos antiguos
+            SubstractPointsFromUser(existingPurchase.Client.Id, existingPurchase.PointsGenerated);
+
+            // Actualizar datos
+            existingPurchase.Amount = obj.Amount;
+            existingPurchase.Client = _context.Clients.FirstOrDefault(c => c.Id == obj.Client.Id)
+                ?? throw new InvalidOperationException("Cliente no encontrado.");
+
+            // Actualizar productos (manejo seguro con EF Core)
+            existingPurchase.PurchaseProducts.Clear();
+            foreach (var prod in obj.PurchaseProducts)
             {
-                throw new Exception("Error al actualizar la compra: " + ex.Message, ex);
+                existingPurchase.PurchaseProducts.Add(prod);
             }
+
+            // Recalcular puntos y asignar
+            SetPointsToPurchase(existingPurchase);
+            SetPointsToUser(existingPurchase.Client.Id, existingPurchase.PointsGenerated);
+
+            _context.Purchases.Update(existingPurchase);
+            _context.SaveChanges();
         }
 
         public void Clear()

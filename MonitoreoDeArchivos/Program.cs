@@ -27,17 +27,17 @@ class Program
 {
     static void Main(string[] args)
     {
-        string rutaCarpetaDestinoProductos = @"C:\Users\mateo\OneDrive\Escritorio\facultad\pruebasModInt\carpetaInProductos"; // Cambia por tu ruta
+        string rutaCarpetaDestinoProductos = @"C:\Users\mateo\OneDrive\Escritorio\facultad\pruebasModInt\carpetaInProductos"; 
 
         using var watcherProductos = new FileSystemWatcher(rutaCarpetaDestinoProductos);
-        watcherProductos.Filter = "*.xls*"; // Puedes filtrar por "*.xml" o "*.xlsx"
+        watcherProductos.Filter = "*.xls*"; // filtro de archivo a leer
         watcherProductos.Created += OnCreatedProducts;
         watcherProductos.EnableRaisingEvents = true;
 
-        string rutaCarpetaDestinoPurchases = @"C:\Users\mateo\OneDrive\Escritorio\facultad\pruebasModInt\carpetaInVentas"; // Cambia por tu ruta
+        string rutaCarpetaDestinoPurchases = @"C:\Users\mateo\OneDrive\Escritorio\facultad\pruebasModInt\carpetaInVentas"; 
 
         using var watcherPurchases = new FileSystemWatcher(rutaCarpetaDestinoPurchases);
-        watcherPurchases.Filter = "*.xls*"; // Puedes filtrar por "*.xml" o "*.xlsx"
+        watcherPurchases.Filter = "*.xls*"; 
         watcherPurchases.Created += OnCreatedPurchases;
         watcherPurchases.EnableRaisingEvents = true;
 

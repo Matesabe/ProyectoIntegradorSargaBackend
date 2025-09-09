@@ -19,7 +19,6 @@ namespace BusinessLogic.Entities
             Rol = rol;
             RecurrenceCount = 0;
         }
-
         public int Points { get; set; }
         public int RecurrenceCount { get; set; }
 

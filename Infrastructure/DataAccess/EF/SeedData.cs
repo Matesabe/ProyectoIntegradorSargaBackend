@@ -33,6 +33,8 @@ namespace Infrastructure.DataAccess.EF
             {
                 clearUsuarios();
                 loadUsers();
+                loadArticulosPrueba();
+                loadPromotions();
             }
             catch (Exception ex)
             {
@@ -180,21 +182,24 @@ namespace Infrastructure.DataAccess.EF
         private void PromotionPrueba()
         {
             PurchasePromotionAmount promotion = null;
-            promotion = new PurchasePromotionAmount(0, "Promoción de prueba", 1, "Amount");
+            promotion = new PurchasePromotionAmount(0, "Promoción de prueba", 1, "Amount", true);
             _context.PurchasePromotionsAmount.Add(promotion);
             _context.SaveChanges();
         }
 
         private void PromotionPruebaProductos()
         {
-            PurchasePromotionProducts promotion = null;
-            List<ProductPromotion> promotionProducts = new List<ProductPromotion>();
-            ProductPromotion productPromotion1 = new ProductPromotion(_context.Products.FirstOrDefault(p => p.productCode == "1000316497").Id, 0);
-            ProductPromotion productPromotion2 = new ProductPromotion(_context.Products.FirstOrDefault(p => p.productCode == "ARSAL").Id, 0);
-            promotionProducts.Add(productPromotion1);
-            promotionProducts.Add(productPromotion2);
+            var promotion = new PurchasePromotionProducts(0, "Promoción de prueba productos", null, 200, true);
 
-            promotion = new PurchasePromotionProducts(0, "Promoción de prueba productos", promotionProducts, 200);
+            var product1 = _context.Products.FirstOrDefault(p => p.productCode == "1000316497");
+            var product2 = _context.Products.FirstOrDefault(p => p.productCode == "ARSAL");
+
+            promotion.ProductPromotions = new List<ProductPromotion>
+            {
+                new ProductPromotion(product1.Id, 0) { Promotion = promotion },
+                new ProductPromotion(product2.Id, 0) { Promotion = promotion }
+            };
+
             _context.PurchasePromotionsProducts.Add(promotion);
             _context.SaveChanges();
         }
@@ -217,26 +222,47 @@ namespace Infrastructure.DataAccess.EF
         private void PromotionPruebaFecha()
         {
             PurchasePromotionDate promotion = null;
-            promotion = new PurchasePromotionDate(0, DateTime.Now.AddDays(-1), DateTime.Now.AddDays(10), 100, 100, "DatePrueba");
+            promotion = new PurchasePromotionDate(0, DateTime.Now.AddDays(-1), DateTime.Now.AddDays(10), 100, 100, "DatePrueba", true);
             _context.PurchasePromotionsDate.Add(promotion); 
             _context.SaveChanges();
         }
 
-        
+        private void loadPromotions()
+        {
+            clearPromotions();
+            PromotionPrueba();
+            PromotionPruebaProductos();
+            PromotionPruebaRecurrence();
+            PromotionPruebaFecha();
+        }
 
+        private void loadArticulosPrueba()
+        {
+       
+            articuloPrueba1();
+            articuloPrueba2();
+            articuloPrueba3();
+            _context.SaveChanges();
+        }
         private void articuloPrueba1()
         {
+            if (_context.Products.Any(p => p.productCode == "1000316497"))
+                return; // Evita duplicados si ya existe el producto
             Product product1 = new Product(0, "1000316497", "Canguro Felpa Liso Maui", 2000, "Invierno", "2025", "Hombre", "Maui", "Canguro");
             _context.Products.Add(product1);
         }
 
         private void articuloPrueba2()
         {
+            if (_context.Products.Any(p => p.productCode == "ARSAL"))
+                return; // Evita duplicados si ya existe el producto
             Product product2 = new Product(0, "ARSAL", "Babucha Felpa Prueba", 1000, "Invierno", "2025", "Hombre", "Rusty", "Babucha");
             _context.Products.Add(product2);
         }
         private void articuloPrueba3()
         {
+            if (_context.Products.Any(p => p.productCode == "112344960"))
+                return; // Evita duplicados si ya existe el producto
             Product product3 = new Product(0, "112344960", "Vaquero Wrangler", 1500, "Invierno", "2025", "Hombre", "Wrangler", "Jean");
             _context.Products.Add(product3);
         }

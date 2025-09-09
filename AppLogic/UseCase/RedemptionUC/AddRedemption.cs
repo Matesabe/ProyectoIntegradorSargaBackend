@@ -25,10 +25,7 @@ namespace AppLogic.UseCase.RedemptionUC
                 {
                     throw new ArgumentNullException(nameof(obj), "El objeto no puede ser nulo");
                 }
-                if (obj.Client == null)
-                {
-                    throw new ArgumentException("El cliente no puede ser nulo", nameof(obj.Client));
-                }
+
                 return _repo.Add(RedemptionMapper.FromDto(obj));
             }
             catch (Exception ex)

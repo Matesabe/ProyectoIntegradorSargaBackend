@@ -14,7 +14,7 @@ namespace AppLogic.Mapper
         public static Redemption FromDto(RedemptionDto dto)
         {
             return new Redemption(dto.Id,
-                                   (Client)UserMapper.FromDto(dto.Client),
+                                   dto.ClientId,
                                    dto.PointsUsed
             );
         }
@@ -23,8 +23,9 @@ namespace AppLogic.Mapper
         {
             return new RedemptionDto(
                 redemption.Id,
-                UserMapper.ToDto(redemption.Client), 
-                redemption.PointsUsed
+                redemption.ClientId, 
+                redemption.PointsUsed,
+                redemption.RedemptionDate
             );
         }
 

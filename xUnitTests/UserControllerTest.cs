@@ -12,20 +12,20 @@ namespace xUnitTests
     public class UsersControllerTests
     {
         // Reemplaza int.any por cualquier valor entero válido, por ejemplo 1
-        UserDto userOk = new UserDto(1, "12345678", "Juan Pérez", "juan.perez@email.com", "Pass123", "600123456", "Administrator");
+        UserDto userOk = new UserDto(1, "12345678", "Juan Pérez", "juan.perez@email.com", "Pass123", "600123456", "Administrator", 0, 0);
 
-        UserDto userRepetido = new UserDto(0, "12345678", "Juan Pérez", "juan.perez@email.com", "Pass123", "600123456", "Administrator");
+        UserDto userRepetido = new UserDto(0, "12345678", "Juan Pérez", "juan.perez@email.com", "Pass123", "600123456", "Administrator", 0, 0);
 
-        UserDto userCIErrorLength = new UserDto(0, "123456789", "Ana García", "ana.garcia@email.com", "Pass456", "600654321", "Client");
-        UserDto userCIErrorNum = new UserDto(0, "1234567B", "Ana García", "ana.garcia@email.com", "Pass456", "600654321", "Client");
+        UserDto userCIErrorLength = new UserDto(0, "123456789", "Ana García", "ana.garcia@email.com", "Pass456", "600654321", "Client", 0, 0);
+        UserDto userCIErrorNum = new UserDto(0, "1234567B", "Ana García", "ana.garcia@email.com", "Pass456", "600654321", "Client", 0, 0);
 
-        UserDto userEmailError = new UserDto(0, "12345678", "Ana García", "ana.garciaemail.com", "Pass456", "600654321", "Client");
+        UserDto userEmailError = new UserDto(0, "12345678", "Ana García", "ana.garciaemail.com", "Pass456", "600654321", "Client", 0, 0);
 
-        UserDto userPassError = new UserDto(0, "12345678", "Ana García", "ana.garcia@email.com", "123", "600654321", "Client");
+        UserDto userPassError = new UserDto(0, "12345678", "Ana García", "ana.garcia@email.com", "123", "600654321", "Client", 0, 0);
 
-        UserDto userPhoneError = new UserDto(0, "12345678", "Ana García", "ana.garcia@email.com", "Pass456", "60065A321", "Client");
+        UserDto userPhoneError = new UserDto(0, "12345678", "Ana García", "ana.garcia@email.com", "Pass456", "60065A321", "Client", 0, 0);
 
-        UserDto userRoleError = new UserDto(0, "12345678", "Ana García", "ana.garcia@email.com", "Pass456", "600654321", "InvalidRole");
+        UserDto userRoleError = new UserDto(0, "12345678", "Ana García", "ana.garcia@email.com", "Pass456", "600654321", "InvalidRole", 0, 0);
 
 
         public UsersControllerTests() { }
@@ -44,7 +44,8 @@ namespace xUnitTests
                 Mock.Of<IGetByName<UserDto>>(),
                 Mock.Of<IGetById<UserDto>>(),
                 Mock.Of<IUpdate<UserDto>>(),
-                Mock.Of<IGetByEmail<UserDto>>()
+                Mock.Of<IGetByEmail<UserDto>>(),
+                Mock.Of<IGetByCi<UserDto>>()
             );
 
             // Act  
@@ -69,7 +70,8 @@ namespace xUnitTests
                 Mock.Of<IGetByName<UserDto>>(),
                 Mock.Of<IGetById<UserDto>>(),
                 Mock.Of<IUpdate<UserDto>>(),
-                Mock.Of<IGetByEmail<UserDto>>()
+                Mock.Of<IGetByEmail<UserDto>>(),
+                Mock.Of<IGetByCi<UserDto>>()
             );
 
             // Act  
@@ -94,7 +96,8 @@ namespace xUnitTests
                 Mock.Of<IGetByName<UserDto>>(),
                 Mock.Of<IGetById<UserDto>>(),
                 Mock.Of<IUpdate<UserDto>>(),
-                Mock.Of<IGetByEmail<UserDto>>()
+                Mock.Of<IGetByEmail<UserDto>>(),
+                Mock.Of<IGetByCi<UserDto>>()
             );
 
             // Act  
@@ -119,7 +122,8 @@ namespace xUnitTests
                 Mock.Of<IGetByName<UserDto>>(),
                 Mock.Of<IGetById<UserDto>>(),
                 Mock.Of<IUpdate<UserDto>>(),
-                Mock.Of<IGetByEmail<UserDto>>()
+                Mock.Of<IGetByEmail<UserDto>>(),
+                Mock.Of<IGetByCi<UserDto>>()
             );
 
             // Act  
@@ -144,7 +148,8 @@ namespace xUnitTests
                 Mock.Of<IGetByName<UserDto>>(),
                 Mock.Of<IGetById<UserDto>>(),
                 Mock.Of<IUpdate<UserDto>>(),
-                Mock.Of<IGetByEmail<UserDto>>()
+                Mock.Of<IGetByEmail<UserDto>>(),
+                Mock.Of<IGetByCi<UserDto>>()
             );
 
             // Act  
@@ -169,7 +174,8 @@ namespace xUnitTests
                 Mock.Of<IGetByName<UserDto>>(),
                 Mock.Of<IGetById<UserDto>>(),
                 Mock.Of<IUpdate<UserDto>>(),
-                Mock.Of<IGetByEmail<UserDto>>()
+                Mock.Of<IGetByEmail<UserDto>>(),
+                Mock.Of<IGetByCi<UserDto>>()
             );
 
             // Act  
@@ -194,7 +200,8 @@ namespace xUnitTests
                 Mock.Of<IGetByName<UserDto>>(),
                 Mock.Of<IGetById<UserDto>>(),
                 Mock.Of<IUpdate<UserDto>>(),
-                Mock.Of<IGetByEmail<UserDto>>()
+                Mock.Of<IGetByEmail<UserDto>>(),
+                Mock.Of<IGetByCi<UserDto>>()
             );
 
             // Act  
@@ -219,7 +226,8 @@ namespace xUnitTests
                 Mock.Of<IGetByName<UserDto>>(),
                 Mock.Of<IGetById<UserDto>>(),
                 Mock.Of<IUpdate<UserDto>>(),
-                Mock.Of<IGetByEmail<UserDto>>()
+                Mock.Of<IGetByEmail<UserDto>>(),
+                Mock.Of<IGetByCi<UserDto>>()
             );
 
             // Act  
@@ -244,7 +252,8 @@ namespace xUnitTests
                 Mock.Of<IGetByName<UserDto>>(),
                 Mock.Of<IGetById<UserDto>>(),
                 Mock.Of<IUpdate<UserDto>>(),
-                Mock.Of<IGetByEmail<UserDto>>()
+                Mock.Of<IGetByEmail<UserDto>>(),
+                Mock.Of<IGetByCi<UserDto>>()
             );
 
             // Act  

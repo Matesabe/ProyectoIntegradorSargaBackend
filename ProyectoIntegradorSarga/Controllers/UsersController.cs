@@ -202,7 +202,7 @@ namespace ProyectoIntegradorSarga.Controllers
                 var rol = User.Claims.FirstOrDefault(c => c.Type == "Rol")?.Value;
                 if (rol != "Administrator")
                 {
-                    return BadRequest("Usuario con rol inválido para crear administrador.");
+                    return Forbid("Usuario con rol inválido para crear administrador.");
                 }
 
                 if (user == null)
@@ -225,9 +225,15 @@ namespace ProyectoIntegradorSarga.Controllers
         }
 
         // PUT api/<ValuesController>/5
+        [Authorize]
         [HttpPut("{id}")]
         public IActionResult Update(UserDto user, int id) {
             try {
+                var rol = User.Claims.FirstOrDefault(c => c.Type == "Rol")?.Value;
+                if (rol != "Administrator")
+                {
+                    return Forbid("Usuario con rol inválido para eliminar un ususario.");
+                }
                 if (user == null)
                 {
                     return BadRequest("El objeto no puede ser nulo");
@@ -247,20 +253,18 @@ namespace ProyectoIntegradorSarga.Controllers
 
 
         // DELETE api/<ValuesController>/5
-        [HttpDelete]
-        public IActionResult Delete(UserDto user)
+        [Authorize]
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
         {
             try
             {
                 var rol = User.Claims.FirstOrDefault(c => c.Type == "Rol")?.Value;
                 if (rol != "Administrator")
                 {
-                    return BadRequest("Usuario con rol inválido para eliminar un canje.");
+                    return Forbid("Usuario con rol inválido para eliminar un ususario.");
                 }
-                if (user == null)
-                {
-                    return BadRequest("El objeto no puede ser nulo");
-                }
+                var user = _getById.Execute(id);
                 _remove.Execute(user);
                 return Ok();
             }

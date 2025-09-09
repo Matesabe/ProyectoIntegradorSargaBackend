@@ -26,11 +26,17 @@ namespace AppLogic.Mapper
 
         public static List<SharedUseCase.DTOs.Purchase.ProductPromotionDto> ToDtoList(List<BusinessLogic.Entities.ProductPromotion> productPromotions)
         {
+            if (productPromotions == null)
+                return new List<SharedUseCase.DTOs.Purchase.ProductPromotionDto>();
+
             return productPromotions.Select(ToDto).ToList();
         }
 
         public static List<BusinessLogic.Entities.ProductPromotion> FromDtoList(List<SharedUseCase.DTOs.Purchase.ProductPromotionDto> productPromotionDtos)
         {
+            if (productPromotionDtos == null)
+                return new List<BusinessLogic.Entities.ProductPromotion>();
+
             return productPromotionDtos.Select(FromDto).ToList();
         }
     }

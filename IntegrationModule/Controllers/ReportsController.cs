@@ -8,13 +8,12 @@ namespace IntegrationModule.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ReportsController : Controller
+    public class ReportsController : ControllerBase
     {
-        IGetAll<ReportDto> _getAll;
-        IAdd<ReportDto> _add;
-        
-        public ReportsController(IGetAll<ReportDto> getAll,
-                                 IAdd<ReportDto> add)
+        private readonly IGetAll<ReportDto> _getAll;
+        private readonly IAdd<ReportDto> _add;
+
+        public ReportsController(IGetAll<ReportDto> getAll, IAdd<ReportDto> add)
         {
             _getAll = getAll;
             _add = add;
@@ -44,10 +43,18 @@ namespace IntegrationModule.Controllers
             {
                 if (report == null)
                 {
-                    return BadRequest("Purchase data is null.");
+                    return BadRequest("Report data is null.");
                 }
+
+                // Validaciones de negocio mínimas
+                if (string.IsNullOrWhiteSpace(report.type))
+                    return BadRequest("El tipo de reporte es obligatorio.");
+                if (report.TotalLines < 0 || report.ProcessedLines < 0)
+                    return BadRequest("Los valores de líneas deben ser mayores o iguales a 0.");
+
                 int addedReportId = _add.Execute(report);
-                return Ok(addedReportId);
+
+                return CreatedAtAction(nameof(GetAll), new { id = addedReportId }, report);
             }
             catch (Exception ex)
             {
@@ -58,4 +65,5 @@ namespace IntegrationModule.Controllers
             }
         }
     }
+
 }

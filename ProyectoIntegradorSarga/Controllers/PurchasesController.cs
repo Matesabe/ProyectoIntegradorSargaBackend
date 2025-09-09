@@ -8,47 +8,68 @@ using SharedUseCase.InterfacesUC.Purchase;
 
 namespace ProyectoIntegradorSarga.Controllers
 {
-    [EnableCors]
-    [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
+    [Route("api/[controller]")]
     public class PurchasesController : Controller
     {
-        IGetPurchaseByClientId<PurchaseDto> _getByClientId;
-        IGetById<PurchaseDto> _getById;
+        private readonly IGetAll<PurchaseDto> _getAllPurchases;
+        private readonly IGetPurchaseByClientId<PurchaseDto> _getByClientId;
+        private readonly IGetById<PurchaseDto> _getById;
 
-        public PurchasesController(IGetPurchaseByClientId<PurchaseDto> getByClientId, IGetById<PurchaseDto> getById)
+        public PurchasesController(
+            IGetAll<PurchaseDto> getAll,
+            IGetPurchaseByClientId<PurchaseDto> getByClientId,
+            IGetById<PurchaseDto> getById)
         {
+            _getAllPurchases = getAll;
             _getByClientId = getByClientId;
             _getById = getById;
         }
 
-        [Authorize]
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            try
+            {
+                var rolLogueado = User.Claims.FirstOrDefault(c => c.Type == "Rol")?.Value;
+                var idLogueado = User.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
+
+                if (rolLogueado == "Administrator")
+                {
+                    return Ok(_getAllPurchases.Execute());
+                }
+
+                if (string.IsNullOrEmpty(idLogueado))
+                    return BadRequest("No se pudo obtener el id del usuario logueado.");
+
+                var purchases = _getByClientId.Execute(int.Parse(idLogueado));
+                return Ok(purchases);
+            }
+            catch (Exception ex)
+            {
+                var errorMessage = ex.InnerException != null
+                    ? $"{ex.Message} - InnerException: {ex.InnerException.Message}"
+                    : ex.Message;
+                return BadRequest(errorMessage);
+            }
+        }
+
         [HttpGet("client/{clientId}")]
         public IActionResult GetByClientId(int clientId)
         {
             try
             {
                 if (clientId <= 0)
-                {
                     return BadRequest("Client ID must be greater than zero.");
-                }
-                var purchases = _getByClientId.Execute(clientId);
-                var idLogueado = User.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
+
                 var rolLogueado = User.Claims.FirstOrDefault(c => c.Type == "Rol")?.Value;
+                var idLogueado = User.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
 
-                if (rolLogueado != "Administrator")
-                {
-                        if (string.IsNullOrEmpty(idLogueado))
-                    {
-                        return BadRequest("No se pudo obtener el id del usuario logueado.");
-                    }
-                }
+                if (rolLogueado != "Administrator" && idLogueado != clientId.ToString())
+                    return StatusCode(403, "Usuario con id inválido para acceder a estas compras.");
 
-                // Verificar que todas las compras tengan el id de usuario del usuario logueado
-                if (purchases.Any(p => p.Client.Id.ToString() != idLogueado))
-                {
-                    return BadRequest("Usuario con id inválido para acceder a estas compras.");
-                }
+                var purchases = _getByClientId.Execute(clientId);
                 return Ok(purchases);
             }
             catch (Exception ex)
@@ -61,30 +82,20 @@ namespace ProyectoIntegradorSarga.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetById(int id) {
+        public IActionResult GetById(int id)
+        {
             try
             {
                 var purchase = _getById.Execute(id);
                 if (purchase == null)
-                {
                     return NotFound();
-                }
-                var idLogueado = User.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
+
                 var rolLogueado = User.Claims.FirstOrDefault(c => c.Type == "Rol")?.Value;
+                var idLogueado = User.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
 
-                if(rolLogueado != "Administrator")
-                {  
-                    if (string.IsNullOrEmpty(idLogueado))
-                    {
-                        return BadRequest("No se pudo obtener el id del usuario logueado.");
-                    }
-                }
+                if (rolLogueado != "Administrator" && purchase.Client.Id.ToString() != idLogueado)
+                    return Forbid("Usuario con id inválido para acceder a esta compra.");
 
-                // Verificar que todas las compras tengan el id de usuario del usuario logueado
-                if (purchase.Client.Id.ToString() != idLogueado)
-                {
-                    return BadRequest("Usuario con id inválido para acceder a esta compra.");
-                }
                 return Ok(purchase);
             }
             catch (Exception ex)
@@ -96,4 +107,5 @@ namespace ProyectoIntegradorSarga.Controllers
             }
         }
     }
+
 }

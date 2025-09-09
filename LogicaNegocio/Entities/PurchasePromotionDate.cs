@@ -17,7 +17,7 @@ namespace BusinessLogic.Entities
         public override string Type { get; set; }
         public override bool IsActive { get; set; }
 
-        public PurchasePromotionDate(int id, DateTime dateStart, DateTime dateEnd, int pointsPerDate, double minimalAmount, string description)
+        public PurchasePromotionDate(int id, DateTime dateStart, DateTime dateEnd, int pointsPerDate, double minimalAmount, string description, bool isActive)
             : base(id)
         {
             PromotionDateStart = dateStart;
@@ -26,7 +26,7 @@ namespace BusinessLogic.Entities
             MinimalAmount = minimalAmount;
             Type = "Date";
             Description = description;
-            IsActive = true; // Assuming the promotion is active by default
+            IsActive = isActive; 
         }
 
         public override int generatePoints(Purchase purchase)

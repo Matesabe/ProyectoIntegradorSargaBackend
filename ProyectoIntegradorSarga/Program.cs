@@ -77,6 +77,7 @@ builder.Services.AddScoped<IGetByProductCode<SubProductDto>, GetByProductCodeSub
 
 // Inyecciones de los Caso de Uso de Compras
 builder.Services.AddScoped<IRepoPurchase, PurchaseRepo>();
+builder.Services.AddScoped<IGetAll<PurchaseDto>, GetAllPurchases>();
 builder.Services.AddScoped<IGetPurchaseByClientId<PurchaseDto>, GetPurchaseByClientId>();
 builder.Services.AddScoped<IGetById<PurchaseDto>, GetByIdPurchase>();
 

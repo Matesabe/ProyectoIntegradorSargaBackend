@@ -190,18 +190,25 @@ namespace ProyectoIntegradorSarga.Controllers
 
         // DELETE api/<ValuesController>/5
         [Authorize]
-        [HttpDelete]
-        public IActionResult Delete(PromotionDto pro)
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
         {
             try
             {
                 var rol = User.Claims.FirstOrDefault(c => c.Type == "Rol")?.Value;
                 if (rol != "Administrator")
                 {
-                    return BadRequest("Usuario con rol inválido para actualizar promociones.");
+                    return BadRequest("Usuario con rol inválido para eliminar promociones.");
                 }
-                _remove.Execute(pro);
-                return Ok();
+
+                var promotion = _getById.Execute(id);
+                if (promotion == null)
+                {
+                    return NotFound($"Promoción con ID {id} no encontrada.");
+                }
+
+                _remove.Execute(promotion);
+                return Ok($"Promoción con ID {id} eliminada exitosamente.");
             }
             catch (Exception ex)
             {

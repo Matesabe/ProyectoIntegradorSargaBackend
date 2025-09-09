@@ -10,8 +10,9 @@ namespace SharedUseCase.DTOs.Redemption
 {
     public record RedemptionDto (
         int Id,
-        UserDto Client,
-        int PointsUsed
+        int ClientId,
+        int PointsUsed,
+        DateTime Date
         )
     {
     }

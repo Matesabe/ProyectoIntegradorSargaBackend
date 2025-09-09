@@ -22,22 +22,25 @@ namespace Infrastructure.DataAccess.EF
             try
             {
                 if (obj == null)
-                {
                     throw new ArgumentNullException(nameof(obj), "El objeto no puede ser nulo");
-                }
-                if (obj.Client == null)
-                {
-                    throw new ArgumentException("El campo 'Client' no puede estar vacío", nameof(obj.Client));
-                }
+
                 if (obj.PointsUsed <= 0)
-                {
                     throw new ArgumentException("El campo 'PointsUsed' debe ser mayor que cero", nameof(obj.PointsUsed));
-                }
+
+                // Verificar que el cliente exista
+                var client = _context.Clients.FirstOrDefault(c => c.Id == obj.ClientId);
+                if (client == null)
+                    throw new ArgumentException("No se encontró el cliente.", nameof(obj.ClientId));
+
+                // Solo usamos la clave foránea
+                obj.Client = null;
 
                 _context.Redemptions.Add(obj);
-                SetPointsToUser(obj.Client.Id, obj.PointsUsed);
+
+                SetPointsToUser(obj.ClientId, obj.PointsUsed);
                 _context.SaveChanges();
-                return obj.Id; // Asumiendo que el Id se genera automáticamente
+
+                return obj.Id;
             }
             catch (NotEnoughPointsException)
             {
@@ -45,7 +48,8 @@ namespace Infrastructure.DataAccess.EF
             }
             catch (Exception ex)
             {
-                throw new Exception("Error al agregar el canje: " + ex.Message, ex);
+                var real = ex.InnerException?.InnerException ?? ex.InnerException ?? ex;
+                throw new Exception("Error al agregar el canje: " + real.Message, real);
             }
         }
 

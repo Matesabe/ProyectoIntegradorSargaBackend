@@ -19,14 +19,14 @@ namespace BusinessLogic.Entities
             Type = "Recurrence";
             IsActive = true; // Default value, can be set later if needed
         }
-        public PurchasePromotionRecurrence(int id, string description, int recurrenceValue, int pointsPerRecurrence)
+        public PurchasePromotionRecurrence(int id, string description, int recurrenceValue, int pointsPerRecurrence, bool isActive)
             : base(id)
         {
             Description = description;
             RecurrenceValue = recurrenceValue;
             PointsPerRecurrence = pointsPerRecurrence;
             Type = "Recurrence";
-            IsActive = true; // Default value, can be set later if needed
+            IsActive = isActive; 
         }
 
         public override int generatePoints(Purchase purchase)
@@ -39,6 +39,10 @@ namespace BusinessLogic.Entities
             if (recurrenceCount < 0)
             {
                 throw new ArgumentException("Recurrence count cannot be negative");
+            }
+            if (recurrenceCount > RecurrenceValue)
+            {
+                recurrenceCount = RecurrenceValue;
             }
             return recurrenceCount * PointsPerRecurrence;
         }

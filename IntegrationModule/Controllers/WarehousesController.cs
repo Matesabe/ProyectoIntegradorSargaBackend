@@ -9,19 +9,19 @@ namespace IntegrationModule.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class WarehousesController : Controller
+    public class WarehousesController : ControllerBase
     {
-        IClearStocks _clearStocks;
-        IUpdateStocks _updateStocks;
-        IGetAll<WarehouseDto> _getAll;
+        private readonly IClearStocks _clearStocks;
+        private readonly IUpdateStocks _updateStocks;
+        private readonly IGetAll<WarehouseDto> _getAll;
 
         public WarehousesController(IClearStocks clearStocks,
                                     IUpdateStocks updateStocks,
                                     IGetAll<WarehouseDto> getAll)
         {
-         _clearStocks = clearStocks;
-         _updateStocks = updateStocks;
-         _getAll = getAll;
+            _clearStocks = clearStocks;
+            _updateStocks = updateStocks;
+            _getAll = getAll;
         }
 
         [HttpGet]
@@ -29,15 +29,15 @@ namespace IntegrationModule.Controllers
         {
             try
             {
-            var warehouses = _getAll.Execute();
-            return Ok(warehouses);
+                var warehouses = _getAll.Execute();
+                return Ok(warehouses);
             }
             catch (Exception ex)
             {
-            var errorMessage = ex.InnerException != null
-                ? $"{ex.Message} - InnerException: {ex.InnerException.Message}"
-                : ex.Message;
-            return BadRequest(new { error = errorMessage});
+                var errorMessage = ex.InnerException != null
+                    ? $"{ex.Message} - InnerException: {ex.InnerException.Message}"
+                    : ex.Message;
+                return BadRequest(new { error = errorMessage });
             }
         }
 
@@ -47,19 +47,19 @@ namespace IntegrationModule.Controllers
             try
             {
                 _clearStocks.Execute();
-                return Ok("Stocks cleared successfully.");
+                return Ok(new { message = "Stocks cleared successfully." });
             }
             catch (Exception ex)
             {
                 var errorMessage = ex.InnerException != null
                     ? $"{ex.Message} - InnerException: {ex.InnerException.Message}"
                     : ex.Message;
-                return BadRequest(errorMessage);
+                return BadRequest(new { error = errorMessage });
             }
         }
 
         [HttpPut("update-stocks")]
-        public IActionResult UpdateStocks(SubProductDto sub)
+        public IActionResult UpdateStocks([FromBody] SubProductDto sub)
         {
             try
             {
@@ -67,7 +67,20 @@ namespace IntegrationModule.Controllers
                 {
                     return BadRequest(new { error = "El subproducto no puede ser nulo." });
                 }
+
+                if (sub.Id <= 0)
+                {
+                    return BadRequest(new { error = "El ID de subproducto es inválido." });
+                }
+
+                if (new[] { sub.stockPdelE, sub.stockCol, sub.stockPay, sub.stockPeat, sub.stockSal }
+                    .Any(stock => stock < 0))
+                {
+                    return BadRequest(new { error = "Las cantidades de stock no pueden ser negativas." });
+                }
+
                 _updateStocks.Execute(sub, (int)sub.stockPdelE, (int)sub.stockCol, (int)sub.stockPay, (int)sub.stockPeat, (int)sub.stockSal);
+
                 return Ok(new { message = "Stocks updated successfully." });
             }
             catch (Exception ex)
@@ -79,4 +92,5 @@ namespace IntegrationModule.Controllers
             }
         }
     }
+
 }

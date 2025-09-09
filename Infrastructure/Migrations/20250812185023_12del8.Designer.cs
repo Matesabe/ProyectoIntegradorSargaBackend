@@ -4,6 +4,7 @@ using Infrastructure.DataAccess.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(SargaContext))]
-    partial class SargaContextModelSnapshot : ModelSnapshot
+    [Migration("20250812185023_12del8")]
+    partial class _12del8
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -317,9 +320,6 @@ namespace Infrastructure.Migrations
 
                     b.Property<int>("PointsUsed")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("RedemptionDate")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
